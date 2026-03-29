@@ -169,7 +169,13 @@
   * {
     @apply border-border outline-ring/50;
   }
+  section {
+    @apply lg:border-x;
+  }
   body {
     @apply bg-background text-foreground;
+  }
+  button {
+    @apply cursor-pointer!;
   }
 }
