@@ -3,7 +3,7 @@ import { Logo } from "./logo";
 
 export const Navbar = () => {
 	return (
-		<nav className="fixed z-10 top-6 inset-x-4 h-14 bg-background border dark:border-slate-700/70 max-w-screen-md mx-auto rounded-full">
+		<nav className="fixed z-100 top-6 inset-x-4 h-14 border backdrop-blur-sm bg-background/70 dark:border-slate-700/70 max-w-screen-md mx-auto rounded-full">
 			<div className="h-full flex items-center justify-between mx-auto px-3">
         <Logo />
         <nav className="hidden md:flex items-center gap-6">

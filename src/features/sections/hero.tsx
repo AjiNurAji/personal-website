@@ -34,7 +34,7 @@ export const Hero = () => {
 			</div>
 
 			{/* content of the section */}
-			<div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4">
+			<div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4 lg:max-w-5xl mx-auto  justify-cente">
 				<Badge variant="default" className="px-3 py-2 text-sm">
 					<RiFlashlightFill />
 					Full Web Stack Developer
