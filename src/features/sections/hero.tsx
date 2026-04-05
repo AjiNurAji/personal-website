@@ -11,9 +11,9 @@ import {
 
 export const Hero = () => {
 	return (
-		<section className="relative min-h-screen flex items-center justify-center px-6 pt-6 overflow-hidden">
+		<section className="relative min-h-screen flex items-center justify-center px-6 pt-6 overflow-hidden border-b">
 			<div
-				className="absolute inset-0 z-0 flex items-center justify-center"
+				className="absolute inset-0 z-0 flex items-center justify-center blur-[1px] opacity-50"
 				id="background-pattern"
 			>
 				<PixelBlast
@@ -51,10 +51,11 @@ export const Hero = () => {
 			</div>
 
 			{/* scroll down indicator */}
-			<div className="flex justify-center items-center gap-0 absolute bottom-10 w-full z-10">
+			<div className="flex flex-col justify-center items-center gap-1 absolute bottom-10 w-full z-10">
+				<span className="animate-pulse text-xs">Scroll down</span>
 				<Tooltip>
 					<TooltipTrigger>
-						<div className="w-6 h-10 rounded-full border-2 border-primary flex justify-center items-start p-1 pt-1.5 overflow-hidden animate-pulse">
+						<div className="flex w-6 h-10 rounded-full border-2 border-primary justify-center items-start p-1 pt-1.5 overflow-hidden animate-pulse">
 							<div className="w-2 h-3 block rounded-full bg-primary animate-bounce" />
 						</div>
 					</TooltipTrigger>

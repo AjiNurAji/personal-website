@@ -169,13 +169,26 @@
   * {
     @apply border-border outline-ring/50;
   }
-  section {
-    @apply lg:border-x;
-  }
   body {
     @apply bg-background text-foreground;
   }
   button {
     @apply cursor-pointer!;
   }
+}
+
+::selection {
+  @apply bg-accent text-accent-foreground;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 5px;
 }

@@ -6,8 +6,8 @@ import { cn } from "~/lib/utils"
 
 export const About = () => {
   return (
-    <section className="relative py-20 px-6" id="about">
-      <div className="max-w-screen-lg mx-auto">
+    <section className="relative px-6 sm:px-0 border-b" id="about">
+      <div className="max-w-screen-lg mx-auto border-x py-20 px-6">
         <div className="flex flex-col md:flex-row-reverse gap-12">
           <div className="mt-10 w-48 h-48 md:w-64 md:h-64 hidden md:block">
             <div className="relative w-full h-full rounded-2xl overflow-hidden bg-accent">
