@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "~/lib/utils";
 import { TooltipProvider } from "~/components/ui/tooltip";
 import { ThemeProvider } from "~/components/ThemeProvider";
+import { ScrollProvider } from "~/components/ScrollProvider";
 
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -40,7 +41,11 @@ export default function RootLayout({
 					enableSystem
 					disableTransitionOnChange
 				>
-					<TooltipProvider>{children}</TooltipProvider>
+					<TooltipProvider>
+						<ScrollProvider>
+							{children}
+						</ScrollProvider>
+					</TooltipProvider>
 				</ThemeProvider>
 			</body>
 		</html>
