@@ -1,12 +1,18 @@
+"use client";
 import { RiDownload2Line, RiGithubFill } from "@remixicon/react"
+import { motion } from "framer-motion"
 import Image from "next/image"
 import { Badge } from "~/components/ui/badge"
 import { buttonVariants } from "~/components/ui/button"
 import { cn } from "~/lib/utils"
 
-export const About = () => {
+const About = () => {
   return (
-    <section className="relative px-6 sm:px-0 border-b" id="about">
+    <motion.section 
+      initial={{ y: 100, opacity: 0 }}
+      whileInView={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.6 }}
+      className="relative z-3 bg-background px-6 sm:px-0 border-y" id="about">
       <div className="max-w-screen-lg mx-auto border-x py-20 px-6">
         <div className="flex flex-col md:flex-row-reverse gap-12">
           <div className="mt-10 w-48 h-48 md:w-64 md:h-64 hidden md:block">
@@ -27,6 +33,8 @@ export const About = () => {
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   )
 }
+
+export default About;

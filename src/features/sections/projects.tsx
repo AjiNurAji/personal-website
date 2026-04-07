@@ -1,7 +1,7 @@
 import { ProjectCard } from "~/components/elements/ProjectCard"
 import { Badge } from "~/components/ui/badge"
 
-export const ProjectsSection = () => {
+const ProjectsSection = () => {
   return (
     <section id="projects" className="relative px-6 py-20">
       <div className="max-w-screen-lg mx-auto">
@@ -26,3 +26,5 @@ export const ProjectsSection = () => {
     </section>
   )
 }
+
+export default ProjectsSection;

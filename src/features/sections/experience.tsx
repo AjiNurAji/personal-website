@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Badge } from "~/components/ui/badge";
 
-export const Experience = () => {
+const Experience = () => {
 	return (
 		<section id="experience" className="relative px-6 py-20">
 			<div className="max-w-screen-lg mx-auto">
@@ -101,3 +101,5 @@ export const Experience = () => {
 		</section>
 	);
 };
+
+export default Experience;

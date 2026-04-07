@@ -8,10 +8,19 @@ import {
 	TooltipTrigger,
 	TooltipContent,
 } from "~/components/ui/tooltip";
+import { motion, useScroll, useTransform } from "framer-motion";
 
-export const Hero = () => {
+const Hero = () => {
+	const { scrollY } = useScroll();
+
+  const opacity = useTransform(scrollY, [0, 350], [1, 0]);
+  const scale = useTransform(scrollY, [0, 350], [1, 0.8]);
+
 	return (
-		<section className="relative min-h-screen flex items-center justify-center px-6 pt-6 overflow-hidden border-b">
+		<motion.section
+			style={{ opacity, scale }}
+			id="hero"
+			className="sticky top-0 z-1 min-h-screen flex items-center justify-center px-6 pt-6 overflow-hidden">
 			<div
 				className="absolute inset-0 z-0 flex items-center justify-center blur-[1px] opacity-50"
 				id="background-pattern"
@@ -64,6 +73,8 @@ export const Hero = () => {
 					</TooltipContent>
 				</Tooltip>
 			</div>
-		</section>
+		</motion.section>
 	);
 };
+
+export default Hero;
