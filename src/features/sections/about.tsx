@@ -9,8 +9,9 @@ import { cn } from "~/lib/utils"
 const About = () => {
   return (
     <motion.section 
-      initial={{ y: 100, opacity: 0 }}
-      whileInView={{ y: 0, opacity: 1 }}
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: false, amount: 0.3 }}
       transition={{ duration: 0.6 }}
       className="relative z-3 bg-background px-6 sm:px-0 border-y" id="about">
       <div className="max-w-screen-lg mx-auto border-x py-20 px-6">

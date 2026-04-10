@@ -9,18 +9,20 @@ import {
 	TooltipContent,
 } from "~/components/ui/tooltip";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { LetterAnimation } from "~/components/elements/LetterAnimation";
 
 const Hero = () => {
 	const { scrollY } = useScroll();
 
-  const opacity = useTransform(scrollY, [0, 350], [1, 0]);
-  const scale = useTransform(scrollY, [0, 350], [1, 0.8]);
+	const opacity = useTransform(scrollY, [0, 350], [1, 0]);
+	const scale = useTransform(scrollY, [0, 350], [1, 0.8]);
 
 	return (
 		<motion.section
 			style={{ opacity, scale }}
 			id="hero"
-			className="sticky top-0 z-1 min-h-screen flex items-center justify-center px-6 pt-6 overflow-hidden">
+			className="sticky top-0 z-1 min-h-screen flex items-center justify-center px-6 pt-6 overflow-hidden"
+		>
 			<div
 				className="absolute inset-0 z-0 flex items-center justify-center blur-[1px] opacity-50"
 				id="background-pattern"
@@ -43,20 +45,31 @@ const Hero = () => {
 			</div>
 
 			{/* content of the section */}
-			<div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4 lg:max-w-5xl mx-auto  justify-cente">
-				<Badge variant="default" className="px-3 py-2 text-sm">
-					<RiFlashlightFill />
-					Full Web Stack Developer
-				</Badge>
-				<h1 className="mt-6 text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.2]! tracking-tight">
+			<div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4 lg:max-w-5xl mx-auto">
+				<motion.div
+					initial={{ opacity: 0, filter: "blur(4px)" }}
+					animate={{ opacity: 1, filter: "blur(0px)" }}
+					transition={{
+						duration: 1.35,
+					}}
+				>
+					<Badge variant="default" className="px-3 py-2 text-sm">
+						<RiFlashlightFill />
+						Full Web Stack Developer
+					</Badge>
+				</motion.div>
+				<LetterAnimation
+					isHeading
+					className="mt-6 text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.2]! tracking-tight"
+				>
 					Building Scalable & Engaging Web Experiences
-				</h1>
-				<p className="mt-6 text-[17px] md:text-lg text-muted-foreground">
+				</LetterAnimation>
+				<LetterAnimation className="mt-6 text-[17px] md:text-lg text-muted-foreground max-w-screen-md overflow-hidden flex-wrap flex text-center justify-center items-center">
 					Hey there! I'm a Aji Nur Aji , a Full Stack Developer who loves building
 					cool and scalable web experiences. From crafting beautiful frontends to
 					powering robust backends, I bring ideas to life with clean code and great
 					design. Let's create something amazing together!
-				</p>
+				</LetterAnimation>
 			</div>
 
 			{/* scroll down indicator */}
