@@ -55,7 +55,7 @@ const Hero = () => {
 					Hey there! I'm a Aji Nur Aji , a Full Stack Developer who loves building
 					cool and scalable web experiences. From crafting beautiful frontends to
 					powering robust backends, I bring ideas to life with clean code and great
-					design. Let's create something amazing together! 🚀
+					design. Let's create something amazing together!
 				</p>
 			</div>
 
