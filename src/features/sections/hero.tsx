@@ -9,7 +9,7 @@ import {
 	TooltipContent,
 } from "~/components/ui/tooltip";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { LetterAnimation } from "~/components/elements/LetterAnimation";
+import { HeroHeadingAnimation, LetterAnimation } from "~/components/elements/LetterAnimation";
 
 const Hero = () => {
 	const { scrollY } = useScroll();
@@ -58,12 +58,10 @@ const Hero = () => {
 						Full Web Stack Developer
 					</Badge>
 				</motion.div>
-				<LetterAnimation
-					isHeading
+				<HeroHeadingAnimation
+					text="Building Scalable & Engaging Web Experiences"
 					className="mt-6 text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.2]! tracking-tight"
-				>
-					Building Scalable & Engaging Web Experiences
-				</LetterAnimation>
+				/>
 				<LetterAnimation className="mt-6 text-[17px] md:text-lg text-muted-foreground max-w-screen-md overflow-hidden flex-wrap flex text-center justify-center items-center">
 					Hey there! I'm a Aji Nur Aji , a Full Stack Developer who loves building
 					cool and scalable web experiences. From crafting beautiful frontends to

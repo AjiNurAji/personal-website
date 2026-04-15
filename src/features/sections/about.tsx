@@ -1,41 +1,75 @@
 "use client";
-import { RiDownload2Line, RiGithubFill } from "@remixicon/react"
-import { motion } from "framer-motion"
-import Image from "next/image"
-import { Badge } from "~/components/ui/badge"
-import { buttonVariants } from "~/components/ui/button"
-import { cn } from "~/lib/utils"
+
+import { RiDownload2Line, RiGithubFill } from "@remixicon/react";
+import Image from "next/image";
+import { LetterAnimation } from "~/components/elements/LetterAnimation";
+import { AnimateIn } from "~/components/elements/AnimateIn";
+import { Badge } from "~/components/ui/badge";
+import { buttonVariants } from "~/components/ui/button";
+import { cn } from "~/lib/utils";
 
 const About = () => {
   return (
-    <motion.section 
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: false, amount: 0.3 }}
-      transition={{ duration: 0.6 }}
-      className="relative z-3 bg-background px-6 sm:px-0 border-y" id="about">
+    <section className="relative z-3 bg-background px-6 sm:px-0 border-y overflow-hidden" id="about">
       <div className="max-w-screen-lg mx-auto border-x py-20 px-6">
         <div className="flex flex-col md:flex-row-reverse gap-12">
-          <div className="mt-10 w-48 h-48 md:w-64 md:h-64 hidden md:block">
+
+          {/* Profile image */}
+          <AnimateIn variant="blur-fade" className="mt-10 w-48 h-48 md:w-64 md:h-64 hidden md:block">
             <div className="relative w-full h-full rounded-2xl overflow-hidden bg-accent">
-              <Image src="https://shadcn-portfolio-template.vercel.app/placeholder.svg" alt="Placeholder" loading="lazy" fill />
+              <Image
+                src="https://shadcn-portfolio-template.vercel.app/placeholder.svg"
+                alt="Placeholder"
+                loading="lazy"
+                fill
+              />
             </div>
-          </div>
-          <div className="flex-1 md:text-left">
-            <Badge variant="secondary">About Me</Badge>
-            <h2 className="text-4xl font-bold mb-4 tracking-tight">Passionate about creating impactful web experiences</h2>
-            <p className="text-muted-foreground mb-6 text-justify">With over 5 years of experience in full-stack development, I specialize in building scalable web applications using modern technologies. My expertise includes React, Node.js, and cloud architecture. I'm passionate about creating elegant solutions to complex problems and sharing knowledge with the developer community.</p>
-            <div className="flex flex-wrap gap-4 justify-start">
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className={cn(buttonVariants({ variant: "default" }), 'rounded-full')}>
-              <RiGithubFill /> View GitHub</a>
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className={cn(buttonVariants({ variant: "outline" }), 'rounded-full')}>
-              <RiDownload2Line /> Download CV</a>
-            </div>
+          </AnimateIn>
+
+          {/* Text content */}
+          <div className="flex-1 md:text-left space-y-4">
+            <AnimateIn variant="blur-fade">
+              <Badge variant="secondary">About Me</Badge>
+            </AnimateIn>
+
+            <LetterAnimation isHeading inView className="text-4xl font-bold mb-4 tracking-tight justify-start">
+              Passionate about creating impactful web experiences
+            </LetterAnimation>
+
+            <AnimateIn variant="blur-fade" delay={0.1}>
+              <p className="text-muted-foreground text-justify">
+                With over 5 years of experience in full-stack development, I specialize in building
+                scalable web applications using modern technologies. My expertise includes React,
+                Node.js, and cloud architecture. I&apos;m passionate about creating elegant solutions
+                to complex problems and sharing knowledge with the developer community.
+              </p>
+            </AnimateIn>
+
+            <AnimateIn variant="blur-fade" delay={0.2}>
+              <div className="flex flex-wrap gap-4 justify-start">
+                <a
+                  href="https://github.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cn(buttonVariants({ variant: "default" }), "rounded-full")}
+                >
+                  <RiGithubFill /> View GitHub
+                </a>
+                <a
+                  href="https://github.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cn(buttonVariants({ variant: "outline" }), "rounded-full")}
+                >
+                  <RiDownload2Line /> Download CV
+                </a>
+              </div>
+            </AnimateIn>
           </div>
         </div>
       </div>
-    </motion.section>
-  )
-}
+    </section>
+  );
+};
 
 export default About;
