@@ -61,6 +61,15 @@ const Hero = () => {
 						<RiFlashlightFill className="w-4 h-4 mr-1.5" />
 						Full Web Stack Developer
 					</Badge>
+					<div className="hidden sm:block">
+						<Badge
+							variant="outline"
+							className="px-2 py-1 text-[11px] border-green-500/50 bg-green-500/10 text-green-500 backdrop-blur-md cursor-default pointer-events-none"
+						>
+							<span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse mr-1.5 inline-block" />
+							Open to Hire
+						</Badge>
+					</div>
 				</motion.div>
 				<HeroHeadingAnimation
 					text="Building Scalable & Engaging Web Experiences"
