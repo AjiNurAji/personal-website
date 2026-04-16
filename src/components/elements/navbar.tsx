@@ -21,7 +21,7 @@ export const Navbar = () => {
 					))}
 				</nav>
 				<div className="flex items-center gap-2 sm:gap-3">
-					<div className="block">
+					<div className="hidden sm:block">
 						<Badge
 							variant="outline"
 							className="px-2 py-1 text-[11px] border-green-500/50 bg-green-500/10 text-green-500 backdrop-blur-md cursor-default pointer-events-none"
