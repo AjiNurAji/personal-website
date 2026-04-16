@@ -2,32 +2,24 @@ import Link from "next/link";
 import { Separator } from "../ui/separator";
 import { Logo } from "./logo";
 import { RiDrinks2Fill, RiGithubFill, RiInstagramLine, RiTiktokFill } from "@remixicon/react";
+import { NAV_LINKS } from "~/config/nav";
 
 export const Footer = () => {
 	return (
-		<footer className="border-t bg-background">
+		<footer className="border-t bg-background px-4 sm:px-0">
 			<div className="max-w-5xl mx-auto border-x px-6">
 				<div className="py-12 flex flex-col justify-start gap-3 items-center">
 					<Logo />
-					<nav className="flex items-center gap-6">
-						<a
-							href="#about"
-							className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-						>
-							About
-						</a>
-						<a
-							href="#projects"
-							className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-						>
-							Projects
-						</a>
-						<a
-							href="#contact"
-							className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-						>
-							Contact
-						</a>
+					<nav className="flex items-center gap-4 sm:gap-6 flex-wrap justify-center">
+						{NAV_LINKS.map((link) => (
+							<a
+								key={link.name}
+								href={link.href}
+								className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+							>
+								{link.name}
+							</a>
+						))}
 					</nav>
 				</div>
 				<Separator orientation="horizontal" />

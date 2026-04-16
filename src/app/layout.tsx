@@ -30,6 +30,7 @@ export default function RootLayout({
 	return (
 		<html
 			lang="en"
+			translate="no"
 			className={cn("font-sans", outfit.variable)}
 			suppressHydrationWarning
 		>

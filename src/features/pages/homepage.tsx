@@ -1,4 +1,4 @@
-import { About, Experience, Hero, ProjectsSection } from "../sections";
+import { About, Experience, Hero, ProjectsSection, Skills } from "../sections";
 import AchievementsSection from "../sections/achievements";
 
 const Homepage = () => {
@@ -6,6 +6,7 @@ const Homepage = () => {
     <>
       <Hero />
       <About />
+      <Skills />
       <Experience />
       <ProjectsSection />
       <AchievementsSection />

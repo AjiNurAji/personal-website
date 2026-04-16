@@ -19,7 +19,7 @@ const experiences = [
 
 const Experience = () => {
 	return (
-		<section id="experience" className="relative overflow-hidden">
+		<section id="experience" className="relative overflow-hidden px-4 sm:px-0">
 			<div className="max-w-5xl mx-auto border-x px-6 py-20">
 				{/* Section header */}
 				<div className="flex flex-col items-center justify-center gap-3 text-center mb-12">

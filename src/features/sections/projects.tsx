@@ -11,7 +11,7 @@ import { cn } from "~/lib/utils";
 
 const ProjectsSection = () => {
   return (
-    <section id="projects" className="relative z-[4] bg-background border-t overflow-hidden">
+    <section id="projects" className="relative z-[4] bg-background border-t overflow-hidden px-4 sm:px-0">
       <div className="max-w-5xl mx-auto border-x py-20 px-6">
 
         {/* Section header */}

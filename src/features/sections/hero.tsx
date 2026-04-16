@@ -9,7 +9,10 @@ import {
 	TooltipContent,
 } from "~/components/ui/tooltip";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { HeroHeadingAnimation, LetterAnimation } from "~/components/elements/LetterAnimation";
+import {
+	HeroHeadingAnimation,
+	LetterAnimation,
+} from "~/components/elements/LetterAnimation";
 
 const Hero = () => {
 	const { scrollY } = useScroll();
@@ -52,9 +55,10 @@ const Hero = () => {
 					transition={{
 						duration: 1.35,
 					}}
+					className="flex items-center gap-3 flex-wrap justify-center"
 				>
 					<Badge variant="default" className="px-3 py-2 text-sm">
-						<RiFlashlightFill />
+						<RiFlashlightFill className="w-4 h-4 mr-1.5" />
 						Full Web Stack Developer
 					</Badge>
 				</motion.div>
@@ -63,10 +67,10 @@ const Hero = () => {
 					className="mt-6 text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.2]! tracking-tight"
 				/>
 				<LetterAnimation className="mt-6 text-[17px] md:text-lg text-muted-foreground max-w-screen-md overflow-hidden flex-wrap flex text-center justify-center items-center">
-					Hey there! I'm a Aji Nur Aji , a Full Stack Developer who loves building
-					cool and scalable web experiences. From crafting beautiful frontends to
-					powering robust backends, I bring ideas to life with clean code and great
-					design. Let's create something amazing together!
+					Hello! I'm Aji Nur Aji, a motivated and passionate Full-Stack Web
+					Developer. I have a strong interest in building modern web applications
+					using React, Next.js, and Laravel. Let's turn ideas into clean code and
+					build something amazing together!
 				</LetterAnimation>
 			</div>
 
