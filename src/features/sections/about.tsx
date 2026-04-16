@@ -11,7 +11,7 @@ import { cn } from "~/lib/utils";
 const About = () => {
   return (
     <section className="relative z-3 bg-background px-6 sm:px-0 border-y overflow-hidden" id="about">
-      <div className="max-w-screen-lg mx-auto border-x py-20 px-6">
+      <div className="max-w-5xl mx-auto border-x py-20 px-6">
         <div className="flex flex-col md:flex-row-reverse gap-12">
 
           {/* Profile image */}

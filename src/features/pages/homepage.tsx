@@ -1,4 +1,5 @@
 import { About, Experience, Hero, ProjectsSection } from "../sections";
+import AchievementsSection from "../sections/achievements";
 
 const Homepage = () => {
   return (
@@ -7,8 +8,9 @@ const Homepage = () => {
       <About />
       <Experience />
       <ProjectsSection />
+      <AchievementsSection />
     </>
   );
 };
 
-export default Homepage
+export default Homepage;

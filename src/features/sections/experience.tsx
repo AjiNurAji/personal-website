@@ -19,8 +19,8 @@ const experiences = [
 
 const Experience = () => {
 	return (
-		<section id="experience" className="relative px-6 py-20 overflow-hidden">
-			<div className="max-w-screen-lg mx-auto">
+		<section id="experience" className="relative overflow-hidden">
+			<div className="max-w-5xl mx-auto border-x px-6 py-20">
 				{/* Section header */}
 				<div className="flex flex-col items-center justify-center gap-3 text-center mb-12">
 					<AnimateIn variant="blur-fade">

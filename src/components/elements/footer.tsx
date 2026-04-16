@@ -5,8 +5,8 @@ import { RiDrinks2Fill, RiGithubFill, RiInstagramLine, RiTiktokFill } from "@rem
 
 export const Footer = () => {
 	return (
-		<footer className="mt-20">
-			<div className="max-w-screen-lg mx-auto">
+		<footer className="border-t bg-background">
+			<div className="max-w-5xl mx-auto border-x px-6">
 				<div className="py-12 flex flex-col justify-start gap-3 items-center">
 					<Logo />
 					<nav className="flex items-center gap-6">
