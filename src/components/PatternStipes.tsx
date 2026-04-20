@@ -1,5 +1,4 @@
 import React from "react";
-import { cn } from "~/lib/utils";
 
 export const PatternStripes = ({
 	children,
@@ -10,12 +9,10 @@ export const PatternStripes = ({
 }) => {
 	return (
 		<div
-			className={cn(
-				"h-full w-full",
-				order === "normal"
-					? "bg-[repeating-linear-gradient(45deg,_#e5e7eb_0px,_#e5e7eb_1px,_transparent_1px,_transparent_10px)]"
-					: "bg-[repeating-linear-gradient(-45deg,_#e5e7eb_0px,_#e5e7eb_1px,_transparent_1px,_transparent_10px)]",
-			)}
+			className="h-full w-full"
+			style={{
+				backgroundImage: order === "normal" ? "repeating-linear-gradient(45deg, var(--accent) 0px, var(--accent) 1px, transparent 1px, transparent 10px)" : "repeating-linear-gradient(-45deg, var(--accent) 0px, var(--accent) 1px, transparent 1px, transparent 10px)",
+			}}
 		>
 			{children}
 		</div>
