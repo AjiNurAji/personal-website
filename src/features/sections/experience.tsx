@@ -4,6 +4,7 @@ import { Badge } from "~/components/ui/badge";
 import { LetterAnimation } from "~/components/elements/LetterAnimation";
 import { AnimateIn } from "~/components/elements/AnimateIn";
 import { ExperienceCard } from "~/components/elements/ExperienceCard";
+import { PatternStripes } from "~/components/PatternStipes";
 
 const experiences = [
 	{
@@ -20,29 +21,31 @@ const experiences = [
 const Experience = () => {
 	return (
 		<section id="experience" className="relative overflow-hidden px-4 sm:px-0">
-			<div className="max-w-5xl mx-auto border-x px-6 py-20">
-				{/* Section header */}
-				<div className="flex flex-col items-center justify-center gap-3 text-center mb-12">
-					<AnimateIn variant="blur-fade">
-						<Badge variant="secondary">Experience</Badge>
-					</AnimateIn>
-					<LetterAnimation isHeading inView className="text-4xl sm:text-5xl font-bold tracking-tight">
-						Professional Journey
-					</LetterAnimation>
-					<AnimateIn variant="blur-fade" delay={0.1}>
-						<p className="text-muted-foreground">
-							A timeline of my professional growth and key achievements
-						</p>
-					</AnimateIn>
-				</div>
+			<PatternStripes>
+				<div className="max-w-5xl mx-auto border-x px-6 py-20 bg-background relative z-10">
+					{/* Section header */}
+					<div className="flex flex-col items-center justify-center gap-3 text-center mb-12">
+						<AnimateIn variant="blur-fade">
+							<Badge variant="secondary">Experience</Badge>
+						</AnimateIn>
+						<LetterAnimation isHeading inView className="text-4xl sm:text-5xl font-bold tracking-tight">
+							Professional Journey
+						</LetterAnimation>
+						<AnimateIn variant="blur-fade" delay={0.1}>
+							<p className="text-muted-foreground">
+								A timeline of my professional growth and key achievements
+							</p>
+						</AnimateIn>
+					</div>
 
-				{/* Timeline */}
-				<div className="relative">
-					{experiences.map((exp, index) => (
-						<ExperienceCard key={index} {...exp} delay={index * 0.1} />
-					))}
+					{/* Timeline */}
+					<div className="relative">
+						{experiences.map((exp, index) => (
+							<ExperienceCard key={index} {...exp} delay={index * 0.1} />
+						))}
+					</div>
 				</div>
-			</div>
+			</PatternStripes>
 		</section>
 	);
 };
