@@ -2,8 +2,13 @@ import { Navbar } from "~/components/elements/navbar";
 import { Footer } from "~/components/elements/footer";
 import { ProjectCard } from "~/components/elements/ProjectCard";
 import { Badge } from "~/components/ui/badge";
+import prisma from "~/lib/prisma";
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  const projects = await prisma.project.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+
   return (
     <div className="font-sans min-h-screen flex flex-col">
       <Navbar />
@@ -20,9 +25,23 @@ export default function ProjectsPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
-              <ProjectCard key={i} />
+            {projects.map((project) => (
+              <ProjectCard 
+                key={project.id}
+                title={project.title}
+                description={project.description}
+                image={project.image}
+                link={project.link}
+                github={project.github}
+                demo={project.demo}
+                badges={project.badges}
+              />
             ))}
+            {projects.length === 0 && (
+              <div className="col-span-full py-20 text-center text-muted-foreground italic">
+                No projects found.
+              </div>
+            )}
           </div>
         </div>
       </main>
@@ -30,3 +49,4 @@ export default function ProjectsPage() {
     </div>
   );
 }
+

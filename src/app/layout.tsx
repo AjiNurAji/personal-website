@@ -4,6 +4,8 @@ import "./globals.css";
 import { cn } from "~/lib/utils";
 import { TooltipProvider } from "~/components/ui/tooltip";
 import { ThemeProvider } from "~/components/ThemeProvider";
+import { Toaster } from "~/components/ui/sonner";
+
 
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -43,7 +45,9 @@ export default function RootLayout({
 				>
 					<TooltipProvider>
 							{children}
+							<Toaster position="top-right" richColors />
 					</TooltipProvider>
+
 				</ThemeProvider>
 			</body>
 		</html>

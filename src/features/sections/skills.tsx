@@ -1,36 +1,20 @@
-"use client";
-
 import { LetterAnimation } from "~/components/elements/LetterAnimation";
 import { AnimateIn } from "~/components/elements/AnimateIn";
 import { Badge } from "~/components/ui/badge";
 import {
   RiReactjsLine,
-  RiNodejsLine,
-  RiTailwindCssFill,
-  RiDatabase2Line,
-  RiJavascriptLine,
-  RiHtml5Line,
-  RiCss3Line,
-  RiGithubFill,
   RiBracesLine,
-  RiServerLine
+  RiDatabase2Line,
+  RiTerminalLine
 } from "@remixicon/react";
 import { PatternStripes } from "~/components/PatternStipes";
+import prisma from "~/lib/prisma";
 
-const skills = [
-  { name: "React / Next.js", icon: <RiReactjsLine className="w-4 h-4 mr-2" /> },
-  { name: "TypeScript", icon: <RiJavascriptLine className="w-4 h-4 mr-2" /> },
-  { name: "Node.js", icon: <RiNodejsLine className="w-4 h-4 mr-2" /> },
-  { name: "Tailwind CSS", icon: <RiTailwindCssFill className="w-4 h-4 mr-2" /> },
-  { name: "Databases (SQL/NoSQL)", icon: <RiDatabase2Line className="w-4 h-4 mr-2" /> },
-  { name: "HTML5", icon: <RiHtml5Line className="w-4 h-4 mr-2" /> },
-  { name: "CSS3", icon: <RiCss3Line className="w-4 h-4 mr-2" /> },
-  { name: "Git & GitHub", icon: <RiGithubFill className="w-4 h-4 mr-2" /> },
-  { name: "REST APIs", icon: <RiBracesLine className="w-4 h-4 mr-2" /> },
-  { name: "Docker / CI/CD", icon: <RiServerLine className="w-4 h-4 mr-2" /> },
-];
+const Skills = async () => {
+  const dbSkills = await prisma.skill.findMany({
+    orderBy: { priority: "desc" }
+  });
 
-const Skills = () => {
   return (
     <section className="relative z-3 bg-background px-4 sm:px-0 border-b overflow-hidden" id="skills">
       <PatternStripes order="reverse">
@@ -52,16 +36,28 @@ const Skills = () => {
             </AnimateIn>
 
             <div className="flex flex-wrap justify-center gap-3 pt-8 max-w-3xl">
-              {skills.map((skill, index) => (
-                <AnimateIn key={skill.name} variant="blur-fade" delay={0.1 + index * 0.05} className="flex">
-                  <div className="flex items-center px-4 py-2 bg-secondary/30 hover:bg-secondary/80 border border-border/50 rounded-full transition-all duration-300 transform hover:scale-105 cursor-default hover:shadow-md">
-                    <div className="text-primary group-hover:text-primary transition-colors">
-                      {skill.icon}
+              {dbSkills.map((skill, index) => {
+                let Icon = RiBracesLine;
+                if (skill.category === "Frontend") Icon = RiReactjsLine;
+                if (skill.category === "Backend") Icon = RiDatabase2Line;
+                if (skill.category === "Tools") Icon = RiTerminalLine;
+
+                return (
+                  <AnimateIn key={skill.id} variant="blur-fade" delay={0.1 + index * 0.05} className="flex">
+                    <div className="flex items-center px-4 py-2 bg-secondary/30 hover:bg-secondary/80 border border-border/50 rounded-full transition-all duration-300 transform hover:scale-105 cursor-default hover:shadow-md">
+                      <div className="text-primary group-hover:text-primary transition-colors flex items-center">
+                        <Icon className="w-4 h-4 mr-2" />
+                      </div>
+                      <span className="text-sm font-medium">{skill.name}</span>
                     </div>
-                    <span className="text-sm font-medium">{skill.name}</span>
-                  </div>
-                </AnimateIn>
-              ))}
+                  </AnimateIn>
+                );
+              })}
+              {dbSkills.length === 0 && (
+                <div className="col-span-full py-10 text-center text-muted-foreground italic">
+                  Skills data is coming soon!
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -71,3 +67,4 @@ const Skills = () => {
 };
 
 export default Skills;
+

@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { RiArrowRightLine } from "@remixicon/react";
 import { ProjectCard } from "~/components/elements/ProjectCard";
@@ -9,8 +7,15 @@ import { Badge } from "~/components/ui/badge";
 import { buttonVariants } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 import { PatternStripes } from "~/components/PatternStipes";
+import prisma from "~/lib/prisma";
 
-const ProjectsSection = () => {
+const ProjectsSection = async () => {
+  const featuredProjects = await prisma.project.findMany({
+    where: { featured: true },
+    orderBy: { createdAt: "desc" },
+    take: 6
+  });
+
   return (
     <section id="projects" className="relative z-4 bg-background border-t overflow-hidden px-4 sm:px-0">
       <PatternStripes order="reverse">
@@ -33,11 +38,24 @@ const ProjectsSection = () => {
 
           {/* Project grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
-            {[1, 2, 3, 4, 5, 6].map((i, index) => (
-              <AnimateIn key={i} variant="blur-fade" delay={index * 0.08}>
-                <ProjectCard />
+            {featuredProjects.map((project, index) => (
+              <AnimateIn key={project.id} variant="blur-fade" delay={index * 0.08}>
+                <ProjectCard 
+                  title={project.title}
+                  description={project.description}
+                  image={project.image}
+                  link={project.link}
+                  github={project.github}
+                  demo={project.demo}
+                  badges={project.badges}
+                />
               </AnimateIn>
             ))}
+            {featuredProjects.length === 0 && (
+              <div className="col-span-full py-20 text-center text-muted-foreground italic">
+                Work in progress... Check back soon!
+              </div>
+            )}
           </div>
 
           {/* CTA */}
@@ -57,4 +75,4 @@ const ProjectsSection = () => {
   );
 };
 
-export default ProjectsSection;
+export default ProjectsSection;

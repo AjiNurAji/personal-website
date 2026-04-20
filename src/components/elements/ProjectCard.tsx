@@ -6,35 +6,61 @@ import { buttonVariants } from "../ui/button"
 import { RiExternalLinkLine, RiGithubFill } from "@remixicon/react"
 import Link from "next/link"
 
-export const ProjectCard = () => {
+interface ProjectCardProps {
+  title: string;
+  description: string;
+  image: string;
+  link: string;
+  github?: string | null;
+  demo?: string | null;
+  badges: string[];
+}
+
+export const ProjectCard = ({ title, description, image, github, demo, badges }: ProjectCardProps) => {
   return (
-    <Card className="pt-0 group overflow-hidden hover:shadow-lg transition-shadow duration-300">
-      <CardHeader className="bg-accent h-64 w-full relative">
-        <Image src="https://shadcn-portfolio-template.vercel.app/placeholder.svg" className="object-cover w-auto h-full transition-transform duration-300 group-hover:scale-105" alt="Placeholder" fill />
+    <Card className="pt-0 group overflow-hidden hover:shadow-lg transition-all duration-300 h-full flex flex-col border-zinc-200 dark:border-zinc-800">
+      <CardHeader className="bg-accent h-48 w-full relative">
+        <Image 
+          src={image || "https://shadcn-portfolio-template.vercel.app/placeholder.svg"} 
+          className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105" 
+          alt={title} 
+          fill 
+        />
       </CardHeader>
       <CardContent className="flex-1 flex flex-col p-6">
-        <h3 className="text-xl font-semibold mb-2">Project Name</h3>
-        <p className="text-muted-foreground">
-          A brief description of the project and its features.
+        <h3 className="text-xl font-semibold mb-2 line-clamp-1">{title}</h3>
+        <p className="text-muted-foreground text-sm line-clamp-2">
+          {description}
         </p>
-        <div className="flex flex-wrap gap-2 mt-4">
-          <Badge variant="secondary">TypeScript</Badge>
-          <Badge variant="secondary">React</Badge>
-          <Badge variant="secondary">Tailwind CSS</Badge>
+        <div className="flex flex-wrap gap-1.5 mt-4">
+          {badges.map((badge) => (
+            <Badge key={badge} variant="secondary" className="text-[10px] py-0">
+              {badge}
+            </Badge>
+          ))}
         </div>
 
-        <div className="mt-auto pt-4 flex gap-4">
-          <Link href="#" target="_blank" rel="noopener noreferrer" className={cn(buttonVariants({variant: 'default'}), 'rounded-full px-4 py-2 flex items-center gap-2 w-fit')}>
-            <RiExternalLinkLine className="w-4 h-4" />
-            Live Demo
-          </Link>
-          <Link href="#" target="_blank" rel="noopener noreferrer" className={cn(buttonVariants({variant: 'outline'}), 'rounded-full px-4 py-2 flex items-center gap-2 w-fit')}>
-            <RiGithubFill className="w-4 h-4" />
-            Source Code
-          </Link>
-
+        <div className="mt-auto pt-6 flex gap-3">
+          {(demo || github) ? (
+            <>
+              {demo && (
+                <Link href={demo} target="_blank" rel="noopener noreferrer" className={cn(buttonVariants({variant: 'default'}), 'rounded-full px-4 py-2 flex items-center gap-2 text-xs')}>
+                  <RiExternalLinkLine className="w-3.5 h-3.5" />
+                  Live Demo
+                </Link>
+              )}
+              {github && (
+                <Link href={github} target="_blank" rel="noopener noreferrer" className={cn(buttonVariants({variant: 'outline'}), 'rounded-full px-4 py-2 flex items-center gap-2 text-xs')}>
+                  <RiGithubFill className="w-3.5 h-3.5" />
+                  Code
+                </Link>
+              )}
+            </>
+          ) : (
+            <p className="text-xs text-muted-foreground italic">No links available</p>
+          )}
         </div>
       </CardContent>
     </Card>
   )
-}
+}
