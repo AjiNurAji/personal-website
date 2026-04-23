@@ -1,6 +1,5 @@
-import { useState } from "react";
 import AdminLayout from "@/Layouts/AdminLayout";
-import { Button } from "@/Components/UI/button";
+import { Button, buttonVariants } from "@/Components/UI/button";
 import {
   Table,
   TableBody,
@@ -9,16 +8,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/Components/UI/table";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/Components/UI/dialog";
 import { RiAddLine, RiEditLine, RiDeleteBinLine } from "@remixicon/react";
-import { AchievementForm } from "@/Components/Dashboard/AchievementForm";
-import { router } from "@inertiajs/react";
+import { router, Link } from "@inertiajs/react";
 import { toast } from "sonner";
 
 interface Achievement {
@@ -34,9 +25,6 @@ interface AchievementsIndexProps {
 }
 
 export default function AchievementsIndex({ achievements }: AchievementsIndexProps) {
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [editingAchievement, setEditingAchievement] = useState<Achievement | null>(null);
-
   function onDelete(id: number) {
     if (confirm("Are you sure you want to delete this achievement?")) {
       router.delete(route('admin.achievements.destroy', id), {
@@ -60,24 +48,13 @@ export default function AchievementsIndex({ achievements }: AchievementsIndexPro
                 Manage your awards and certifications.
             </p>
             </div>
-            <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-            <DialogTrigger asChild>
-                <Button>
-                <RiAddLine className="mr-2 h-4 w-4" />
-                New Achievement
-                </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[400px]">
-                <DialogHeader>
-                <DialogTitle>Add New Achievement</DialogTitle>
-                </DialogHeader>
-                <AchievementForm
-                onSuccess={() => {
-                    setIsCreateOpen(false);
-                }}
-                />
-            </DialogContent>
-            </Dialog>
+            <Link 
+              href={route('admin.achievements.create')} 
+              className={buttonVariants()}
+            >
+              <RiAddLine className="mr-2 h-4 w-4" />
+              New Achievement
+            </Link>
         </div>
 
         <div className="rounded-md border bg-white dark:bg-zinc-950 shadow-sm">
@@ -105,26 +82,12 @@ export default function AchievementsIndex({ achievements }: AchievementsIndexPro
                     <TableCell>{achievement.organization || '-'}</TableCell>
                     <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
-                        <Dialog open={editingAchievement?.id === achievement.id} onOpenChange={(open: boolean) => !open && setEditingAchievement(null)}>
-                            <DialogTrigger asChild>
-                                <Button variant="ghost" size="icon" onClick={() => setEditingAchievement(achievement)}>
-                                    <RiEditLine className="h-4 w-4" />
-                                </Button>
-                            </DialogTrigger>
-                            <DialogContent className="sm:max-w-[400px]">
-                            <DialogHeader>
-                                <DialogTitle>Edit Achievement</DialogTitle>
-                            </DialogHeader>
-                            {editingAchievement?.id === achievement.id && (
-                                <AchievementForm
-                                    initialData={editingAchievement}
-                                    onSuccess={() => {
-                                        setEditingAchievement(null);
-                                    }}
-                                />
-                            )}
-                            </DialogContent>
-                        </Dialog>
+                        <Link
+                            href={route('admin.achievements.edit', achievement.id)}
+                            className={buttonVariants({ variant: "ghost", size: "icon" })}
+                        >
+                            <RiEditLine className="h-4 w-4" />
+                        </Link>
                         <Button
                             variant="ghost"
                             size="icon"

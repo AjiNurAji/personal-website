@@ -1,24 +1,25 @@
-"use client";
-
 import { Badge } from "@/Components/UI/badge";
 import { LetterAnimation } from "@/Components/Elements/LetterAnimation";
 import { AnimateIn } from "@/Components/Elements/AnimateIn";
 import { ExperienceCard } from "@/Components/Elements/ExperienceCard";
-import { PatternStripes } from "@/Components/PatternStripes";
 
-const experiences = [
-  {
-    logo: "/assets/images/company/logo-bps.webp",
-    company: "TechCorp Solutions",
-    role: "Senior Full Stack Developer",
-    period: "2021 - Present",
-    description:
-      "Led the development of enterprise-scale web applications, mentored junior developers, and implemented best practices for code quality and performance optimization.",
-    skills: ["React", "Node.js", "TypeScript", "AWS", "MongoDB"],
-  },
-];
+interface ExperienceProps {
+  initialExperiences: any[];
+}
 
-const Experience = () => {
+const Experience = ({ initialExperiences }: ExperienceProps) => {
+  const formatDate = (dateString: string) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+  };
+
+  const getPeriod = (exp: any) => {
+    const start = formatDate(exp.start_date);
+    const end = exp.end_date ? formatDate(exp.end_date) : "Present";
+    return `${start} — ${end}`;
+  };
+
   return (
     <section
       id="experience"
@@ -49,9 +50,24 @@ const Experience = () => {
 
           {/* Timeline */}
           <div className="relative">
-            {experiences.map((exp: any, index: number) => (
-              <ExperienceCard key={index} {...exp} delay={index * 0.1} />
-            ))}
+            {initialExperiences.length > 0 ? (
+              initialExperiences.map((exp: any, index: number) => (
+                <ExperienceCard 
+                  key={exp.id || index} 
+                  logo={exp.logo}
+                  company={exp.company}
+                  role={exp.title}
+                  period={getPeriod(exp)}
+                  description={exp.description}
+                  skills={[]} // Skills might need to be fetched separately or added to the model
+                  delay={index * 0.1} 
+                />
+              ))
+            ) : (
+              <div className="text-center py-10 text-muted-foreground italic">
+                Experience details coming soon.
+              </div>
+            )}
           </div>
         </div>
     </section>

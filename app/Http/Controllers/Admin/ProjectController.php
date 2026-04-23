@@ -7,6 +7,7 @@ use App\Models\Project;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
 {
@@ -30,13 +31,17 @@ class ProjectController extends Controller
             'slug' => 'required|string|max:255|unique:projects',
             'description' => 'required|string',
             'content' => 'nullable|string',
-            'image' => 'required|string',
+            'image' => 'required|image|max:2048',
             'link' => 'nullable|string',
             'github' => 'nullable|string',
             'demo' => 'nullable|string',
             'badges' => 'nullable|string',
             'featured' => 'boolean',
         ]);
+
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('projects', 'public');
+        }
 
         if (isset($validated['badges']) && is_string($validated['badges'])) {
             $validated['badges'] = collect(explode(',', $validated['badges']))->map(fn($b) => trim($b))->filter()->values()->toJson();
@@ -71,13 +76,22 @@ class ProjectController extends Controller
             'slug' => 'required|string|max:255|unique:projects,slug,' . $project->id,
             'description' => 'required|string',
             'content' => 'nullable|string',
-            'image' => 'required|string',
+            'image' => 'nullable|image|max:2048',
             'link' => 'nullable|string',
             'github' => 'nullable|string',
             'demo' => 'nullable|string',
             'badges' => 'nullable|string',
             'featured' => 'boolean',
         ]);
+
+        if ($request->hasFile('image')) {
+            if ($project->image && !str_starts_with($project->image, 'http')) {
+                Storage::disk('public')->delete($project->image);
+            }
+            $validated['image'] = $request->file('image')->store('projects', 'public');
+        } else {
+            unset($validated['image']);
+        }
 
         if (isset($validated['badges']) && is_string($validated['badges'])) {
             $validated['badges'] = collect(explode(',', $validated['badges']))->map(fn($b) => trim($b))->filter()->values()->toJson();
@@ -90,6 +104,9 @@ class ProjectController extends Controller
 
     public function destroy(Project $project)
     {
+        if ($project->image && !str_starts_with($project->image, 'http')) {
+            Storage::disk('public')->delete($project->image);
+        }
         $project->delete();
         return redirect()->route('admin.projects.index')->with('success', 'Project deleted successfully.');
     }

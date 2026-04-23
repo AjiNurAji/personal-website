@@ -13,9 +13,10 @@ interface Props {
     projects: any[];
     skills: any[];
     achievements: any[];
+    experiences: any[];
 }
 
-export default function Home({ projects, skills, achievements }: Props) {
+export default function Home({ projects, skills, achievements, experiences }: Props) {
     return (
         <div className="font-sans bg-background text-foreground selection:bg-primary/10 selection:text-primary">
             <Head title="Portfolio" />
@@ -25,7 +26,7 @@ export default function Home({ projects, skills, achievements }: Props) {
                 <Hero />
                 <About />
                 <Skills initialSkills={skills} />
-                <Experience />
+                <Experience initialExperiences={experiences} />
                 <ProjectsSection initialProjects={projects} />
                 <AchievementsSection initialAchievements={achievements} />
             </main>

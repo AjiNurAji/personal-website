@@ -1,8 +1,10 @@
 "use client";
 
-;
 import { Badge } from "@/Components/UI/badge";
 import { AnimateIn } from "@/Components/Elements/AnimateIn";
+import { SafeImage } from "./SafeImage";
+import MDEditor from '@uiw/react-md-editor';
+import { useTheme } from "@/hooks/use-theme";
 
 interface ExperienceCardProps {
   logo: string;
@@ -23,6 +25,9 @@ export const ExperienceCard = ({
   skills,
   delay = 0,
 }: ExperienceCardProps) => {
+  const { theme } = useTheme();
+  const logoUrl = logo ? (logo.startsWith('http') || logo.startsWith('/') ? logo : `/storage/${logo}`) : '';
+
   return (
     <AnimateIn
       variant="fade-left"
@@ -38,16 +43,13 @@ export const ExperienceCard = ({
         {/* Company row */}
         <AnimateIn variant="fade-left" delay={delay + 0.05}>
           <div className="flex items-center gap-3">
-            <div className="relative shrink-0 size-10 rounded-lg bg-accent overflow-hidden flex justify-center items-center">
-              <div className="relative size-7">
-                <img
-                  src={logo}
-                  alt={company}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                  
-                />
-              </div>
+            <div className="relative shrink-0 size-10 rounded-lg bg-accent overflow-hidden flex justify-center items-center p-1.5">
+              <SafeImage
+                src={logoUrl}
+                alt={company}
+                className="w-full h-full object-contain"
+                containerClassName="w-full h-full"
+              />
             </div>
             <span className="text-lg font-semibold">{company}</span>
           </div>
@@ -79,21 +81,27 @@ export const ExperienceCard = ({
           </div>
         </AnimateIn>
 
-        {/* Description */}
+        {/* Description (Markdown) */}
         <AnimateIn variant="fade-left" delay={delay + 0.15}>
-          <p className="text-muted-foreground">{description}</p>
+          <div className="prose prose-sm prose-zinc dark:prose-invert max-w-none">
+            <div data-color-mode={theme}>
+              <MDEditor.Markdown source={description} />
+            </div>
+          </div>
         </AnimateIn>
 
         {/* Skills */}
-        <AnimateIn variant="fade-left" delay={delay + 0.2}>
-          <div className="flex flex-wrap gap-2">
-            {skills.map((skill) => (
-              <Badge key={skill} variant="secondary">
-                {skill}
-              </Badge>
-            ))}
-          </div>
-        </AnimateIn>
+        {skills && skills.length > 0 && (
+          <AnimateIn variant="fade-left" delay={delay + 0.2}>
+            <div className="flex flex-wrap gap-2">
+              {skills.map((skill) => (
+                <Badge key={skill} variant="secondary">
+                  {skill}
+                </Badge>
+              ))}
+            </div>
+          </AnimateIn>
+        )}
       </div>
     </AnimateIn>
   );

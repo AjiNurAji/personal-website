@@ -17,6 +17,18 @@ class SkillController extends Controller
         ]);
     }
 
+    public function create()
+    {
+        return Inertia::render('Admin/Skills/Create');
+    }
+
+    public function edit(Skill $skill)
+    {
+        return Inertia::render('Admin/Skills/Edit', [
+            'skill' => $skill
+        ]);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([

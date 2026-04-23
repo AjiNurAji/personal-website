@@ -16,6 +16,7 @@ import {
 } from "@remixicon/react";
 import { Link } from "@inertiajs/react";
 import { Button } from "@/Components/UI/button";
+import { cn } from "@/lib/utils";
 
 interface DashboardProps {
   stats: {
@@ -89,11 +90,14 @@ export default function Dashboard({ stats }: DashboardProps) {
           </div>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {statCards.map((stat) => (
             <Card
               key={stat.title}
-              className={`overflow-hidden border-2 !${stat.border} shadow-none hover:shadow-md transition-all duration-300 group`}
+              className={cn(
+                "overflow-hidden border shadow-none hover:shadow-md transition-all duration-300 group",
+                stat.border
+              )}
             >
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <div className="space-y-1">
@@ -119,8 +123,8 @@ export default function Dashboard({ stats }: DashboardProps) {
           ))}
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
-          <Card className="col-span-full lg:col-span-4 border-2 shadow-none overflow-hidden group">
+        <div className="grid grid-cols-1 lg:grid-cols-7 gap-6">
+          <Card className="lg:col-span-4 border shadow-none overflow-hidden group">
             <CardHeader className="bg-zinc-50/50 dark:bg-zinc-900/50 border-b">
               <CardTitle className="flex items-center gap-2">
                 <RiGithubFill className="size-5" />
@@ -131,7 +135,7 @@ export default function Dashboard({ stats }: DashboardProps) {
               </CardDescription>
             </CardHeader>
             <CardContent className="p-0">
-              <div className="divide-y">
+              <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
                 {[
                   "Database migrated to Laravel & Supabase",
                   "Vite & Tailwind v4 integration",
@@ -151,14 +155,14 @@ export default function Dashboard({ stats }: DashboardProps) {
             </CardContent>
           </Card>
 
-          <Card className="col-span-full lg:col-span-3 border-2 shadow-none overflow-hidden">
+          <Card className="lg:col-span-3 border shadow-none overflow-hidden">
             <CardHeader className="bg-zinc-50/50 dark:bg-zinc-900/50 border-b">
               <CardTitle>System Actions</CardTitle>
               <CardDescription>Quick management shortcuts</CardDescription>
             </CardHeader>
-            <CardContent className="p-6 grid gap-4">
-              <Link href="/admin/projects">
-                <div className="p-4 rounded-xl border-2 border-zinc-100 dark:border-zinc-800 hover:border-zinc-950 dark:hover:border-zinc-200 cursor-pointer transition-all flex items-center justify-between group">
+            <CardContent className="p-6 grid grid-cols-1 gap-4">
+              <Link href="/admin/projects" className="block">
+                <div className="p-4 rounded-xl border border-zinc-100 dark:border-zinc-800 hover:border-zinc-950 dark:hover:border-zinc-200 cursor-pointer transition-all flex items-center justify-between group">
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded-lg bg-zinc-100 dark:bg-zinc-800 group-hover:bg-zinc-950 group-hover:text-white dark:group-hover:bg-zinc-200 dark:group-hover:text-zinc-950 transition-colors">
                       <RiFolder2Line className="size-5" />
@@ -168,8 +172,8 @@ export default function Dashboard({ stats }: DashboardProps) {
                   <RiArrowRightUpLine className="size-5 text-muted-foreground" />
                 </div>
               </Link>
-              <Link href="/admin/skills">
-                <div className="p-4 rounded-xl border-2 border-zinc-100 dark:border-zinc-800 hover:border-zinc-950 dark:hover:border-zinc-200 cursor-pointer transition-all flex items-center justify-between group">
+              <Link href="/admin/skills" className="block">
+                <div className="p-4 rounded-xl border border-zinc-100 dark:border-zinc-800 hover:border-zinc-950 dark:hover:border-zinc-200 cursor-pointer transition-all flex items-center justify-between group">
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded-lg bg-zinc-100 dark:bg-zinc-800 group-hover:bg-zinc-950 group-hover:text-white dark:group-hover:bg-zinc-200 dark:group-hover:text-zinc-950 transition-colors">
                       <RiToolsLine className="size-5" />

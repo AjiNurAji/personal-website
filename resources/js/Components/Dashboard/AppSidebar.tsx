@@ -6,6 +6,7 @@ import {
   RiFolder2Line,
   RiToolsLine,
   RiAwardLine,
+  RiBriefcaseLine,
   RiLogoutBoxLine,
 } from "@remixicon/react";
 import {
@@ -47,6 +48,12 @@ const navItems = [
     url: route('admin.achievements.index'),
     icon: RiAwardLine,
     component: "Admin/Achievements/Index",
+  },
+  {
+    title: "Experience",
+    url: route('admin.experiences.index'),
+    icon: RiBriefcaseLine,
+    component: "Admin/Experiences/Index",
   },
 ];
 

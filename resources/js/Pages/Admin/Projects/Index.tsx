@@ -1,6 +1,5 @@
-import { useState } from "react";
 import AdminLayout from "@/Layouts/AdminLayout";
-import { Button } from "@/Components/UI/button";
+import { Button, buttonVariants } from "@/Components/UI/button";
 import {
   Table,
   TableBody,
@@ -9,18 +8,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/Components/UI/table";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/Components/UI/dialog";
 import { RiAddLine, RiEditLine, RiDeleteBinLine } from "@remixicon/react";
 import { Badge } from "@/Components/UI/badge";
-import { ProjectForm } from "@/Components/Dashboard/ProjectForm";
 import { Project } from "@/types";
-import { router } from "@inertiajs/react";
+import { router, Link } from "@inertiajs/react";
 import { toast } from "sonner";
 
 interface ProjectsIndexProps {
@@ -28,9 +19,6 @@ interface ProjectsIndexProps {
 }
 
 export default function ProjectsIndex({ projects }: ProjectsIndexProps) {
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [editingProject, setEditingProject] = useState<Project | null>(null);
-
   function onDelete(id: number) {
     if (confirm("Are you sure you want to delete this project?")) {
       router.delete(route('admin.projects.destroy', id), {
@@ -54,24 +42,10 @@ export default function ProjectsIndex({ projects }: ProjectsIndexProps) {
                 Manage your portfolio projects.
             </p>
             </div>
-            <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-            <DialogTrigger asChild>
-                <Button>
-                <RiAddLine className="mr-2 h-4 w-4" />
-                New Project
-                </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[600px]">
-                <DialogHeader>
-                <DialogTitle>Add New Project</DialogTitle>
-                </DialogHeader>
-                <ProjectForm
-                onSuccess={() => {
-                    setIsCreateOpen(false);
-                }}
-                />
-            </DialogContent>
-            </Dialog>
+            <Link href={route('admin.projects.create')} className={buttonVariants()}>
+              <RiAddLine className="mr-2 h-4 w-4" />
+              New Project
+            </Link>
         </div>
 
         <div className="rounded-md border bg-white dark:bg-zinc-950 shadow-sm">
@@ -108,52 +82,42 @@ export default function ProjectsIndex({ projects }: ProjectsIndexProps) {
                         <div className="flex flex-wrap gap-1">
                         {project.badges ? (
                                 (() => {
-                                    const parsed = typeof project.badges === 'string' ? JSON.parse(project.badges) : project.badges;
-                                    const badgesArray = Array.isArray(parsed) ? parsed : Object.values(parsed);
+                                    try {
+                                        const parsed = typeof project.badges === 'string' ? JSON.parse(project.badges) : project.badges;
+                                        const badgesArray = Array.isArray(parsed) ? parsed : Object.values(parsed);
 
-                                    return (
-                                        <>
-                                        {badgesArray.slice(0, 3).map((badge: string) => (
-                                            <span
-                                                key={badge}
-                                                className="text-[10px] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded"
-                                            >
-                                                {badge}
-                                            </span>
-                                            ))}
-                                            {badgesArray.length > 3 && (
-                                            <span className="text-[10px] text-muted-foreground">
-                                                +{badgesArray.length - 3} more
-                                            </span>
-                                        )}
-                                        </>
-                                    )
+                                        return (
+                                            <>
+                                            {badgesArray.slice(0, 3).map((badge: string) => (
+                                                <span
+                                                    key={badge}
+                                                    className="text-[10px] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded"
+                                                >
+                                                    {badge}
+                                                </span>
+                                                ))}
+                                                {badgesArray.length > 3 && (
+                                                <span className="text-[10px] text-muted-foreground">
+                                                    +{badgesArray.length - 3} more
+                                                </span>
+                                            )}
+                                            </>
+                                        )
+                                    } catch (e) {
+                                        return <span className="text-[10px]">{project.badges}</span>;
+                                    }
                                 })()
                         ) : null}
                         </div>
                     </TableCell>
                     <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
-                        <Dialog open={editingProject?.id === project.id} onOpenChange={(open: boolean) => !open && setEditingProject(null)}>
-                            <DialogTrigger asChild>
-                                <Button variant="ghost" size="icon" onClick={() => setEditingProject({...project, badges: typeof project.badges === 'string' ? JSON.parse(project.badges).join(', ') : (Array.isArray(project.badges) ? project.badges.join(', ') : '')})}>
-                                    <RiEditLine className="h-4 w-4" />
-                                </Button>
-                            </DialogTrigger>
-                            <DialogContent className="sm:max-w-[600px]">
-                            <DialogHeader>
-                                <DialogTitle>Edit Project</DialogTitle>
-                            </DialogHeader>
-                            {editingProject?.id === project.id && (
-                                <ProjectForm
-                                    initialData={editingProject}
-                                    onSuccess={() => {
-                                        setEditingProject(null);
-                                    }}
-                                />
-                            )}
-                            </DialogContent>
-                        </Dialog>
+                        <Link
+                            href={route('admin.projects.edit', project.id)}
+                            className={buttonVariants({ variant: "ghost", size: "icon" })}
+                        >
+                            <RiEditLine className="h-4 w-4" />
+                        </Link>
                         <Button
                             variant="ghost"
                             size="icon"

@@ -1,9 +1,12 @@
+import React from "react";
 import { Card, CardContent, CardHeader } from "../UI/card";
 import { Badge } from "../UI/badge";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "../UI/button";
 import { RiExternalLinkLine, RiGithubFill } from "@remixicon/react";
 import { Link } from "@inertiajs/react";
+
+import { SafeImage } from "./SafeImage";
 
 interface ProjectCardProps {
   title: string;
@@ -13,7 +16,7 @@ interface ProjectCardProps {
   link?: string | null;
   github?: string | null;
   demo?: string | null;
-  badges: string[];
+  badges: string;
 }
 
 export const ProjectCard = ({
@@ -25,20 +28,32 @@ export const ProjectCard = ({
   demo,
   badges,
 }: ProjectCardProps) => {
-  // Normalize badges — always produce a string[]
-  const badgeList: string[] = Array.isArray(badges)
-    ? badges
-    : typeof badges === "string"
-    ? (badges as string).split(",").map((b) => b.trim()).filter(Boolean)
-    : [];
+  // Normalize badges — handle JSON string or array
+  const badgeList: string[] = React.useMemo(() => {
+    try {
+      if (Array.isArray(badges)) return badges;
+      if (typeof badges === 'string') {
+        const parsed = JSON.parse(badges);
+        return Array.isArray(parsed) ? parsed : [parsed];
+      }
+      return [];
+    } catch (e) {
+      return typeof badges === 'string' ? badges.split(',').map(s => s.trim()) : [];
+    }
+  }, [badges]);
+
+  const imageUrl = image 
+    ? (image.startsWith('http') ? image : `/storage/${image}`) 
+    : undefined;
 
   return (
     <Card className="pt-0 group overflow-hidden hover:shadow-lg transition-all duration-300 h-full flex flex-col border-zinc-200 dark:border-zinc-800">
-      <CardHeader className="bg-accent h-48 w-full relative">
-        <img
-          src={image || "https://shadcn-portfolio-template.vercel.app/placeholder.svg"}
-          className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+      <CardHeader className="bg-accent h-48 w-full relative p-0 overflow-hidden">
+        <SafeImage
+          src={imageUrl}
           alt={title}
+          className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+          containerClassName="w-full h-full"
         />
       </CardHeader>
       <CardContent className="flex-1 flex flex-col p-6">
