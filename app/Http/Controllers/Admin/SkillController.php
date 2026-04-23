@@ -37,7 +37,7 @@ class SkillController extends Controller
             'name' => 'required|string|max:255',
             'icon' => 'required|string|max:255',
             'category' => 'required|string|max:255',
-            'order' => 'required|integer',
+            'priority' => 'required|integer',
         ]);
 
         $skill->update($validated);
