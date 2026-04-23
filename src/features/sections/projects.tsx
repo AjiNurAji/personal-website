@@ -45,7 +45,7 @@ const ProjectsSection = async () => {
 
           {/* Project grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
-            {featuredProjects.map((project, index) => (
+            {featuredProjects.map((project: any, index: number) => (
               <AnimateIn
                 key={project.id}
                 variant="blur-fade"

@@ -57,7 +57,7 @@ const AchievementsSection = async () => {
 
           {/* Achievement cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-            {dbAchievements.map((item, index) => {
+            {dbAchievements.map((item: any, index: number) => {
               // For now, if no icon specified, default to Trophy
               const Icon = RiTrophyLine;
               return (

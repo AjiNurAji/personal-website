@@ -28,7 +28,7 @@ export default async function AchievementsPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {achievements.map((item, index) => {
+            {achievements.map((item: any) => {
               const Icon = RiTrophyLine;
               return (
                 <Card

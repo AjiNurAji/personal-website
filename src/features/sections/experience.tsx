@@ -49,7 +49,7 @@ const Experience = () => {
 
           {/* Timeline */}
           <div className="relative">
-            {experiences.map((exp, index) => (
+            {experiences.map((exp: any, index: number) => (
               <ExperienceCard key={index} {...exp} delay={index * 0.1} />
             ))}
           </div>
