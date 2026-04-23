@@ -11,7 +11,7 @@ class SkillController extends Controller
 {
     public function index()
     {
-        $skills = Skill::orderBy('order')->get();
+        $skills = Skill::orderBy('priority')->get();
         return Inertia::render('Admin/Skills/Index', [
             'skills' => $skills
         ]);
@@ -23,7 +23,7 @@ class SkillController extends Controller
             'name' => 'required|string|max:255',
             'icon' => 'required|string|max:255',
             'category' => 'required|string|max:255',
-            'order' => 'required|integer',
+            'priority' => 'required|integer',
         ]);
 
         Skill::create($validated);
