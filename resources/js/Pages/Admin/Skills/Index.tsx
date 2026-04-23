@@ -26,7 +26,7 @@ interface Skill {
   name: string;
   icon: string;
   category: string;
-  order: number;
+  priority: number;
 }
 
 interface SkillsIndexProps {
@@ -84,7 +84,7 @@ export default function SkillsIndex({ skills }: SkillsIndexProps) {
             <Table>
             <TableHeader>
                 <TableRow>
-                <TableHead className="w-[100px]">Order</TableHead>
+                <TableHead className="w-[100px]">Priority</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Category</TableHead>
                 <TableHead>Icon</TableHead>
@@ -101,7 +101,7 @@ export default function SkillsIndex({ skills }: SkillsIndexProps) {
                 ) : (
                 skills.map((skill) => (
                     <TableRow key={skill.id}>
-                    <TableCell className="font-medium">{skill.order}</TableCell>
+                    <TableCell className="font-mono text-sm text-muted-foreground">{skill.priority}</TableCell>
                     <TableCell>{skill.name}</TableCell>
                     <TableCell>{skill.category}</TableCell>
                     <TableCell className="text-muted-foreground font-mono text-xs">{skill.icon}</TableCell>

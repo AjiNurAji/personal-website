@@ -15,7 +15,7 @@ interface Skill {
   name: string;
   icon: string;
   category: string;
-  order: number;
+  priority: number;
 }
 
 interface SkillFormProps {
@@ -28,7 +28,7 @@ export function SkillForm({ initialData, onSuccess }: SkillFormProps) {
     name: initialData?.name || "",
     icon: initialData?.icon || "",
     category: initialData?.category || "Frontend",
-    order: initialData?.order || 0,
+    priority: initialData?.priority || 0,
   });
 
   function onSubmit(e: FormEvent) {
@@ -89,15 +89,15 @@ export function SkillForm({ initialData, onSuccess }: SkillFormProps) {
       </Field>
 
       <Field>
-        <FieldLabel>Order (Sort Priority)</FieldLabel>
+        <FieldLabel>Priority (lower = higher up)</FieldLabel>
         <FieldContent>
           <Input 
             type="number"
             placeholder="0" 
-            value={data.order}
-            onChange={(e) => setData('order', parseInt(e.target.value) || 0)} 
+            value={data.priority}
+            onChange={(e) => setData('priority', parseInt(e.target.value) || 0)} 
           />
-          {errors.order && <FieldError errors={[errors.order]} />}
+          {errors.priority && <FieldError errors={[errors.priority]} />}
         </FieldContent>
       </Field>
 
