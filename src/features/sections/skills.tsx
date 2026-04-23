@@ -46,7 +46,7 @@ const Skills = async () => {
             </AnimateIn>
 
             <div className="flex flex-wrap justify-center gap-3 pt-8 max-w-3xl">
-              {dbSkills.map((skill, index) => {
+              {dbSkills.map((skill: any, index: number) => {
                 const iconSlug = skill.name.toLowerCase()
                   .replace(/\.js$/, "dotjs")
                   .replace(/ /g, "")
