@@ -22,7 +22,8 @@ export default async function AchievementsPage() {
               Recognition & Milestones
             </h1>
             <p className="text-muted-foreground max-w-lg mx-auto">
-              A complete list of competitions, awards, and community contributions.
+              A complete list of competitions, awards, and community
+              contributions.
             </p>
           </div>
 
@@ -30,10 +31,21 @@ export default async function AchievementsPage() {
             {achievements.map((item, index) => {
               const Icon = RiTrophyLine;
               return (
-                <Card key={item.id} className="h-full border bg-card hover:shadow-md transition-shadow duration-300">
+                <Card
+                  key={item.id}
+                  className="h-full border bg-card hover:shadow-md transition-shadow duration-300"
+                >
                   <CardContent className="p-6 flex flex-col gap-4 h-full">
-                    <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center bg-zinc-100 dark:bg-zinc-800")}>
-                      <Icon className={cn("size-5 text-zinc-900 dark:text-zinc-100")} />
+                    <div
+                      className={cn(
+                        "w-10 h-10 rounded-lg flex items-center justify-center bg-zinc-100 dark:bg-zinc-800",
+                      )}
+                    >
+                      <Icon
+                        className={cn(
+                          "size-5 text-zinc-900 dark:text-zinc-100",
+                        )}
+                      />
                     </div>
                     <div className="flex-1 space-y-1">
                       <p className="font-semibold leading-snug">{item.title}</p>
@@ -41,7 +53,9 @@ export default async function AchievementsPage() {
                         {item.organization} · {item.year}
                       </p>
                     </div>
-                    <p className="text-sm text-muted-foreground">{item.description}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {item.description}
+                    </p>
                   </CardContent>
                 </Card>
               );
@@ -58,4 +72,3 @@ export default async function AchievementsPage() {
     </div>
   );
 }
-

@@ -26,9 +26,10 @@ export default async function ProjectsPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {projects.map((project) => (
-              <ProjectCard 
+              <ProjectCard
                 key={project.id}
                 title={project.title}
+                slug={project.slug}
                 description={project.description}
                 image={project.image}
                 link={project.link}
@@ -49,4 +50,3 @@ export default async function ProjectsPage() {
     </div>
   );
 }
-

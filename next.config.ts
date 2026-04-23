@@ -6,8 +6,13 @@ const nextConfig: NextConfig = {
 
   // add allowed image domains
   images: {
-    domains: ["github.com"],
-  }
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "github.com",
+      },
+    ],
+  },
 };
 
 export default nextConfig;
