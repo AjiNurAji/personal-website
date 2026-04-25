@@ -1,13 +1,5 @@
 import AdminLayout from "@/Layouts/AdminLayout";
-import { AchievementForm } from "@/Components/Dashboard/AchievementForm";
-
-interface Achievement {
-  id: number;
-  title: string;
-  description: string;
-  organization: string | null;
-  year: string | null;
-}
+import { AchievementForm, Achievement } from "@/Components/Dashboard/AchievementForm";
 
 interface Props {
   achievement: Achievement;

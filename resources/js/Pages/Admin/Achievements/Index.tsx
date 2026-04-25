@@ -11,15 +11,7 @@ import {
 import { RiAddLine, RiEditLine, RiDeleteBinLine } from "@remixicon/react";
 import { router, Link } from "@inertiajs/react";
 import { toast } from "sonner";
-
-interface Achievement {
-  id: number;
-  title: string;
-  description: string;
-  organization: string | null;
-  year: string | null;
-  category: "event" | "award" | "certification";
-}
+import { Achievement } from "@/Components/Dashboard/AchievementForm";
 
 interface AchievementsIndexProps {
   achievements: Achievement[];
@@ -90,7 +82,7 @@ export default function AchievementsIndex({ achievements }: AchievementsIndexPro
                     <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
                         <Link
-                            href={route('admin.achievements.edit', achievement.id)}
+                            href={route('admin.achievements.edit', achievement.id!)}
                             className={buttonVariants({ variant: "ghost", size: "icon" })}
                         >
                             <RiEditLine className="h-4 w-4" />
@@ -98,7 +90,7 @@ export default function AchievementsIndex({ achievements }: AchievementsIndexPro
                         <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => onDelete(achievement.id)}
+                            onClick={() => onDelete(achievement.id!)}
                             className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30"
                         >
                             <RiDeleteBinLine className="h-4 w-4" />

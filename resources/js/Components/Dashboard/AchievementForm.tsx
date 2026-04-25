@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/Components/UI/select";
 
-interface Achievement {
+export interface Achievement {
   id?: number;
   title: string;
   description: string;
