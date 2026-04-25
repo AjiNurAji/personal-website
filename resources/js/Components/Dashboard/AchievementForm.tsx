@@ -14,13 +14,24 @@ import { FormEvent } from "react";
 import MDEditor from '@uiw/react-md-editor';
 import { RiArrowLeftLine } from "@remixicon/react";
 import { useTheme } from "@/hooks/use-theme";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/Components/UI/select";
 
 interface Achievement {
   id?: number;
   title: string;
   description: string;
+  content: string | null;
   organization: string | null;
   year: string | null;
+  category: "event" | "award" | "certification";
+  certificate_path: string | null;
+  preview_image: string | null;
 }
 
 interface AchievementFormProps {
@@ -29,17 +40,22 @@ interface AchievementFormProps {
 
 export function AchievementForm({ initialData }: AchievementFormProps) {
   const { theme } = useTheme();
-  const { data, setData, post, put, processing, errors } = useForm({
+  const { data, setData, post, processing, errors } = useForm({
     title: initialData?.title || "",
     description: initialData?.description || "",
+    content: initialData?.content || "",
     organization: initialData?.organization || "",
     year: initialData?.year || "",
+    category: initialData?.category || "event",
+    certificate: null as File | null,
+    preview: null as File | null,
+    _method: initialData?.id ? 'PUT' : 'POST',
   });
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
     if (initialData?.id) {
-      put(route('admin.achievements.update', initialData.id), {
+      post(route('admin.achievements.update', initialData.id), {
         onSuccess: () => {
           toast.success("Achievement updated successfully");
         },
@@ -115,6 +131,71 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
                   onChange={(e) => setData('year', e.target.value)} 
                 />
                 {errors.year && <FieldError errors={[errors.year]} />}
+              </FieldContent>
+            </Field>
+
+            <Field>
+              <FieldLabel>Category</FieldLabel>
+              <FieldContent>
+                <Select
+                  value={data.category}
+                  onValueChange={(val: any) => setData('category', val)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="event">Event</SelectItem>
+                    <SelectItem value="award">Award</SelectItem>
+                    <SelectItem value="certification">Certification</SelectItem>
+                  </SelectContent>
+                </Select>
+                {errors.category && <FieldError errors={[errors.category]} />}
+              </FieldContent>
+            </Field>
+        </div>
+
+        <Field>
+          <FieldLabel>Details / Content (Markdown - Optional)</FieldLabel>
+          <FieldContent className="min-h-[300px]">
+            <div data-color-mode={theme} className="w-full">
+              <MDEditor
+                value={data.content || ''}
+                onChange={(val) => setData('content', val || '')}
+                preview="edit"
+                height={300}
+              />
+            </div>
+            {errors.content && <FieldError errors={[errors.content]} />}
+          </FieldContent>
+        </Field>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Field>
+              <FieldLabel>Certificate (PDF/PNG)</FieldLabel>
+              <FieldContent>
+                <Input 
+                  type="file"
+                  onChange={(e) => setData('certificate', e.target.files?.[0] || null)} 
+                />
+                {errors.certificate && <FieldError errors={[errors.certificate]} />}
+                {initialData?.certificate_path && (
+                    <p className="text-xs text-muted-foreground mt-1">Existing: {initialData.certificate_path}</p>
+                )}
+              </FieldContent>
+            </Field>
+
+            <Field>
+              <FieldLabel>Preview Image (Card Preview)</FieldLabel>
+              <FieldContent>
+                <Input 
+                  type="file"
+                  onChange={(e) => setData('preview', e.target.files?.[0] || null)} 
+                />
+                {errors.preview && <FieldError errors={[errors.preview]} />}
+                {initialData?.preview_image && (
+                    <p className="text-xs text-muted-foreground mt-1">Existing: {initialData.preview_image}</p>
+                )}
               </FieldContent>
             </Field>
         </div>

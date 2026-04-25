@@ -18,6 +18,7 @@ interface Achievement {
   description: string;
   organization: string | null;
   year: string | null;
+  category: "event" | "award" | "certification";
 }
 
 interface AchievementsIndexProps {
@@ -62,6 +63,7 @@ export default function AchievementsIndex({ achievements }: AchievementsIndexPro
             <TableHeader>
                 <TableRow>
                 <TableHead>Year</TableHead>
+                <TableHead>Category</TableHead>
                 <TableHead>Title</TableHead>
                 <TableHead>Organization</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
@@ -78,6 +80,11 @@ export default function AchievementsIndex({ achievements }: AchievementsIndexPro
                 achievements.map((achievement) => (
                     <TableRow key={achievement.id}>
                     <TableCell className="font-medium">{achievement.year || '-'}</TableCell>
+                    <TableCell>
+                        <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary capitalize">
+                            {achievement.category}
+                        </span>
+                    </TableCell>
                     <TableCell>{achievement.title}</TableCell>
                     <TableCell>{achievement.organization || '-'}</TableCell>
                     <TableCell className="text-right">

@@ -85,7 +85,10 @@ export const ExperienceCard = ({
         <AnimateIn variant="fade-left" delay={delay + 0.15}>
           <div className="prose prose-sm prose-zinc dark:prose-invert max-w-none">
             <div data-color-mode={theme}>
-              <MDEditor.Markdown source={description} />
+              <MDEditor.Markdown 
+                source={description} 
+                style={{ backgroundColor: 'transparent', color: 'inherit' }}
+              />
             </div>
           </div>
         </AnimateIn>

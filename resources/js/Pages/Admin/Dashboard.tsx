@@ -13,6 +13,7 @@ import {
   RiUserLine,
   RiArrowRightUpLine,
   RiGithubFill,
+  RiSettings4Line,
 } from "@remixicon/react";
 import { Link } from "@inertiajs/react";
 import { Button } from "@/Components/UI/button";
@@ -131,13 +132,13 @@ export default function Dashboard({ stats }: DashboardProps) {
                 Recent Integration
               </CardTitle>
               <CardDescription>
-                Connected to Supabase PostgreSQL & Laravel 11
+                Connected to MySQL & Laravel 11
               </CardDescription>
             </CardHeader>
             <CardContent className="p-0">
               <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
                 {[
-                  "Database migrated to Laravel & Supabase",
+                  "Database migrated to Laravel & MySQL",
                   "Vite & Tailwind v4 integration",
                   "Auth session types migrated to Breeze",
                 ].map((item, i) => (
@@ -179,6 +180,17 @@ export default function Dashboard({ stats }: DashboardProps) {
                       <RiToolsLine className="size-5" />
                     </div>
                     <span className="font-bold">Update Skills</span>
+                  </div>
+                  <RiArrowRightUpLine className="size-5 text-muted-foreground" />
+                </div>
+              </Link>
+              <Link href="/admin/settings" className="block">
+                <div className="p-4 rounded-xl border border-zinc-100 dark:border-zinc-800 hover:border-zinc-950 dark:hover:border-zinc-200 cursor-pointer transition-all flex items-center justify-between group">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-zinc-100 dark:bg-zinc-800 group-hover:bg-zinc-950 group-hover:text-white dark:group-hover:bg-zinc-200 dark:group-hover:text-zinc-950 transition-colors">
+                      <RiSettings4Line className="size-5" />
+                    </div>
+                    <span className="font-bold">Site Settings</span>
                   </div>
                   <RiArrowRightUpLine className="size-5 text-muted-foreground" />
                 </div>

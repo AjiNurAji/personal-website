@@ -4,10 +4,11 @@ import { AnimateIn } from "@/Components/Elements/AnimateIn";
 import { ExperienceCard } from "@/Components/Elements/ExperienceCard";
 
 interface ExperienceProps {
-  initialExperiences: any[];
+  workExperiences: any[];
+  educationExperiences: any[];
 }
 
-const Experience = ({ initialExperiences }: ExperienceProps) => {
+const Experience = ({ workExperiences, educationExperiences }: ExperienceProps) => {
   const formatDate = (dateString: string) => {
     if (!dateString) return "";
     const date = new Date(dateString);
@@ -32,42 +33,78 @@ const Experience = ({ initialExperiences }: ExperienceProps) => {
           {/* Section header */}
           <div className="flex flex-col items-center justify-center gap-3 text-center mb-12">
             <AnimateIn variant="blur-fade">
-              <Badge variant="secondary">Experience</Badge>
+              <Badge variant="secondary">My Journey</Badge>
             </AnimateIn>
             <LetterAnimation
               isHeading
               inView
               className="text-4xl sm:text-5xl font-bold tracking-tight"
             >
-              Professional Journey
+              Experience & Education
             </LetterAnimation>
             <AnimateIn variant="blur-fade" delay={0.1}>
               <p className="text-muted-foreground">
-                A timeline of my professional growth and key achievements
+                A timeline of my professional growth and educational background
               </p>
             </AnimateIn>
           </div>
 
-          {/* Timeline */}
-          <div className="relative">
-            {initialExperiences.length > 0 ? (
-              initialExperiences.map((exp: any, index: number) => (
-                <ExperienceCard 
-                  key={exp.id || index} 
-                  logo={exp.logo}
-                  company={exp.company}
-                  role={exp.title}
-                  period={getPeriod(exp)}
-                  description={exp.description}
-                  skills={[]} // Skills might need to be fetched separately or added to the model
-                  delay={index * 0.1} 
-                />
-              ))
-            ) : (
-              <div className="text-center py-10 text-muted-foreground italic">
-                Experience details coming soon.
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {/* Work Experience */}
+            <div className="space-y-8">
+              <div className="flex items-center gap-2 mb-6">
+                <div className="h-10 w-1 bg-primary rounded-full" />
+                <h3 className="text-2xl font-bold">Work Experience</h3>
               </div>
-            )}
+              <div className="relative space-y-4">
+                {workExperiences.length > 0 ? (
+                  workExperiences.map((exp: any, index: number) => (
+                    <ExperienceCard 
+                      key={exp.id || index} 
+                      logo={exp.logo}
+                      company={exp.company}
+                      role={exp.title}
+                      period={getPeriod(exp)}
+                      description={exp.description}
+                      skills={[]}
+                      delay={index * 0.1} 
+                    />
+                  ))
+                ) : (
+                  <div className="text-center py-10 text-muted-foreground italic border rounded-xl border-dashed">
+                    Work experience coming soon.
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Education */}
+            <div className="space-y-8">
+              <div className="flex items-center gap-2 mb-6">
+                <div className="h-10 w-1 bg-primary rounded-full" />
+                <h3 className="text-2xl font-bold">Education</h3>
+              </div>
+              <div className="relative space-y-4">
+                {educationExperiences.length > 0 ? (
+                  educationExperiences.map((exp: any, index: number) => (
+                    <ExperienceCard 
+                      key={exp.id || index} 
+                      logo={exp.logo}
+                      company={exp.company}
+                      role={exp.title}
+                      period={getPeriod(exp)}
+                      description={exp.description}
+                      skills={[]}
+                      delay={index * 0.1} 
+                    />
+                  ))
+                ) : (
+                  <div className="text-center py-10 text-muted-foreground italic border rounded-xl border-dashed">
+                    Education details coming soon.
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
     </section>

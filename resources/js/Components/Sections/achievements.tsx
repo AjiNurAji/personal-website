@@ -51,40 +51,60 @@ const AchievementsSection = ({ initialAchievements = [] }: { initialAchievements
           </div>
 
           {/* Achievement cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
             {dbAchievements.map((item: any, index: number) => {
-              // For now, if no icon specified, default to Trophy
-              const Icon = RiTrophyLine;
+              const Icon = item.category === 'award' ? RiTrophyLine : (item.category === 'certification' ? RiMedalLine : RiStarLine);
               return (
                 <AnimateIn
                   key={item.id}
                   variant="blur-fade"
                   delay={index * 0.1}
                 >
-                  <Card className="h-full border bg-card hover:shadow-md transition-shadow duration-300">
-                    <CardContent className="p-6 flex flex-col gap-4 h-full">
-                      <div
-                        className={cn(
-                          "w-10 h-10 rounded-lg flex items-center justify-center bg-zinc-100 dark:bg-zinc-800",
-                        )}
-                      >
-                        <Icon
-                          className={cn(
-                            "size-5 text-zinc-900 dark:text-zinc-100",
-                          )}
+                  <Card className="h-full border bg-card hover:shadow-xl transition-all duration-300 overflow-hidden group">
+                    {item.preview_image && (
+                      <div className="aspect-video w-full overflow-hidden border-b bg-muted">
+                        <img 
+                          src={`/storage/${item.preview_image}`} 
+                          alt={item.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                       </div>
+                    )}
+                    <CardContent className="p-6 flex flex-col gap-4 h-full relative">
+                      <div className="flex justify-between items-start">
+                        <div
+                          className={cn(
+                            "w-10 h-10 rounded-lg flex items-center justify-center bg-primary/10 text-primary",
+                          )}
+                        >
+                          <Icon className="size-5" />
+                        </div>
+                        <Badge variant="outline" className="capitalize text-[10px] font-bold tracking-widest">
+                          {item.category}
+                        </Badge>
+                      </div>
+                      
                       <div className="flex-1 space-y-1">
-                        <p className="font-semibold leading-snug">
+                        <h4 className="font-bold text-lg leading-tight group-hover:text-primary transition-colors">
                           {item.title}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
+                        </h4>
+                        <p className="text-xs text-muted-foreground font-medium">
                           {item.organization} · {item.year}
                         </p>
                       </div>
-                      <p className="text-sm text-muted-foreground">
+
+                      <p className="text-sm text-muted-foreground line-clamp-2">
                         {item.description}
                       </p>
+
+                      <div className="pt-2">
+                         <Link 
+                           href={`/achievements/${item.id}`}
+                           className="text-xs font-bold uppercase tracking-widest text-primary flex items-center gap-1 hover:gap-2 transition-all"
+                         >
+                            View Details <RiArrowRightLine className="size-3" />
+                         </Link>
+                      </div>
                     </CardContent>
                   </Card>
                 </AnimateIn>

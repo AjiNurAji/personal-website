@@ -73,7 +73,7 @@ const Skills = ({ initialSkills = [] }: { initialSkills?: any[] }) => {
                         <img 
                           src={iconUrl} 
                           alt={skill.name} 
-                          className="size-full object-contain grayscale group-hover:grayscale-0 transition-all"
+                          className="size-full object-contain grayscale-0 md:grayscale md:group-hover:grayscale-0 transition-all"
                           onError={(e) => {
                             (e.target as HTMLImageElement).src = `https://cdn.simpleicons.org/codeigniter`; // generic fallback
                           }}

@@ -4,7 +4,14 @@ import { Badge } from "../UI/badge";
 import { NAV_LINKS } from "@/Config/nav";
 import { MobileNav } from "./mobile-nav";
 
-export const Navbar = () => {
+interface NavbarProps {
+  customLinks?: { label: string; href: string }[] | null;
+  isAvailable?: boolean;
+}
+
+export const Navbar = ({ customLinks, isAvailable = true }: NavbarProps) => {
+  const links = customLinks || NAV_LINKS.map(l => ({ label: l.name, href: l.href }));
+
   return (
     <nav className="fixed z-40 top-0 h-14 backdrop-blur-md bg-background/80 w-full border-b px-4 sm:px-0">
       <div className="absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-zinc-400/50 to-transparent" />
@@ -17,28 +24,20 @@ export const Navbar = () => {
           </div>
         </div>
         <nav className="hidden md:flex items-center gap-8">
-          {NAV_LINKS.map((link) => (
+          {links.map((link) => (
             <a
-              key={link.name}
+              key={link.label}
               href={link.href}
               className="text-xs font-bold uppercase tracking-tighter text-muted-foreground hover:text-foreground transition-all flex items-center gap-1 group"
             >
               <span className="opacity-0 group-hover:opacity-100 transition-opacity text-zinc-300 dark:text-zinc-700">/</span>
-              {link.name}
+              {link.label}
             </a>
           ))}
         </nav>
         <div className="flex items-center gap-2 sm:gap-3">
-          <div className="hidden sm:block">
-            <Badge
-              variant="outline"
-              className="px-2 py-0.5 text-[10px] font-black uppercase tracking-wider border-emerald-500/50 bg-emerald-500/10 text-emerald-500 backdrop-blur-md"
-            >
-              Hire Me
-            </Badge>
-          </div>
           <ThemeToggle />
-          <MobileNav />
+          <MobileNav links={links} />
         </div>
       </div>
     </nav>

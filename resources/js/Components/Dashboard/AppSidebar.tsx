@@ -8,6 +8,7 @@ import {
   RiAwardLine,
   RiBriefcaseLine,
   RiLogoutBoxLine,
+  RiSettings4Line,
 } from "@remixicon/react";
 import {
   Sidebar,
@@ -54,6 +55,12 @@ const navItems = [
     url: route('admin.experiences.index'),
     icon: RiBriefcaseLine,
     component: "Admin/Experiences/Index",
+  },
+  {
+    title: "Site Settings",
+    url: route('admin.settings.index'),
+    icon: RiSettings4Line,
+    component: "Admin/Settings/Index",
   },
 ];
 

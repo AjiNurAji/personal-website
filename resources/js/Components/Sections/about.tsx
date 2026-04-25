@@ -1,14 +1,24 @@
 "use client";
 
 import { RiMailSendLine, RiGithubFill } from "@remixicon/react";
-;
 import { LetterAnimation } from "@/Components/Elements/LetterAnimation";
 import { AnimateIn } from "@/Components/Elements/AnimateIn";
 import { Badge } from "@/Components/UI/badge";
 import { buttonVariants } from "@/Components/UI/button";
 import { cn } from "@/lib/utils";
+import MDEditor from "@uiw/react-md-editor";
 
-const About = () => {
+interface AboutProps {
+  title?: string;
+  description?: string;
+  githubUrl?: string;
+  contactEmail?: string;
+  image?: string;
+}
+
+const About = ({ title, description, githubUrl, contactEmail, image }: AboutProps) => {
+  const defaultDesc = "I have hands-on experience in developing responsive interfaces and managing backend systems. Beyond coding, I also possess fundamental knowledge of computer networking, giving me a broader perspective on technical architecture. I am eager to learn, grow, and contribute to a dynamic and collaborative work environment.";
+  
   return (
     <section
       className="relative z-3 bg-transparent px-4 sm:px-0 border-y overflow-hidden"
@@ -22,14 +32,13 @@ const About = () => {
             {/* Profile image */}
             <AnimateIn
               variant="blur-fade"
-              className="mt-10 w-48 h-48 md:w-64 md:h-64 hidden md:block"
+              className="mt-10 w-48 h-48 md:w-64 md:h-64 flex justify-center mx-auto md:mx-0"
             >
               <div className="relative w-full h-full rounded-2xl overflow-hidden bg-accent">
                 <img
-                  src="https://github.com/ajinuraji.png"
-                  alt="Placeholder"
+                  src={image || "https://github.com/ajinuraji.png"}
+                  alt="Profile"
                   loading="lazy"
-                  
                 />
               </div>
             </AnimateIn>
@@ -45,24 +54,30 @@ const About = () => {
                 inView
                 className="text-4xl font-bold mb-4 tracking-tight justify-start"
               >
-                Passionate about creating impactful web experiences
+                {title || "Passionate about creating impactful web experiences"}
               </LetterAnimation>
 
               <AnimateIn variant="blur-fade" delay={0.1}>
-                <p className="text-muted-foreground text-justify">
-                  I have hands-on experience in developing responsive interfaces
-                  and managing backend systems. Beyond coding, I also possess
-                  fundamental knowledge of computer networking, giving me a
-                  broader perspective on technical architecture. I am eager to
-                  learn, grow, and contribute to a dynamic and collaborative
-                  work environment.
-                </p>
+                <div className="text-muted-foreground">
+                  <div data-color-mode="light" className="dark:hidden">
+                    <MDEditor.Markdown 
+                      source={description?.trim() || defaultDesc} 
+                      style={{ backgroundColor: 'transparent', color: 'inherit' }}
+                    />
+                  </div>
+                  <div data-color-mode="dark" className="hidden dark:block">
+                    <MDEditor.Markdown 
+                      source={description?.trim() || defaultDesc} 
+                      style={{ backgroundColor: 'transparent', color: 'inherit' }}
+                    />
+                  </div>
+                </div>
               </AnimateIn>
 
               <AnimateIn variant="blur-fade" delay={0.2}>
                 <div className="flex flex-wrap gap-4 justify-start">
                   <a
-                    href="https://github.com/ajinuraji"
+                    href={githubUrl || "https://github.com/ajinuraji"}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={cn(
@@ -73,7 +88,7 @@ const About = () => {
                     <RiGithubFill /> View GitHub
                   </a>
                   <a
-                    href="mailto:contact@example.com"
+                    href={`mailto:${contactEmail || "contact@example.com"}`}
                     className={cn(
                       buttonVariants({ variant: "outline" }),
                       "rounded-full",

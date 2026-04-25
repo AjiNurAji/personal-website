@@ -13,7 +13,11 @@ import {
 } from "../UI/sheet";
 import { Logo } from "./logo";
 
-export function MobileNav() {
+interface MobileNavProps {
+  links: { label: string; href: string }[];
+}
+
+export function MobileNav({ links }: MobileNavProps) {
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -31,14 +35,14 @@ export function MobileNav() {
           </SheetTitle>
         </SheetHeader>
         <nav className="flex flex-col gap-4 pt-6 px-4">
-          {NAV_LINKS.map((link) => (
+          {links.map((link) => (
             <a
-              key={link.name}
+              key={link.label}
               href={link.href}
               onClick={() => setOpen(false)}
               className="text-lg font-medium text-muted-foreground hover:text-foreground transition-colors py-2"
             >
-              {link.name}
+              {link.label}
             </a>
           ))}
         </nav>
