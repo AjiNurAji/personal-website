@@ -127,6 +127,14 @@
   button {
     @apply cursor-pointer!;
   }
+
+  /* Markdown Font Fix */
+  .prose, 
+  .wmde-markdown, 
+  .wmde-markdown * {
+    font-family: var(--font-sans) !important;
+    @apply font-sans!;
+  }
 }
 
 ::selection {

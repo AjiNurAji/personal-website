@@ -9,6 +9,7 @@ import {
   TableRow,
 } from "@/Components/UI/table";
 import { RiAddLine, RiEditLine, RiDeleteBinLine } from "@remixicon/react";
+import * as SimpleIcons from "react-icons/si";
 import { router, Link } from "@inertiajs/react";
 import { toast } from "sonner";
 
@@ -62,9 +63,9 @@ export default function SkillsIndex({ skills }: SkillsIndexProps) {
             <TableHeader>
                 <TableRow>
                 <TableHead className="w-[100px]">Priority</TableHead>
+                <TableHead className="w-[80px]">Icon</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Category</TableHead>
-                <TableHead>Icon</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
             </TableHeader>
@@ -76,32 +77,41 @@ export default function SkillsIndex({ skills }: SkillsIndexProps) {
                     </TableCell>
                 </TableRow>
                 ) : (
-                skills.map((skill) => (
-                    <TableRow key={skill.id}>
-                    <TableCell className="font-mono text-sm text-muted-foreground">{skill.priority}</TableCell>
-                    <TableCell>{skill.name}</TableCell>
-                    <TableCell>{skill.category}</TableCell>
-                    <TableCell className="text-muted-foreground font-mono text-xs">{skill.icon}</TableCell>
-                    <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                        <Link
-                            href={route('admin.skills.edit', skill.id)}
-                            className={buttonVariants({ variant: "ghost", size: "icon" })}
-                        >
-                            <RiEditLine className="h-4 w-4" />
-                        </Link>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => onDelete(skill.id)}
-                            className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30"
-                        >
-                            <RiDeleteBinLine className="h-4 w-4" />
-                        </Button>
-                        </div>
-                    </TableCell>
-                    </TableRow>
-                ))
+                skills.map((skill) => {
+                    const IconComponent = skill.icon && (SimpleIcons as any)[skill.icon] ? (SimpleIcons as any)[skill.icon] : null;
+                    return (
+                        <TableRow key={skill.id}>
+                        <TableCell className="font-mono text-sm text-muted-foreground">{skill.priority}</TableCell>
+                        <TableCell>
+                            {IconComponent ? (
+                                <IconComponent className="h-6 w-6" />
+                            ) : (
+                                <span className="text-muted-foreground font-mono text-xs">{skill.icon}</span>
+                            )}
+                        </TableCell>
+                        <TableCell className="font-medium">{skill.name}</TableCell>
+                        <TableCell>{skill.category}</TableCell>
+                        <TableCell className="text-right">
+                            <div className="flex justify-end gap-2">
+                            <Link
+                                href={route('admin.skills.edit', skill.id)}
+                                className={buttonVariants({ variant: "ghost", size: "icon" })}
+                            >
+                                <RiEditLine className="h-4 w-4" />
+                            </Link>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => onDelete(skill.id)}
+                                className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30"
+                            >
+                                <RiDeleteBinLine className="h-4 w-4" />
+                            </Button>
+                            </div>
+                        </TableCell>
+                        </TableRow>
+                    );
+                })
                 )}
             </TableBody>
             </Table>

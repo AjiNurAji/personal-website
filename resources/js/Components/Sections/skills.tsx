@@ -43,22 +43,29 @@ const Skills = ({ initialSkills = [] }: { initialSkills?: any[] }) => {
 
             <div className="flex flex-wrap justify-center gap-3 pt-8 max-w-3xl">
               {dbSkills.map((skill: any, index: number) => {
-                const iconSlug = skill.name.toLowerCase()
-                  .replace(/\.js$/, "dotjs")
-                  .replace(/ /g, "")
-                  .replace(/\+/g, "plus")
-                  .replace(/#/g, "sharp");
+                let finalSlug = "";
+
+                if (skill.icon && skill.icon.startsWith("Si")) {
+                  finalSlug = skill.icon.substring(2).toLowerCase();
+                } else {
+                  const iconSlug = skill.name.toLowerCase()
+                    .replace(/\.js$/, "dotjs")
+                    .replace(/ /g, "")
+                    .replace(/\+/g, "plus")
+                    .replace(/#/g, "sharp");
+                  
+                  // Manual overrides for specific slugs
+                  const slugMap: Record<string, string> = {
+                    "next.js": "nextdotjs",
+                    "node.js": "nodedotjs",
+                    "framer motion": "framer",
+                    "express.js": "express",
+                    "tailwind css": "tailwindcss",
+                  };
+                  
+                  finalSlug = slugMap[skill.name.toLowerCase()] || iconSlug;
+                }
                 
-                // Manual overrides for specific slugs
-                const slugMap: Record<string, string> = {
-                  "next.js": "nextdotjs",
-                  "node.js": "nodedotjs",
-                  "framer motion": "framer",
-                  "express.js": "express",
-                  "tailwind css": "tailwindcss",
-                };
-                
-                const finalSlug = slugMap[skill.name.toLowerCase()] || iconSlug;
                 const iconUrl = `https://cdn.simpleicons.org/${finalSlug}`;
 
                 return (

@@ -10,6 +10,8 @@ import { TooltipProvider } from "@/Components/UI/tooltip";
 import { Head } from "@inertiajs/react";
 import { ThemeToggle } from "@/Components/UI/theme-toggle";
 
+import { PreviewModal } from "@/Components/Dashboard/PreviewModal";
+
 interface AdminLayoutProps {
     children: ReactNode;
     title?: string;
@@ -32,6 +34,7 @@ export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayo
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
+                    <PreviewModal />
                     <ThemeToggle />
                   </div>
                 </header>

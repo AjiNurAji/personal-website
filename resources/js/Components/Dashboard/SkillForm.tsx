@@ -12,6 +12,7 @@ import {
 import { toast } from "sonner";
 import { FormEvent } from "react";
 import { RiArrowLeftLine } from "@remixicon/react";
+import { IconPicker } from "./IconPicker";
 
 interface Skill {
   id?: number;
@@ -76,12 +77,11 @@ export function SkillForm({ initialData }: SkillFormProps) {
         </Field>
 
         <Field>
-          <FieldLabel>Icon Key (Remix Icon format)</FieldLabel>
+          <FieldLabel>Icon Key (Simple Icons format)</FieldLabel>
           <FieldContent>
-            <Input 
-              placeholder="RiReactjsLine" 
+            <IconPicker 
               value={data.icon}
-              onChange={(e) => setData('icon', e.target.value)} 
+              onChange={(val) => setData('icon', val)}
             />
             {errors.icon && <FieldError errors={[errors.icon]} />}
           </FieldContent>
