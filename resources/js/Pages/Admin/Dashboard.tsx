@@ -25,9 +25,15 @@ interface DashboardProps {
     skills: number;
     achievements: number;
   };
+  githubCommits?: {
+    message: string;
+    url: string;
+    date: string;
+    sha: string;
+  }[];
 }
 
-export default function Dashboard({ stats }: DashboardProps) {
+export default function Dashboard({ stats, githubCommits = [] }: DashboardProps) {
   const statCards = [
     {
       title: "Projects",
@@ -129,29 +135,37 @@ export default function Dashboard({ stats }: DashboardProps) {
             <CardHeader className="bg-zinc-50/50 dark:bg-zinc-900/50 border-b">
               <CardTitle className="flex items-center gap-2">
                 <RiGithubFill className="size-5" />
-                Recent Integration
+                Recent Commits
               </CardTitle>
               <CardDescription>
-                Connected to MySQL & Laravel 11
+                Latest updates from AjiNurAji/personal-website
               </CardDescription>
             </CardHeader>
             <CardContent className="p-0">
               <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
-                {[
-                  "Database migrated to Laravel & MySQL",
-                  "Vite & Tailwind v4 integration",
-                  "Auth session types migrated to Breeze",
-                ].map((item, i) => (
-                  <div
-                    key={item}
-                    className="p-4 flex items-center justify-between hover:bg-zinc-50/50 dark:hover:bg-zinc-900/50 transition-colors"
-                  >
-                    <span className="text-sm font-medium">{item}</span>
-                    <span className="text-[10px] uppercase font-bold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-                      Success
-                    </span>
+                {githubCommits.length > 0 ? (
+                  githubCommits.map((commit, i) => (
+                    <a
+                      key={commit.sha}
+                      href={commit.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-4 flex items-center justify-between hover:bg-zinc-50/50 dark:hover:bg-zinc-900/50 transition-colors group/item block"
+                    >
+                      <div className="flex flex-col gap-1">
+                        <span className="text-sm font-medium group-hover/item:text-blue-600 dark:group-hover/item:text-blue-400 transition-colors">{commit.message}</span>
+                        <span className="text-xs text-muted-foreground">{commit.date}</span>
+                      </div>
+                      <span className="text-[10px] font-mono text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded-md">
+                        {commit.sha}
+                      </span>
+                    </a>
+                  ))
+                ) : (
+                  <div className="p-8 text-center text-muted-foreground text-sm">
+                    No recent commits found or unable to connect to GitHub.
                   </div>
-                ))}
+                )}
               </div>
             </CardContent>
           </Card>
