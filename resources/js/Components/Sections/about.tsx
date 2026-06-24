@@ -28,25 +28,31 @@ const About = ({ title, description, githubUrl, contactEmail, image }: AboutProp
           ABOUT
         </div>
         <div className="max-w-5xl mx-auto border-x pt-24 pb-32 px-6 bg-background/80 backdrop-blur-sm relative z-10">
-          <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-6 items-stretch">
-            {/* Profile Image Bento Card */}
-            <AnimateIn
-              variant="blur-fade"
-              className="h-full flex"
-            >
-              <div className="relative w-full aspect-square md:h-full rounded-3xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 border shadow-sm group">
-                <img
-                  src={image ? (image.startsWith('http') || image.startsWith('/') ? image : `/storage/${image}`) : "https://github.com/ajinuraji.png"}
-                  alt="Profile"
-                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              </div>
-            </AnimateIn>
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-8 items-start relative">
+            {/* Left Column: Sticky Profile Card */}
+            <div className="lg:sticky lg:top-24 space-y-6">
+              <AnimateIn variant="blur-fade">
+                <div className="relative w-full aspect-square md:aspect-[4/5] rounded-3xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 border shadow-sm group">
+                  <img
+                    src={image ? (image.startsWith('http') || image.startsWith('/') ? image : `/storage/${image}`) : "https://github.com/ajinuraji.png"}
+                    alt="Profile"
+                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    loading="lazy"
+                  />
+                  {/* Premium overlay gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500"></div>
+                  
+                  {/* Overlay content */}
+                  <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 text-white">
+                    <p className="font-bold text-xl tracking-tight">Aji Nur Aji</p>
+                    <p className="text-white/80 text-sm">Fullstack Developer</p>
+                  </div>
+                </div>
+              </AnimateIn>
+            </div>
 
-            {/* Text Content Bento Card */}
-            <AnimateIn variant="blur-fade" delay={0.1} className="h-full flex">
+            {/* Right Column: Text Content Bento Card */}
+            <AnimateIn variant="blur-fade" delay={0.1} className="flex">
               <div className="flex-1 space-y-6 bg-zinc-50 dark:bg-zinc-900/40 border shadow-sm rounded-3xl p-8 md:p-12 flex flex-col justify-center relative overflow-hidden group">
                 {/* Decorative background glow */}
                 <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/2"></div>

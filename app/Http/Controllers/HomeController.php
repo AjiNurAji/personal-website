@@ -13,7 +13,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $experiences = Experience::orderBy('priority', 'asc')->orderBy('start_date', 'desc')->get();
+        $experiences = Experience::orderBy('start_date', 'desc')->orderBy('priority', 'asc')->get();
         $settings = \App\Models\Setting::all()->pluck('value', 'key');
 
         return Inertia::render('Home', [
