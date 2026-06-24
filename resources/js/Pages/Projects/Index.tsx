@@ -28,26 +28,30 @@ export default function ProjectsIndex({ projects }: Props) {
             <InteractiveCursor />
             <Navbar />
             <main className="min-h-screen w-full pt-24 pb-16">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="max-w-5xl mx-auto px-6">
                     <AnimateIn variant="blur-fade">
                         <div className="text-center mb-16">
-                            <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">All Projects</h1>
+                            <h1 className="text-4xl md:text-5xl font-black mb-4 tracking-tight">All Projects</h1>
                             <p className="text-muted-foreground max-w-2xl mx-auto">
                                 A collection of projects I've built, ranging from web applications to experiments.
                             </p>
                         </div>
                     </AnimateIn>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {projects.map((project, index) => (
-                            <AnimateIn 
-                                key={project.id} 
-                                variant="blur-fade" 
-                                delay={index * 0.1}
-                            >
-                                <ProjectCard {...project} />
-                            </AnimateIn>
-                        ))}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {projects.map((project, index) => {
+                            return (
+                                <AnimateIn 
+                                    key={project.id} 
+                                    variant="blur-fade" 
+                                    delay={index * 0.1}
+                                >
+                                    <ProjectCard 
+                                        {...project} 
+                                    />
+                                </AnimateIn>
+                            );
+                        })}
                     </div>
 
                     {projects.length === 0 && (

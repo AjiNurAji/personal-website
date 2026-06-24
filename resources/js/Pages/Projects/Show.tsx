@@ -28,9 +28,10 @@ interface Project {
 
 interface Props {
     project: Project;
+    readme_content?: string | null;
 }
 
-export default function ProjectShow({ project }: Props) {
+export default function ProjectShow({ project, readme_content }: Props) {
     const { theme } = useTheme();
     const badgesArray = project.badges ? JSON.parse(project.badges) : [];
     const imageUrl = project.image.startsWith('http') ? project.image : `/storage/${project.image}`;
@@ -81,12 +82,12 @@ export default function ProjectShow({ project }: Props) {
                         <div className="md:col-span-2">
                             <AnimateIn variant="blur-fade" delay={0.3}>
                                 <div className="prose prose-zinc dark:prose-invert max-w-none">
-                                    {project.content ? (
-                                        <div data-color-mode={theme}>
-                                            <MDEditor.Markdown source={project.content} />
+                                    {(readme_content || project.content) ? (
+                                        <div data-color-mode={theme} className="bg-transparent">
+                                            <MDEditor.Markdown source={readme_content || project.content || ''} style={{ backgroundColor: 'transparent' }} />
                                         </div>
                                     ) : (
-                                        <p className="text-muted-foreground italic">No detailed content available for this project.</p>
+                                        <p className="text-muted-foreground italic">No detailed content or GitHub README available for this project.</p>
                                     )}
                                 </div>
                             </AnimateIn>
