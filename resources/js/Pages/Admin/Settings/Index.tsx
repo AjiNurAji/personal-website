@@ -188,13 +188,38 @@ export default function SettingsIndex({ settings }: Props) {
                             </Field>
 
                             <Field>
-                                <FieldLabel>Profile Image URL</FieldLabel>
+                                <FieldLabel>Profile Image</FieldLabel>
                                 <FieldContent>
-                                    <Input 
-                                        value={data.about_image}
-                                        onChange={(e) => setData('about_image', e.target.value)}
-                                        placeholder="https://..."
-                                    />
+                                    <div className="flex items-center gap-4">
+                                        <div className="size-16 rounded-xl border overflow-hidden bg-zinc-100 dark:bg-zinc-800 shrink-0">
+                                            {typeof data.about_image === 'string' && data.about_image ? (
+                                                <img 
+                                                    src={data.about_image.startsWith('http') || data.about_image.startsWith('/') ? data.about_image : `/storage/${data.about_image}`} 
+                                                    alt="Preview" 
+                                                    className="w-full h-full object-cover" 
+                                                />
+                                            ) : data.about_image instanceof File ? (
+                                                <img 
+                                                    src={URL.createObjectURL(data.about_image)} 
+                                                    alt="Preview" 
+                                                    className="w-full h-full object-cover" 
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">No img</div>
+                                            )}
+                                        </div>
+                                        <div className="flex-1 space-y-2">
+                                            <Input 
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={(e) => setData('about_image', e.target.files?.[0] || data.about_image)}
+                                                className="cursor-pointer"
+                                            />
+                                            <p className="text-xs text-muted-foreground">
+                                                Select a new image to replace the current one. Leave empty to keep existing.
+                                            </p>
+                                        </div>
+                                    </div>
                                     {errors.about_image && <FieldError errors={[errors.about_image]} />}
                                 </FieldContent>
                             </Field>

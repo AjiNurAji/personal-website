@@ -21,84 +21,87 @@ const About = ({ title, description, githubUrl, contactEmail, image }: AboutProp
   
   return (
     <section
-      className="relative z-3 bg-transparent px-4 sm:px-0 border-y overflow-hidden"
+      className="relative z-3 bg-transparent px-4 sm:px-0 border-t border-b overflow-hidden"
       id="about"
     >
         <div className="absolute top-10 right-10 text-8xl md:text-9xl font-black text-zinc-500/5 dark:text-zinc-400/5 pointer-events-none select-none -z-10">
           ABOUT
         </div>
-        <div className="max-w-5xl mx-auto border-x py-20 px-6 bg-background/80 backdrop-blur-sm relative z-10">
-          <div className="flex flex-col md:flex-row-reverse gap-12">
-            {/* Profile image */}
+        <div className="max-w-5xl mx-auto border-x pt-24 pb-32 px-6 bg-background/80 backdrop-blur-sm relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-6 items-stretch">
+            {/* Profile Image Bento Card */}
             <AnimateIn
               variant="blur-fade"
-              className="mt-10 w-48 h-48 md:w-64 md:h-64 flex justify-center mx-auto md:mx-0"
+              className="h-full flex"
             >
-              <div className="relative w-full h-full rounded-2xl overflow-hidden bg-accent">
+              <div className="relative w-full aspect-square md:h-full rounded-3xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 border shadow-sm group">
                 <img
-                  src={image || "https://github.com/ajinuraji.png"}
+                  src={image ? (image.startsWith('http') || image.startsWith('/') ? image : `/storage/${image}`) : "https://github.com/ajinuraji.png"}
                   alt="Profile"
+                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                   loading="lazy"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               </div>
             </AnimateIn>
 
-            {/* Text content */}
-            <div className="flex-1 md:text-left space-y-4">
-              <AnimateIn variant="blur-fade">
-                <Badge variant="secondary">About Me</Badge>
-              </AnimateIn>
+            {/* Text Content Bento Card */}
+            <AnimateIn variant="blur-fade" delay={0.1} className="h-full flex">
+              <div className="flex-1 space-y-6 bg-zinc-50 dark:bg-zinc-900/40 border shadow-sm rounded-3xl p-8 md:p-12 flex flex-col justify-center relative overflow-hidden group">
+                {/* Decorative background glow */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
+                
+                <div className="relative z-10 space-y-6">
+                  <Badge variant="outline" className="bg-background/50 backdrop-blur-sm">About Me</Badge>
 
-              <LetterAnimation
-                isHeading
-                inView
-                className="text-4xl font-bold mb-4 tracking-tight justify-start"
-              >
-                {title || "Passionate about creating impactful web experiences"}
-              </LetterAnimation>
+                  <LetterAnimation
+                    isHeading
+                    inView
+                    className="text-4xl md:text-5xl font-black tracking-tighter justify-start leading-tight"
+                  >
+                    {title || "Passionate about creating impactful web experiences"}
+                  </LetterAnimation>
 
-              <AnimateIn variant="blur-fade" delay={0.1}>
-                <div className="text-muted-foreground">
-                  <div data-color-mode="light" className="dark:hidden">
-                    <MDEditor.Markdown 
-                      source={description?.trim() || defaultDesc} 
-                      style={{ backgroundColor: 'transparent', color: 'inherit' }}
-                    />
+                  <div className="text-muted-foreground leading-relaxed text-lg">
+                    <div data-color-mode="light" className="dark:hidden">
+                      <MDEditor.Markdown 
+                        source={description?.trim() || defaultDesc} 
+                        style={{ backgroundColor: 'transparent', color: 'inherit', fontSize: 'inherit', lineHeight: 'inherit' }}
+                      />
+                    </div>
+                    <div data-color-mode="dark" className="hidden dark:block">
+                      <MDEditor.Markdown 
+                        source={description?.trim() || defaultDesc} 
+                        style={{ backgroundColor: 'transparent', color: 'inherit', fontSize: 'inherit', lineHeight: 'inherit' }}
+                      />
+                    </div>
                   </div>
-                  <div data-color-mode="dark" className="hidden dark:block">
-                    <MDEditor.Markdown 
-                      source={description?.trim() || defaultDesc} 
-                      style={{ backgroundColor: 'transparent', color: 'inherit' }}
-                    />
+
+                  <div className="flex flex-wrap gap-4 pt-4">
+                    <a
+                      href={githubUrl || "https://github.com/ajinuraji"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={cn(
+                        buttonVariants({ variant: "default" }),
+                        "rounded-full px-6 transition-all active:scale-95",
+                      )}
+                    >
+                      <RiGithubFill className="mr-2" /> View GitHub
+                    </a>
+                    <a
+                      href={`mailto:${contactEmail || "contact@example.com"}`}
+                      className={cn(
+                        buttonVariants({ variant: "outline" }),
+                        "rounded-full px-6 transition-all active:scale-95 bg-background/50 backdrop-blur-sm",
+                      )}
+                    >
+                      <RiMailSendLine className="mr-2 h-4 w-4" /> Hire Me
+                    </a>
                   </div>
                 </div>
-              </AnimateIn>
-
-              <AnimateIn variant="blur-fade" delay={0.2}>
-                <div className="flex flex-wrap gap-4 justify-start">
-                  <a
-                    href={githubUrl || "https://github.com/ajinuraji"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={cn(
-                      buttonVariants({ variant: "default" }),
-                      "rounded-full",
-                    )}
-                  >
-                    <RiGithubFill /> View GitHub
-                  </a>
-                  <a
-                    href={`mailto:${contactEmail || "contact@example.com"}`}
-                    className={cn(
-                      buttonVariants({ variant: "outline" }),
-                      "rounded-full",
-                    )}
-                  >
-                    <RiMailSendLine className="mr-2 h-4 w-4" /> Hire Me
-                  </a>
-                </div>
-              </AnimateIn>
-            </div>
+              </div>
+            </AnimateIn>
           </div>
         </div>
     </section>

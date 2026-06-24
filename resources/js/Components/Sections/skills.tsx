@@ -20,26 +20,30 @@ const Skills = ({ initialSkills = [] }: { initialSkills?: any[] }) => {
           SKILLS
         </div>
         <div className="max-w-5xl mx-auto border-x py-20 px-6 bg-background/80 backdrop-blur-sm relative z-10">
-          <div className="flex flex-col items-center text-center space-y-6">
-            <AnimateIn variant="blur-fade">
-              <Badge variant="secondary">My Skills</Badge>
-            </AnimateIn>
+          <div className="bg-zinc-50 dark:bg-zinc-900/40 border shadow-sm rounded-3xl p-8 md:p-12 relative overflow-hidden group">
+            {/* Decorative background glow */}
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-cyan-500/10 blur-[100px] rounded-full pointer-events-none translate-y-1/2 -translate-x-1/2"></div>
+            
+            <div className="relative z-10 flex flex-col items-center text-center space-y-6">
+              <AnimateIn variant="blur-fade">
+                <Badge variant="outline" className="bg-background/50 backdrop-blur-sm">My Skills</Badge>
+              </AnimateIn>
 
-            <LetterAnimation
-              isHeading
-              inView
-              className="text-4xl font-bold tracking-tight justify-center"
-            >
-              Technologies I work with
-            </LetterAnimation>
+              <LetterAnimation
+                isHeading
+                inView
+                className="text-4xl md:text-5xl font-black tracking-tighter justify-center leading-tight"
+              >
+                Technologies I work with
+              </LetterAnimation>
 
-            <AnimateIn variant="blur-fade" delay={0.1} className="max-w-2xl">
-              <p className="text-muted-foreground text-center">
-                I love exploring new technologies and building efficient,
-                scalable solutions. Here are some of the tools and frameworks I
-                use on a daily basis to bring ideas to life.
-              </p>
-            </AnimateIn>
+              <AnimateIn variant="blur-fade" delay={0.1} className="max-w-2xl">
+                <p className="text-muted-foreground text-center text-lg leading-relaxed">
+                  I love exploring new technologies and building efficient,
+                  scalable solutions. Here are some of the tools and frameworks I
+                  use on a daily basis to bring ideas to life.
+                </p>
+              </AnimateIn>
 
             <div className="flex flex-wrap justify-center gap-3 pt-8 max-w-3xl">
               {dbSkills.map((skill: any, index: number) => {
@@ -96,6 +100,7 @@ const Skills = ({ initialSkills = [] }: { initialSkills?: any[] }) => {
                   Skills data is coming soon!
                 </div>
               )}
+            </div>
             </div>
           </div>
         </div>

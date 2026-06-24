@@ -60,7 +60,7 @@ const AchievementsSection = ({ initialAchievements = [] }: { initialAchievements
                   variant="blur-fade"
                   delay={index * 0.1}
                 >
-                  <Link href={`/achievements/${item.id}`} className="block h-[280px] relative rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 group border border-zinc-200/50 dark:border-zinc-800/50">
+                  <Link href={`/achievements/${item.id}`} className="block h-[280px] relative rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 group border border-zinc-200/50 dark:border-zinc-800/50">
                     {/* Image Background */}
                     {item.preview_image ? (
                         <img 

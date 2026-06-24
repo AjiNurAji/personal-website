@@ -33,13 +33,14 @@ const Hero = ({ title, subtitle, isAvailable = true }: HeroProps) => {
             <BackgroundDecorations />
 
             <div
-                className="absolute inset-0 z-0 flex items-center justify-center blur-[1px] opacity-30"
+                className="absolute inset-0 z-0 flex items-center justify-center blur-[1px] opacity-30 mix-blend-overlay"
                 id="background-pattern"
             >
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-500/20 via-background to-background dark:from-emerald-900/20"></div>
                 <PixelBlast
                     key="pixel-blast"
                     variant="square"
-                    color="#888"
+                    color="#10b981"
                     pixelSize={2}
                     patternScale={3}
                     patternDensity={0.5}
@@ -61,7 +62,7 @@ const Hero = ({ title, subtitle, isAvailable = true }: HeroProps) => {
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    transition={{ type: "spring", stiffness: 100, damping: 20, mass: 1 }}
                     className="flex items-center gap-3 flex-wrap justify-center mb-8"
                 >
                     <Badge
@@ -85,13 +86,13 @@ const Hero = ({ title, subtitle, isAvailable = true }: HeroProps) => {
                 <motion.h1
                     initial={{ opacity: 0, filter: "blur(10px)", y: 30 }}
                     animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
-                    transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
+                    transition={{ type: "spring", stiffness: 80, damping: 20, delay: 0.1 }}
                     className="text-5xl sm:text-7xl md:text-8xl font-black leading-[1.1] tracking-tighter"
                 >
                     {title || (
                         <>
                             Building{" "}
-                            <span className="bg-clip-text text-transparent bg-gradient-to-br from-zinc-900 via-zinc-500 to-zinc-400 dark:from-zinc-100 dark:via-zinc-400 dark:to-zinc-600">
+                            <span className="bg-clip-text text-transparent bg-gradient-to-br from-emerald-600 via-teal-500 to-cyan-500 dark:from-emerald-400 dark:via-teal-300 dark:to-cyan-400 drop-shadow-sm">
                                 Digital
                             </span>{" "}
                             Experiences
@@ -102,7 +103,7 @@ const Hero = ({ title, subtitle, isAvailable = true }: HeroProps) => {
                 <motion.p
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.4 }}
+                    transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.2 }}
                     className="mt-8 text-lg md:text-xl text-muted-foreground max-w-2xl font-medium leading-relaxed"
                 >
                     {subtitle ||
@@ -112,7 +113,7 @@ const Hero = ({ title, subtitle, isAvailable = true }: HeroProps) => {
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.6 }}
+                    transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.3 }}
                     className="mt-12 flex gap-4"
                 >
                     <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground px-4 py-2 rounded-full border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50">

@@ -24,7 +24,7 @@ const ProjectsSection = ({ initialProjects = [] }: { initialProjects?: any[] }) 
             <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-blue-500/5 blur-[150px] mix-blend-screen" />
         </div>
 
-        <div className="max-w-5xl mx-auto border-x py-24 px-6 relative z-10">
+        <div className="max-w-5xl mx-auto border-x py-24 px-6 relative z-10 bg-background/80 backdrop-blur-sm">
           {/* Section header */}
           <div className="flex flex-col items-center justify-center gap-4 text-center mb-16">
             <AnimateIn variant="blur-fade">
@@ -66,7 +66,7 @@ const ProjectsSection = ({ initialProjects = [] }: { initialProjects?: any[] }) 
                 </AnimateIn>
               );
             })}
-            
+
             {featuredProjects.length === 0 && (
               <div className="col-span-full py-32 text-center">
                  <div className="w-20 h-20 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-6">
