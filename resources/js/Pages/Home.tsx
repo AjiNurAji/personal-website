@@ -4,6 +4,7 @@ import Hero from "@/Components/Sections/hero";
 import About from "@/Components/Sections/about";
 import Skills from "@/Components/Sections/skills";
 import Experience from "@/Components/Sections/experience";
+import GithubStats from "@/Components/Sections/github-stats";
 import ProjectsSection from "@/Components/Sections/projects";
 import AchievementsSection from "@/Components/Sections/achievements";
 import { InteractiveCursor } from "@/Components/Elements/InteractiveCursor";
@@ -45,6 +46,7 @@ export default function Home({ projects, skills, achievements, work_experiences,
                     workExperiences={work_experiences} 
                     educationExperiences={education_experiences} 
                 />
+                <GithubStats githubUrl={settings.github_url} />
                 <ProjectsSection initialProjects={projects} />
                 <AchievementsSection initialAchievements={achievements} />
             </main>

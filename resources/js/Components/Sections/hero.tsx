@@ -128,6 +128,7 @@ const Hero = ({ title, subtitle, isAvailable = true }: HeroProps) => {
 
             {/* scroll down indicator */}
             <motion.div
+                style={{ opacity }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.2 }}
