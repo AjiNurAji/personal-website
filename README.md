@@ -1,6 +1,14 @@
-# Aji Nur Aji - Personal Portfolio Website
+<p align="center">
+  <img src="public/ana.svg" alt="Aji Nur Aji Logo" width="120" />
+</p>
 
-![Portfolio Preview](public/favicon.ico)
+<h1 align="center">Aji Nur Aji - Personal Portfolio Website</h1>
+
+<p align="center">
+  <a href="https://github.com/AjiNurAji/personal-website/stargazers"><img src="https://img.shields.io/github/stars/AjiNurAji/personal-website?style=for-the-badge&color=eab308" alt="GitHub Stars"/></a>
+  <a href="https://github.com/AjiNurAji/personal-website/network/members"><img src="https://img.shields.io/github/forks/AjiNurAji/personal-website?style=for-the-badge&color=3b82f6" alt="GitHub Forks"/></a>
+  <img src="https://komarev.com/ghpvc/?username=AjiNurAji-portfolio&label=Profile%20Views&color=10b981&style=for-the-badge" alt="Profile Views" />
+</p>
 
 A modern, highly interactive personal portfolio website built with a focus on premium aesthetics, following "UI/UX Pro Max" principles. It features a stunning glassmorphism design, interactive bento grids, and dynamic animations.
 
