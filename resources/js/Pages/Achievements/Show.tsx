@@ -10,12 +10,25 @@ import { buttonVariants } from "@/Components/UI/button";
 import { RiArrowLeftSLine, RiDownloadLine, RiExternalLinkLine } from "@remixicon/react";
 import MDEditor from "@uiw/react-md-editor";
 import { cn } from "@/lib/utils";
+import { useState, useEffect } from "react";
 
 interface Props {
   achievement: any;
 }
 
 export default function AchievementShow({ achievement }: Props) {
+  const [backUrl, setBackUrl] = useState("/#achievements");
+  const [backLabel, setBackLabel] = useState("Back to Home");
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('from') === 'gallery') {
+            setBackUrl('/achievements');
+            setBackLabel('Back to Gallery');
+        }
+    }
+  }, []);
   return (
     <div className="font-sans bg-background text-foreground selection:bg-primary/10 selection:text-primary">
       <Head title={`${achievement.title} - Achievement`} />
@@ -26,11 +39,11 @@ export default function AchievementShow({ achievement }: Props) {
         <div className="max-w-4xl mx-auto px-6">
           <AnimateIn variant="blur-fade">
             <Link
-              href="/"
+              href={backUrl}
               className="inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors mb-8"
             >
               <RiArrowLeftSLine className="mr-1 h-4 w-4" />
-              Back to Home
+              {backLabel}
             </Link>
           </AnimateIn>
 

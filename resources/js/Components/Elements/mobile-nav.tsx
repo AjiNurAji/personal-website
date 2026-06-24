@@ -20,6 +20,26 @@ interface MobileNavProps {
 export function MobileNav({ links }: MobileNavProps) {
   const [open, setOpen] = React.useState(false);
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.startsWith('/#') && window.location.pathname === '/') {
+      e.preventDefault();
+      // Also handle potential singular/plural mismatch (achievement vs achievements)
+      let id = href.replace('/#', '');
+      if (id === 'achievement') id = 'achievements';
+      
+      const element = document.getElementById(id);
+      if (element) {
+        setOpen(false);
+        element.scrollIntoView({ behavior: 'smooth' });
+        window.history.pushState(null, '', href);
+      } else {
+        window.location.href = href;
+      }
+    } else {
+      setOpen(false);
+    }
+  };
+
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
@@ -39,7 +59,7 @@ export function MobileNav({ links }: MobileNavProps) {
             <a
               key={link.label}
               href={link.href}
-              onClick={() => setOpen(false)}
+              onClick={(e) => handleNavClick(e, link.href)}
               className="text-lg font-medium text-muted-foreground hover:text-foreground transition-colors py-2"
             >
               {link.label}

@@ -60,53 +60,51 @@ const AchievementsSection = ({ initialAchievements = [] }: { initialAchievements
                   variant="blur-fade"
                   delay={index * 0.1}
                 >
-                  <Card className="h-full border bg-card hover:shadow-xl transition-all duration-300 overflow-hidden group">
-                    {item.preview_image && (
-                      <div className="aspect-video w-full overflow-hidden border-b bg-muted">
+                  <Link href={`/achievements/${item.id}`} className="block h-[280px] relative rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 group border border-zinc-200/50 dark:border-zinc-800/50">
+                    {/* Image Background */}
+                    {item.preview_image ? (
                         <img 
                           src={`/storage/${item.preview_image}`} 
                           alt={item.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                         />
-                      </div>
-                    )}
-                    <CardContent className="p-6 flex flex-col gap-4 h-full relative">
-                      <div className="flex justify-between items-start">
-                        <div
-                          className={cn(
-                            "w-10 h-10 rounded-lg flex items-center justify-center bg-primary/10 text-primary",
-                          )}
-                        >
-                          <Icon className="size-5" />
+                    ) : (
+                        <div className="absolute inset-0 w-full h-full bg-muted flex items-center justify-center">
+                            <Icon className="size-16 text-muted-foreground/20" />
                         </div>
-                        <Badge variant="outline" className="capitalize text-[10px] font-bold tracking-widest">
-                          {item.category}
-                        </Badge>
-                      </div>
-                      
-                      <div className="flex-1 space-y-1">
-                        <h4 className="font-bold text-lg leading-tight group-hover:text-primary transition-colors">
-                          {item.title}
-                        </h4>
-                        <p className="text-xs text-muted-foreground font-medium">
-                          {item.organization} · {item.year}
-                        </p>
-                      </div>
+                    )}
+                    
+                    {/* Default Overlay (slight gradient for always-visible bottom shadow if needed, but we'll use full overlay on hover) */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-sm" />
 
-                      <p className="text-sm text-muted-foreground line-clamp-2">
-                        {item.description}
-                      </p>
+                    {/* Hover Content */}
+                    <div className="absolute inset-0 p-6 flex flex-col justify-between opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0 text-white">
+                        <div className="flex justify-between items-start">
+                            <Badge variant="outline" className="text-white border-white/20 bg-black/20 backdrop-blur-md capitalize text-xs font-bold tracking-widest">
+                                {item.category}
+                            </Badge>
+                            <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/10 flex items-center justify-center">
+                                <Icon className="size-5 text-white" />
+                            </div>
+                        </div>
 
-                      <div className="pt-2">
-                         <Link 
-                           href={`/achievements/${item.id}`}
-                           className="text-xs font-bold uppercase tracking-widest text-primary flex items-center gap-1 hover:gap-2 transition-all"
-                         >
-                            View Details <RiArrowRightLine className="size-3" />
-                         </Link>
-                      </div>
-                    </CardContent>
-                  </Card>
+                        <div>
+                            <h4 className="font-bold text-xl leading-tight mb-2">
+                                {item.title}
+                            </h4>
+                            <p className="text-xs text-white/80 font-medium mb-3">
+                                {item.organization} · {item.year}
+                            </p>
+                            <p className="text-sm text-white/70 line-clamp-2 mb-4">
+                                {item.description}
+                            </p>
+                            
+                            <div className="text-xs font-bold uppercase tracking-widest text-white/90 flex items-center gap-1 group/btn">
+                                View Details <RiArrowRightLine className="size-4 transform group-hover/btn:translate-x-1 transition-transform" />
+                            </div>
+                        </div>
+                    </div>
+                  </Link>
                 </AnimateIn>
               );
             })}

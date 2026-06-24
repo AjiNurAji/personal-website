@@ -12,6 +12,24 @@ interface NavbarProps {
 export const Navbar = ({ customLinks, isAvailable = true }: NavbarProps) => {
   const links = customLinks || NAV_LINKS.map(l => ({ label: l.name, href: l.href }));
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.startsWith('/#') && window.location.pathname === '/') {
+      e.preventDefault();
+      // Also handle potential singular/plural mismatch (achievement vs achievements)
+      let id = href.replace('/#', '');
+      if (id === 'achievement') id = 'achievements';
+      
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+        window.history.pushState(null, '', href);
+      } else {
+        // If element not found (maybe they changed the ID), fallback to normal navigation
+        window.location.href = href;
+      }
+    }
+  };
+
   return (
     <nav className="fixed z-40 top-0 h-14 backdrop-blur-md bg-background/80 w-full border-b px-4 sm:px-0">
       <div className="absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-zinc-400/50 to-transparent" />
@@ -28,6 +46,7 @@ export const Navbar = ({ customLinks, isAvailable = true }: NavbarProps) => {
             <a
               key={link.label}
               href={link.href}
+              onClick={(e) => handleNavClick(e, link.href)}
               className="text-xs font-bold uppercase tracking-tighter text-muted-foreground hover:text-foreground transition-all flex items-center gap-1 group"
             >
               <span className="opacity-0 group-hover:opacity-100 transition-opacity text-zinc-300 dark:text-zinc-700">/</span>
