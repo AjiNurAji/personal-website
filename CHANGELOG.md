@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [1.2.0] - 2026-06-24
 
 ### Added
 - **Profile Image Upload**: Added the ability to upload a custom profile image directly in the Admin Settings (About tab), overriding the default GitHub avatar URL. Includes an auto-cleanup mechanism to delete old images from local storage.
