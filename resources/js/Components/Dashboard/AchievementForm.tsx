@@ -33,6 +33,7 @@ export interface Achievement {
   category: "event" | "award" | "certification";
   certificate_path: string | null;
   preview_image: string | null;
+  embed_code?: string | null;
 }
 
 interface AchievementFormProps {
@@ -51,6 +52,7 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
     category: initialData?.category || "event",
     certificate: null as File | null,
     preview_image_file: null as File | null,
+    embed_code: initialData?.embed_code || "",
     _method: initialData?.id ? 'PUT' : 'POST',
   });
 
@@ -271,6 +273,19 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
                     />
                     </div>
                     {errors.content && <FieldError errors={[errors.content]} />}
+                </FieldContent>
+                </Field>
+
+                <Field>
+                <FieldLabel>Embed Code (Optional)</FieldLabel>
+                <FieldContent>
+                    <textarea 
+                        className="flex min-h-[100px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                        placeholder="Paste your Credly or third-party embed code here..."
+                        value={data.embed_code || ''}
+                        onChange={(e) => setData('embed_code', e.target.value)}
+                    />
+                    {errors.embed_code && <FieldError errors={[errors.embed_code]} />}
                 </FieldContent>
                 </Field>
             </div>

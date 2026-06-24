@@ -55,6 +55,7 @@ class AchievementController extends Controller
             'category' => 'required|in:event,award,certification',
             'certificate' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
             'preview_image_file' => 'nullable|file|mimes:png,jpg,jpeg|max:5120',
+            'embed_code' => 'nullable|string',
         ]);
 
         if ($request->hasFile('certificate')) {
@@ -104,6 +105,7 @@ class AchievementController extends Controller
             'category' => 'required|in:event,award,certification',
             'certificate' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
             'preview_image_file' => 'nullable|file|mimes:png,jpg,jpeg|max:5120',
+            'embed_code' => 'nullable|string',
         ]);
 
         if ($request->hasFile('certificate')) {

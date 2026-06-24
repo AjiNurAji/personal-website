@@ -10,7 +10,20 @@ import { buttonVariants } from "@/Components/UI/button";
 import { RiArrowLeftSLine, RiDownloadLine, RiExternalLinkLine } from "@remixicon/react";
 import MDEditor from "@uiw/react-md-editor";
 import { cn } from "@/lib/utils";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+
+const RawHtml = ({ html }: { html: string }) => {
+    const divRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (!divRef.current) return;
+        const fragment = document.createRange().createContextualFragment(html);
+        divRef.current.innerHTML = '';
+        divRef.current.appendChild(fragment);
+    }, [html]);
+
+    return <div ref={divRef} className="flex justify-center" />;
+};
 
 interface Props {
   achievement: any;
@@ -121,6 +134,15 @@ export default function AchievementShow({ achievement }: Props) {
                         </>
                       )}
                    </div>
+                   
+                   {achievement.embed_code && (
+                        <div className="mt-12 flex flex-col items-start gap-4">
+                            <h3 className="text-2xl font-bold">Credential Badge</h3>
+                            <div className="p-6 bg-muted/30 rounded-2xl border border-zinc-200 dark:border-zinc-800 transition-transform hover:scale-[1.02] duration-300">
+                                <RawHtml html={achievement.embed_code} />
+                            </div>
+                        </div>
+                    )}
                 </AnimateIn>
               </div>
 
@@ -129,20 +151,20 @@ export default function AchievementShow({ achievement }: Props) {
                   <div className="p-6 rounded-2xl border bg-card/50 backdrop-blur-sm sticky top-28">
                     <h3 className="font-bold mb-4">At a glance</h3>
                     <div className="space-y-4 text-sm">
-                      <div className="flex justify-between border-b pb-2">
-                        <span className="text-muted-foreground">Category</span>
-                        <span className="font-medium capitalize">{achievement.category}</span>
+                      <div className="flex justify-between items-start gap-4 border-b pb-2">
+                        <span className="text-muted-foreground shrink-0">Category</span>
+                        <span className="font-medium text-right capitalize">{achievement.category}</span>
                       </div>
-                      <div className="flex justify-between border-b pb-2">
-                        <span className="text-muted-foreground">Year</span>
-                        <span className="font-medium">{achievement.year}</span>
+                      <div className="flex justify-between items-start gap-4 border-b pb-2">
+                        <span className="text-muted-foreground shrink-0">Year</span>
+                        <span className="font-medium text-right">{achievement.year}</span>
                       </div>
-                      <div className="flex justify-between border-b pb-2">
-                        <span className="text-muted-foreground">Organization</span>
-                        <span className="font-medium">{achievement.organization}</span>
+                      <div className="flex justify-between items-start gap-4 border-b pb-2">
+                        <span className="text-muted-foreground shrink-0">Organization</span>
+                        <span className="font-medium text-right">{achievement.organization}</span>
                       </div>
                     </div>
-                    
+
                     {achievement.certificate_path && (
                         <a 
                             href={`/storage/${achievement.certificate_path}`} 
