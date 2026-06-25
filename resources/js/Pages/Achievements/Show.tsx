@@ -97,13 +97,21 @@ export default function AchievementShow({ achievement }: Props) {
                             <DialogTrigger className={cn(buttonVariants({ variant: "default" }), "rounded-full gap-2 cursor-pointer")}>
                                 <RiExternalLinkLine className="size-4" /> View Certificate
                             </DialogTrigger>
-                            <DialogContent className="max-w-4xl w-[90vw] h-[90vh] p-0 overflow-hidden bg-transparent border-0 ring-0">
+                            <DialogContent className="sm:max-w-4xl md:max-w-5xl w-[95vw] sm:w-[90vw] h-fit max-h-[95vh] p-0 overflow-hidden bg-transparent border-0 ring-0 flex items-center justify-center">
                                 <DialogTitle className="sr-only">Certificate View</DialogTitle>
-                                <iframe 
-                                    src={`/storage/${achievement.certificate_path}`} 
-                                    className="w-full h-full rounded-2xl bg-white dark:bg-zinc-950" 
-                                    title="Certificate Viewer"
-                                />
+                                {achievement.certificate_path.toLowerCase().endsWith('.pdf') ? (
+                                    <iframe 
+                                        src={`/storage/${achievement.certificate_path}`} 
+                                        className="w-full h-[85vh] rounded-2xl bg-white dark:bg-zinc-950 shadow-2xl" 
+                                        title="Certificate Viewer"
+                                    />
+                                ) : (
+                                    <img 
+                                        src={`/storage/${achievement.certificate_path}`} 
+                                        alt="Certificate"
+                                        className="w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl"
+                                    />
+                                )}
                             </DialogContent>
                         </Dialog>
                     </div>
