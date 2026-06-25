@@ -6,6 +6,7 @@ import { AnimateIn } from "@/Components/Elements/AnimateIn";
 import { RiArrowLeftLine, RiExternalLinkLine, RiGithubFill } from "@remixicon/react";
 import { Button, buttonVariants } from "@/Components/UI/button";
 import { Badge } from "@/Components/UI/badge";
+import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/Components/UI/dialog";
 import { cn } from "@/lib/utils";
 import MDEditor from '@uiw/react-md-editor';
 
@@ -30,6 +31,21 @@ interface Props {
     project: Project;
     readme_content?: string | null;
 }
+
+const MarkdownImage = ({ node, ...props }: any) => (
+  <Dialog>
+    <DialogTrigger asChild>
+      <img {...props} className="cursor-zoom-in" />
+    </DialogTrigger>
+    <DialogContent className="sm:max-w-5xl md:max-w-7xl w-[95vw] h-fit max-h-[95vh] p-0 overflow-hidden bg-transparent border-0 ring-0 flex items-center justify-center">
+      <DialogTitle className="sr-only">Image View</DialogTitle>
+      <img 
+        {...props} 
+        className="w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl bg-zinc-50/10 backdrop-blur-md" 
+      />
+    </DialogContent>
+  </Dialog>
+);
 
 export default function ProjectShow({ project, readme_content }: Props) {
     const { theme } = useTheme();
@@ -84,7 +100,11 @@ export default function ProjectShow({ project, readme_content }: Props) {
                                 <div className="prose prose-zinc dark:prose-invert max-w-none">
                                     {(readme_content || project.content) ? (
                                         <div data-color-mode={theme} className="bg-transparent">
-                                            <MDEditor.Markdown source={readme_content || project.content || ''} style={{ backgroundColor: 'transparent' }} />
+                                            <MDEditor.Markdown 
+                                              source={readme_content || project.content || ''} 
+                                              style={{ backgroundColor: 'transparent' }} 
+                                              components={{ img: MarkdownImage }}
+                                            />
                                         </div>
                                     ) : (
                                         <p className="text-muted-foreground italic">No detailed content or GitHub README available for this project.</p>

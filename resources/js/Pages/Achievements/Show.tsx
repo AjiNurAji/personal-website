@@ -26,6 +26,21 @@ const RawHtml = ({ html }: { html: string }) => {
     return <div ref={divRef} className="flex justify-center" />;
 };
 
+const MarkdownImage = ({ node, ...props }: any) => (
+  <Dialog>
+    <DialogTrigger asChild>
+      <img {...props} className="cursor-zoom-in" />
+    </DialogTrigger>
+    <DialogContent className="sm:max-w-5xl md:max-w-7xl w-[95vw] h-fit max-h-[95vh] p-0 overflow-hidden bg-transparent border-0 ring-0 flex items-center justify-center">
+      <DialogTitle className="sr-only">Image View</DialogTitle>
+      <img 
+        {...props} 
+        className="w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl bg-zinc-50/10 backdrop-blur-md" 
+      />
+    </DialogContent>
+  </Dialog>
+);
+
 interface Props {
   achievement: any;
 }
@@ -137,12 +152,14 @@ export default function AchievementShow({ achievement }: Props) {
                             <MDEditor.Markdown 
                               source={achievement.content} 
                               style={{ backgroundColor: 'transparent', color: 'inherit' }}
+                              components={{ img: MarkdownImage }}
                             />
                           </div>
                           <div data-color-mode="dark" className="hidden dark:block">
                             <MDEditor.Markdown 
                               source={achievement.content} 
                               style={{ backgroundColor: 'transparent', color: 'inherit' }}
+                              components={{ img: MarkdownImage }}
                             />
                           </div>
                         </>
