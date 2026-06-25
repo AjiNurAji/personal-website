@@ -7,6 +7,7 @@ import { Head, Link } from "@inertiajs/react";
 import { AnimateIn } from "@/Components/Elements/AnimateIn";
 import { Badge } from "@/Components/UI/badge";
 import { buttonVariants } from "@/Components/UI/button";
+import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/Components/UI/dialog";
 import { RiArrowLeftSLine, RiDownloadLine, RiExternalLinkLine } from "@remixicon/react";
 import MDEditor from "@uiw/react-md-editor";
 import { cn } from "@/lib/utils";
@@ -92,14 +93,19 @@ export default function AchievementShow({ achievement }: Props) {
                   />
                   {achievement.certificate_path && (
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
-                        <a 
-                            href={`/storage/${achievement.certificate_path}`} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className={cn(buttonVariants({ variant: "default" }), "rounded-full gap-2")}
-                        >
-                            <RiExternalLinkLine className="size-4" /> View Certificate
-                        </a>
+                        <Dialog>
+                            <DialogTrigger className={cn(buttonVariants({ variant: "default" }), "rounded-full gap-2 cursor-pointer")}>
+                                <RiExternalLinkLine className="size-4" /> View Certificate
+                            </DialogTrigger>
+                            <DialogContent className="max-w-4xl w-[90vw] h-[90vh] p-0 overflow-hidden bg-transparent border-0 ring-0">
+                                <DialogTitle className="sr-only">Certificate View</DialogTitle>
+                                <iframe 
+                                    src={`/storage/${achievement.certificate_path}`} 
+                                    className="w-full h-full rounded-2xl bg-white dark:bg-zinc-950" 
+                                    title="Certificate Viewer"
+                                />
+                            </DialogContent>
+                        </Dialog>
                     </div>
                   )}
                 </div>
