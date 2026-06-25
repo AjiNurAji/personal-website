@@ -12,9 +12,10 @@ import {
 import { toast } from "sonner";
 import { FormEvent, useState } from "react";
 import MDEditor from '@uiw/react-md-editor';
-import { RiArrowLeftLine } from "@remixicon/react";
+import { RiArrowLeftLine, RiImageAddLine } from "@remixicon/react";
 import { useTheme } from "@/hooks/use-theme";
 import { motion } from "framer-motion";
+import axios from "axios";
 import {
   Select,
   SelectContent,
@@ -72,6 +73,33 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
       });
     }
   }
+
+  const handleMarkdownImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'description' | 'content') => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    const toastId = toast.loading("Uploading image...");
+    const formData = new FormData();
+    formData.append('image', file);
+    
+    try {
+      const response = await axios.post(route('admin.upload-image'), formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      
+      if (response.data.success) {
+        const imgMarkdown = `\n![Image](${response.data.url})\n`;
+        setData(field, (data[field] || '') + imgMarkdown);
+        toast.success("Image uploaded successfully", { id: toastId });
+      }
+    } catch (error) {
+      toast.error("Failed to upload image", { id: toastId });
+    }
+    
+    e.target.value = '';
+  };
 
   return (
     <div className="space-y-6">
@@ -247,7 +275,14 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
             {/* Right Column: Markdown Editors */}
             <div className="space-y-6">
                 <Field>
-                <FieldLabel>Description (Markdown)</FieldLabel>
+                <FieldLabel className="flex items-center justify-between">
+                    <span>Description (Markdown)</span>
+                    <label className="cursor-pointer text-xs flex items-center text-primary hover:text-primary/80">
+                        <RiImageAddLine className="h-3 w-3 mr-1" />
+                        Insert Image
+                        <input type="file" className="hidden" accept="image/*" onChange={(e) => handleMarkdownImageUpload(e, 'description')} />
+                    </label>
+                </FieldLabel>
                 <FieldContent className="min-h-[200px]">
                     <div data-color-mode={theme} className="w-full">
                     <MDEditor
@@ -262,7 +297,14 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
                 </Field>
 
                 <Field>
-                <FieldLabel>Details / Content (Markdown - Optional)</FieldLabel>
+                <FieldLabel className="flex items-center justify-between">
+                    <span>Details / Content (Markdown - Optional)</span>
+                    <label className="cursor-pointer text-xs flex items-center text-primary hover:text-primary/80">
+                        <RiImageAddLine className="h-3 w-3 mr-1" />
+                        Insert Image
+                        <input type="file" className="hidden" accept="image/*" onChange={(e) => handleMarkdownImageUpload(e, 'content')} />
+                    </label>
+                </FieldLabel>
                 <FieldContent className="min-h-[200px]">
                     <div data-color-mode={theme} className="w-full">
                     <MDEditor

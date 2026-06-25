@@ -1,0 +1,1 @@
+import{$ as e}from"./app-C_YJk-hW.js";var t=e();function n({value:e,className:n=``,children:r,...i}){return(0,t.jsx)(`label`,{...i,className:`block text-sm font-medium text-gray-700 dark:text-gray-300 `+n,children:e||r})}export{n as t};

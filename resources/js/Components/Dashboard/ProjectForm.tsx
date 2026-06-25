@@ -15,8 +15,9 @@ import {
 import { toast } from "sonner";
 import { Project } from "@/types";
 import MDEditor from '@uiw/react-md-editor';
-import { RiArrowLeftLine } from "@remixicon/react";
+import { RiArrowLeftLine, RiImageAddLine } from "@remixicon/react";
 import { useTheme } from "@/hooks/use-theme";
+import axios from "axios";
 
 interface ProjectFormProps {
   initialData?: Project;
@@ -58,6 +59,33 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
       },
     });
   }
+
+  const handleMarkdownImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'description' | 'content') => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    const toastId = toast.loading("Uploading image...");
+    const formData = new FormData();
+    formData.append('image', file);
+    
+    try {
+      const response = await axios.post(route('admin.upload-image'), formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      
+      if (response.data.success) {
+        const imgMarkdown = `\n![Image](${response.data.url})\n`;
+        setData(field, (data[field] || '') + imgMarkdown);
+        toast.success("Image uploaded successfully", { id: toastId });
+      }
+    } catch (error) {
+      toast.error("Failed to upload image", { id: toastId });
+    }
+    
+    e.target.value = '';
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -126,14 +154,21 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
         </Field>
 
         <Field>
-          <FieldLabel>Full Content (Markdown)</FieldLabel>
-          <FieldContent className="min-h-[400px]">
+          <FieldLabel className="flex items-center justify-between">
+              <span>Content Details (Markdown)</span>
+              <label className="cursor-pointer text-xs flex items-center text-primary hover:text-primary/80">
+                  <RiImageAddLine className="h-3 w-3 mr-1" />
+                  Insert Image
+                  <input type="file" className="hidden" accept="image/*" onChange={(e) => handleMarkdownImageUpload(e, 'content')} />
+              </label>
+          </FieldLabel>
+          <FieldContent className="min-h-[300px]">
             <div data-color-mode={theme} className="w-full">
               <MDEditor
                 value={data.content || ''}
                 onChange={(val) => setData('content', val || '')}
                 preview="edit"
-                height={400}
+                height={300}
               />
             </div>
             {errors.content && <FieldError errors={[errors.content]} />}

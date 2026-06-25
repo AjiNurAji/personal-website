@@ -1,1 +1,0 @@
-import{Q as e}from"./app-DXd2_2cJ.js";var t=e();function n({value:e,className:n=``,children:r,...i}){return(0,t.jsx)(`label`,{...i,className:`block text-sm font-medium text-gray-700 dark:text-gray-300 `+n,children:e||r})}export{n as t};

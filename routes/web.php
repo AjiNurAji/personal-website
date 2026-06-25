@@ -32,6 +32,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('experiences', ExperienceController::class);
     Route::get('/settings', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
+    Route::post('/upload-image', [App\Http\Controllers\Admin\ImageUploadController::class, 'store'])->name('upload-image');
 });
 
 Route::middleware('auth')->group(function () {
