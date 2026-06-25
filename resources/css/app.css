@@ -140,6 +140,16 @@
     font-family: var(--font-sans) !important;
     @apply font-sans!;
   }
+
+  /* Markdown Image Modernization */
+  .prose img,
+  .wmde-markdown img {
+    @apply rounded-2xl shadow-xl border border-zinc-200 object-cover w-full my-10 transition-transform duration-500 hover:scale-[1.02];
+  }
+  .dark .prose img,
+  .dark .wmde-markdown img {
+    @apply border-zinc-800;
+  }
 }
 
 ::selection {
