@@ -24,12 +24,14 @@ interface AchievementsIndexProps {
 }
 
 export default function AchievementsIndex({ achievements, filters }: AchievementsIndexProps) {
-  const [search, setSearch] = useState(filters?.search || "");
+  const initialSearch = filters?.search || "";
+  const [search, setSearch] = useState(initialSearch);
   const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (search !== filters?.search) {
+      // Only trigger a new search if the user actually typed something different from the current URL's search param
+      if (search !== (filters?.search || "")) {
         setIsSearching(true);
         router.get(
           route('admin.achievements.index'),
