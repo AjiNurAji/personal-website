@@ -4,6 +4,7 @@ import { useTheme } from "@/hooks/use-theme";
 import { AnimateIn } from "@/Components/Elements/AnimateIn";
 import { Badge } from "@/Components/UI/badge";
 import { RiGithubFill } from "@remixicon/react";
+import { SafeImage } from "../Elements/SafeImage";
 
 interface GithubStatsProps {
     githubUrl?: string;
@@ -61,10 +62,10 @@ export default function GithubStats({ githubUrl }: GithubStatsProps) {
                             <div className="absolute top-0 left-0 w-48 h-48 bg-purple-500/10 blur-[80px] rounded-full pointer-events-none -translate-y-1/2 -translate-x-1/2"></div>
                             <h3 className="font-bold mb-6 self-start text-xl w-full border-b pb-4 relative z-10">Contribution Stats</h3>
                             <div className="relative z-10 w-full flex justify-center">
-                                <img 
-                                    src={statsUrl} 
-                                    alt={`${username}'s GitHub Stats`} 
-                                    className="w-full max-w-md mix-blend-multiply dark:mix-blend-normal object-contain transition-transform duration-500 group-hover:scale-105"
+                                <SafeImage
+                                    src={statsUrl}
+                                    alt={`${username}'s GitHub Stats`}
+                                    className="w-full min-h-[160px] md:min-h-[195px] mix-blend-multiply dark:mix-blend-normal object-contain transition-transform duration-500 group-hover:scale-105"
                                     loading="lazy"
                                 />
                             </div>
@@ -77,10 +78,10 @@ export default function GithubStats({ githubUrl }: GithubStatsProps) {
                             <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/10 blur-[80px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
                             <h3 className="font-bold mb-6 self-start text-xl w-full border-b pb-4 relative z-10">Top Languages</h3>
                             <div className="relative z-10 w-full flex justify-center">
-                                <img 
-                                    src={langsUrl} 
-                                    alt={`${username}'s Top Languages`} 
-                                    className="w-full max-w-md mix-blend-multiply dark:mix-blend-normal object-contain transition-transform duration-500 group-hover:scale-105"
+                                <SafeImage
+                                    src={langsUrl}
+                                    alt={`${username}'s Top Languages`}
+                                    className="w-full min-h-[160px] md:min-h-[195px] mix-blend-multiply dark:mix-blend-normal object-contain transition-transform duration-500 group-hover:scale-105"
                                     loading="lazy"
                                 />
                             </div>
@@ -94,10 +95,10 @@ export default function GithubStats({ githubUrl }: GithubStatsProps) {
                         <div className="absolute bottom-0 right-0 w-64 h-64 bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none translate-y-1/2 translate-x-1/2"></div>
                         <h3 className="font-bold mb-6 self-start text-xl w-full border-b pb-4 relative z-10">Contribution Calendar</h3>
                         <div className="w-full max-w-4xl flex justify-center py-4 relative z-10">
-                            <img 
-                                src={`https://ghchart.rshah.org/${theme === 'dark' ? '40c463' : '40c463'}/${username}`} 
-                                alt={`${username}'s Github chart`} 
-                                className="w-full max-w-[800px] mix-blend-multiply dark:mix-blend-normal object-contain transition-transform duration-500 group-hover:scale-105"
+                            <SafeImage
+                                src={`https://ghchart.rshah.org/${theme === 'dark' ? '40c463' : '40c463'}/${username}`}
+                                alt={`${username}'s Github chart`}
+                                className="w-full min-h-[120px] mix-blend-multiply dark:mix-blend-normal object-contain transition-transform duration-500 group-hover:scale-105"
                                 loading="lazy"
                             />
                         </div>
