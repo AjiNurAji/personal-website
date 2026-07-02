@@ -91,14 +91,14 @@ export default function GithubStats({ githubUrl }: GithubStatsProps) {
 
                 {/* Contribution Chart */}
                 <AnimateIn variant="blur-fade" delay={0.3} className="mt-6">
-                    <div className="w-full p-8 md:p-10 rounded-3xl bg-zinc-50 dark:bg-zinc-900/40 border shadow-sm flex flex-col justify-center items-center hover:shadow-lg transition-shadow overflow-x-auto relative overflow-hidden group">
+                    <div className="w-full p-8 md:p-10 rounded-3xl bg-zinc-50 dark:bg-zinc-900/40 border shadow-sm flex flex-col justify-center items-center hover:shadow-lg transition-shadow relative overflow-hidden group">
                         <div className="absolute bottom-0 right-0 w-64 h-64 bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none translate-y-1/2 translate-x-1/2"></div>
                         <h3 className="font-bold mb-6 self-start text-xl w-full border-b pb-4 relative z-10">Contribution Calendar</h3>
                         <div className="w-full max-w-4xl flex justify-center py-4 relative z-10">
                             <SafeImage
                                 src={`https://ghchart.rshah.org/${theme === 'dark' ? '40c463' : '40c463'}/${username}`}
                                 alt={`${username}'s Github chart`}
-                                className="w-full min-h-[120px] mix-blend-multiply dark:mix-blend-normal object-contain transition-transform duration-500 group-hover:scale-105"
+                                className="w-full min-h-[120px] mix-blend-multiply dark:mix-blend-normal dark:invert dark:hue-rotate-180 object-contain transition-transform duration-500 group-hover:scale-105"
                                 loading="lazy"
                             />
                         </div>
