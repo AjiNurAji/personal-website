@@ -5,6 +5,9 @@ import { AnimateIn } from "@/Components/Elements/AnimateIn";
 import { Badge } from "@/Components/UI/badge";
 import { RiGithubFill } from "@remixicon/react";
 import { SafeImage } from "../Elements/SafeImage";
+import { GitHubCalendar } from 'react-github-calendar';
+import { Tooltip as ReactTooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css';
 
 interface GithubStatsProps {
     githubUrl?: string;
@@ -94,13 +97,16 @@ export default function GithubStats({ githubUrl }: GithubStatsProps) {
                     <div className="w-full p-8 md:p-10 rounded-3xl bg-zinc-50 dark:bg-zinc-900/40 border shadow-sm flex flex-col justify-center items-center hover:shadow-lg transition-shadow relative overflow-hidden group">
                         <div className="absolute bottom-0 right-0 w-64 h-64 bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none translate-y-1/2 translate-x-1/2"></div>
                         <h3 className="font-bold mb-6 self-start text-xl w-full border-b pb-4 relative z-10">Contribution Calendar</h3>
-                        <div className="w-full max-w-4xl flex justify-center py-4 relative z-10">
-                            <SafeImage
-                                src={`https://ghchart.rshah.org/${theme === 'dark' ? '40c463' : '40c463'}/${username}`}
-                                alt={`${username}'s Github chart`}
-                                className="w-full min-h-[120px] mix-blend-multiply dark:mix-blend-normal dark:invert dark:hue-rotate-180 object-contain transition-transform duration-500 group-hover:scale-105"
-                                loading="lazy"
-                            />
+                        <div className="w-full max-w-4xl flex justify-center overflow-hidden py-4 relative z-10">
+                            <GitHubCalendar 
+                                username={username} 
+                                colorScheme={theme === 'dark' ? 'dark' : 'light'}
+                                blockSize={14}
+                                blockMargin={4}
+                                fontSize={14}
+                            >
+                                <ReactTooltip html />
+                            </GitHubCalendar>
                         </div>
                     </div>
                 </AnimateIn>

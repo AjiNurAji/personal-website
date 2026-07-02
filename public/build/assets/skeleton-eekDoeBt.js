@@ -1,0 +1,1 @@
+import{et as e}from"./app-iPE7WLKI.js";import{f as t}from"./dist-5kF_MoiH.js";var n=e();function r({className:e,...r}){return(0,n.jsx)(`div`,{"data-slot":`skeleton`,className:t(`animate-pulse rounded-md bg-muted`,e),...r})}export{r as t};
