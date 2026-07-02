@@ -101,11 +101,11 @@ export default function GithubStats({ githubUrl }: GithubStatsProps) {
                             <GitHubCalendar 
                                 username={username} 
                                 colorScheme={theme === 'dark' ? 'dark' : 'light'}
-                                blockSize={14}
+                                blockSize={11}
                                 blockMargin={4}
                                 fontSize={14}
                             >
-                                <ReactTooltip html />
+                                <ReactTooltip id="react-tooltip" html />
                             </GitHubCalendar>
                         </div>
                     </div>
