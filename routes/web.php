@@ -16,6 +16,7 @@ use App\Http\Controllers\ProjectController as PublicProjectController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/projects', [PublicProjectController::class, 'index'])->name('projects.index');
 Route::get('/projects/{slug}', [PublicProjectController::class, 'show'])->name('projects.show');
+Route::get('/projects/{slug}/readme', [PublicProjectController::class, 'readme'])->name('projects.readme');
 
 Route::get('/achievements', [\App\Http\Controllers\AchievementController::class, 'index'])->name('achievements.index');
 Route::get('/achievements/{achievement}', [\App\Http\Controllers\AchievementController::class, 'show'])->name('achievements.show');

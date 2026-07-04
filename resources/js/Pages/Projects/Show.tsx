@@ -9,6 +9,8 @@ import { Badge } from "@/Components/UI/badge";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/Components/UI/dialog";
 import { cn } from "@/lib/utils";
 import MDEditor from '@uiw/react-md-editor';
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 import { SafeImage } from "@/Components/Elements/SafeImage";
 
@@ -29,7 +31,6 @@ interface Project {
 
 interface Props {
     project: Project;
-    readme_content?: string | null;
 }
 
 const MarkdownImage = ({ node, ...props }: any) => (
@@ -47,10 +48,29 @@ const MarkdownImage = ({ node, ...props }: any) => (
   </Dialog>
 );
 
-export default function ProjectShow({ project, readme_content }: Props) {
+export default function ProjectShow({ project }: Props) {
     const { theme } = useTheme();
     const badgesArray = project.badges ? JSON.parse(project.badges) : [];
     const imageUrl = project.image.startsWith('http') ? project.image : `/storage/${project.image}`;
+
+    const [readmeContent, setReadmeContent] = useState<string | null>(null);
+    const [isLoadingReadme, setIsLoadingReadme] = useState<boolean>(!!project.github);
+
+    useEffect(() => {
+        if (project.github) {
+            setIsLoadingReadme(true);
+            axios.get(`/projects/${project.slug}/readme`)
+                .then(res => {
+                    setReadmeContent(res.data.readme_content);
+                })
+                .catch(err => {
+                    console.error("Failed to fetch readme:", err);
+                })
+                .finally(() => {
+                    setIsLoadingReadme(false);
+                });
+        }
+    }, [project.slug, project.github]);
 
     return (
         <div className="font-sans bg-background text-foreground selection:bg-primary/10 selection:text-primary">
@@ -98,10 +118,21 @@ export default function ProjectShow({ project, readme_content }: Props) {
                         <div className="md:col-span-2">
                             <AnimateIn variant="blur-fade" delay={0.3}>
                                 <div className="prose prose-zinc dark:prose-invert max-w-none">
-                                    {(readme_content || project.content) ? (
+                                    {isLoadingReadme ? (
+                                        <div className="space-y-4 animate-pulse">
+                                            <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-3/4"></div>
+                                            <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-full"></div>
+                                            <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-5/6"></div>
+                                            <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-full"></div>
+                                            <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-2/3"></div>
+                                            <div className="h-64 bg-zinc-200 dark:bg-zinc-800 rounded w-full mt-6"></div>
+                                            <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-full"></div>
+                                            <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-4/5"></div>
+                                        </div>
+                                    ) : (readmeContent || project.content) ? (
                                         <div data-color-mode={theme} className="bg-transparent">
                                             <MDEditor.Markdown 
-                                              source={readme_content || project.content || ''} 
+                                              source={readmeContent || project.content || ''} 
                                               style={{ backgroundColor: 'transparent' }} 
                                               components={{ img: MarkdownImage }}
                                             />
