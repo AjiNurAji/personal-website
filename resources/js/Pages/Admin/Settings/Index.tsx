@@ -51,6 +51,7 @@ export default function SettingsIndex({ settings }: Props) {
     contact_email: settings.contact_email || "contact@example.com",
     github_url: settings.github_url || "https://github.com/ajinuraji",
     github_token: settings.github_token || "",
+    wakatime_username: settings.wakatime_username || "",
     about_image: settings.about_image || "https://github.com/ajinuraji.png",
     is_available: settings.is_available === '1' || settings.is_available === true || settings.is_available === 'true',
     social_links: settings.social_links ? (typeof settings.social_links === 'string' ? JSON.parse(settings.social_links) : settings.social_links) : [
@@ -289,6 +290,23 @@ export default function SettingsIndex({ settings }: Props) {
                                             Create at <a href="https://github.com/settings/tokens" target="_blank" className="underline">github.com/settings/tokens</a> with <code>repo</code> scope.
                                         </p>
                                         {errors.github_token && <FieldError errors={[errors.github_token]} />}
+                                    </FieldContent>
+                                </Field>
+                                
+                                <Field>
+                                    <FieldLabel className="flex items-center gap-2">
+                                        WakaTime Username
+                                        <span className="text-xs text-muted-foreground font-normal">(coding stats)</span>
+                                    </FieldLabel>
+                                    <FieldContent>
+                                        <Input 
+                                            value={data.wakatime_username}
+                                            onChange={(e) => setData('wakatime_username', e.target.value)}
+                                            placeholder="your-wakatime-username"
+                                        />
+                                        <p className="text-xs text-muted-foreground mt-1">
+                                            Shows coding activity chart on the landing page. Leave empty to hide.
+                                        </p>
                                     </FieldContent>
                                 </Field>
                                 

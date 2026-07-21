@@ -7,6 +7,7 @@ import Experience from "@/Components/Sections/experience";
 import GithubStats from "@/Components/Sections/github-stats";
 import ProjectsSection from "@/Components/Sections/projects";
 import AchievementsSection from "@/Components/Sections/achievements";
+import WakaTimeStats from "@/Components/Sections/wakatime-stats";
 import { InteractiveCursor } from "@/Components/Elements/InteractiveCursor";
 import { Head } from "@inertiajs/react";
 
@@ -47,6 +48,7 @@ export default function Home({ projects, skills, achievements, work_experiences,
                     educationExperiences={education_experiences} 
                 />
                 <GithubStats githubUrl={settings.github_url} />
+                <WakaTimeStats wakatimeUsername={settings.wakatime_username} />
                 <ProjectsSection initialProjects={projects} />
                 <AchievementsSection initialAchievements={achievements} />
             </main>
