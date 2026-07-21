@@ -193,9 +193,9 @@ export default function ProjectShow({ project }: Props) {
                                 </AnimateIn>
                             )}
 
-                            <AnimateIn variant="blur-fade" delay={0.3}>
-                                <div className="prose prose-zinc dark:prose-invert max-w-none">
-                                    {/* Content Tab */}
+                            <AnimateIn variant="blur-fade" delay={0.15}>
+                                <div className="prose prose-zinc dark:prose-invert max-w-none min-h-[300px]">
+                                    {/* Content Tab — always render project.content */}
                                     {(activeTab === 'content' || !showTabs) && (
                                         <>
                                             {hasContent ? (
@@ -206,38 +206,18 @@ export default function ProjectShow({ project }: Props) {
                                                       components={{ img: MarkdownImage }}
                                                     />
                                                 </div>
-                                            ) : hasReadme ? (
-                                                // Auto-show README if no content
-                                                <div data-color-mode={theme} className="bg-transparent">
-                                                    <MDEditor.Markdown 
-                                                      source={readmeContent || ''} 
-                                                      style={{ backgroundColor: 'transparent' }} 
-                                                      components={{ img: MarkdownImage }}
-                                                    />
-                                                </div>
-                                            ) : isLoadingReadme ? (
-                                                <div className="space-y-4 animate-pulse">
-                                                    <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-3/4"></div>
-                                                    <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-full"></div>
-                                                    <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-5/6"></div>
-                                                    <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-full"></div>
-                                                    <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-2/3"></div>
-                                                    <div className="h-64 bg-zinc-200 dark:bg-zinc-800 rounded w-full mt-6"></div>
-                                                    <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-full"></div>
-                                                    <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-4/5"></div>
-                                                </div>
                                             ) : (
-                                                <div className="text-center py-12">
-                                                    <RiFileTextLine className="size-12 mx-auto text-muted-foreground/30 mb-4" />
+                                                <div className="text-center py-16">
+                                                    <RiInformationLine className="size-12 mx-auto text-muted-foreground/30 mb-4" />
                                                     <p className="text-muted-foreground italic">
-                                                        {readmeError || "No detailed content or GitHub README available for this project."}
+                                                        No detailed description has been added for this project yet.
                                                     </p>
                                                 </div>
                                             )}
                                         </>
                                     )}
 
-                                    {/* README Tab */}
+                                    {/* README Tab — only when tabs are visible */}
                                     {showTabs && activeTab === 'readme' && (
                                         <>
                                             {isLoadingReadme ? (
@@ -294,6 +274,41 @@ export default function ProjectShow({ project }: Props) {
                                                 </div>
                                             )}
                                         </>
+                                    )}
+
+                                    {/* No tabs, no content, loading README */}
+                                    {!showTabs && !hasContent && isLoadingReadme && (
+                                        <div className="space-y-4 animate-pulse">
+                                            <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-3/4"></div>
+                                            <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-full"></div>
+                                            <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-5/6"></div>
+                                            <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-full"></div>
+                                            <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-2/3"></div>
+                                            <div className="h-64 bg-zinc-200 dark:bg-zinc-800 rounded w-full mt-6"></div>
+                                            <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-full"></div>
+                                            <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-4/5"></div>
+                                        </div>
+                                    )}
+
+                                    {/* No tabs, no content, README loaded → show README directly */}
+                                    {!showTabs && !hasContent && hasReadme && (
+                                        <div data-color-mode={theme} className="bg-transparent">
+                                            <MDEditor.Markdown 
+                                              source={readmeContent || ''} 
+                                              style={{ backgroundColor: 'transparent' }} 
+                                              components={{ img: MarkdownImage }}
+                                            />
+                                        </div>
+                                    )}
+
+                                    {/* No tabs, no content, no README, not loading → empty */}
+                                    {!showTabs && !hasContent && !hasReadme && !isLoadingReadme && (
+                                        <div className="text-center py-12">
+                                            <RiFileTextLine className="size-12 mx-auto text-muted-foreground/30 mb-4" />
+                                            <p className="text-muted-foreground italic">
+                                                {readmeError || "No detailed content or GitHub README available for this project."}
+                                            </p>
+                                        </div>
                                     )}
                                 </div>
                             </AnimateIn>
