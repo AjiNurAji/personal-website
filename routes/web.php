@@ -17,6 +17,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/projects', [PublicProjectController::class, 'index'])->name('projects.index');
 Route::get('/projects/{slug}', [PublicProjectController::class, 'show'])->name('projects.show');
 Route::get('/projects/{slug}/readme', [PublicProjectController::class, 'readme'])->name('projects.readme');
+Route::get('/projects/{slug}/refresh-readme', [PublicProjectController::class, 'refreshReadme'])->name('projects.refresh-readme');
 
 Route::get('/achievements', [\App\Http\Controllers\AchievementController::class, 'index'])->name('achievements.index');
 Route::get('/achievements/{achievement}', [\App\Http\Controllers\AchievementController::class, 'show'])->name('achievements.show');
@@ -28,6 +29,7 @@ Route::get('/admin', function () {
 Route::middleware(['auth', 'verified', 'throttle:60,1'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('projects', ProjectController::class);
+    Route::get('/projects/{project}/fetch-readme', [ProjectController::class, 'fetchReadme'])->name('projects.fetch-readme');
     Route::resource('skills', SkillController::class);
     Route::resource('achievements', AchievementController::class);
     Route::resource('experiences', ExperienceController::class);

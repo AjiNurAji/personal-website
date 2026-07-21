@@ -33,6 +33,7 @@ class SettingController extends Controller
             'is_available' => 'nullable|boolean',
             'contact_email' => 'nullable|string',
             'github_url' => 'nullable|string',
+            'github_token' => 'nullable|string',
             'social_links' => 'nullable|array',
             'social_links.*.platform' => 'required|string',
             'social_links.*.url' => 'required|string',

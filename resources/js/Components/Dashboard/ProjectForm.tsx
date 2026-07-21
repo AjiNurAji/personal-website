@@ -15,7 +15,7 @@ import {
 import { toast } from "sonner";
 import { Project } from "@/types";
 import MDEditor from '@uiw/react-md-editor';
-import { RiArrowLeftLine, RiImageAddLine } from "@remixicon/react";
+import { RiArrowLeftLine, RiImageAddLine, RiGithubFill } from "@remixicon/react";
 import { useTheme } from "@/hooks/use-theme";
 import axios from "axios";
 
@@ -44,6 +44,9 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
       ? (initialData.image.startsWith('http') ? initialData.image : `/storage/${initialData.image}`) 
       : null
   );
+
+  const [isFetchingReadme, setIsFetchingReadme] = useState(false);
+  const [readmePreview, setReadmePreview] = useState<string | null>(null);
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -92,6 +95,35 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
     if (file) {
       setData('image', file);
       setPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleFetchReadme = async () => {
+    if (!initialData?.id || !data.github) {
+      toast.error("Save the project first with a GitHub URL, then fetch the README.");
+      return;
+    }
+
+    setIsFetchingReadme(true);
+    setReadmePreview(null);
+
+    try {
+      const response = await axios.get(route('admin.projects.fetch-readme', initialData.id));
+      
+      if (response.data.readme_content) {
+        setReadmePreview(response.data.readme_content);
+        
+        // Set the content to the README content
+        setData('content', response.data.readme_content);
+        
+        toast.success("README fetched successfully! It's been loaded into the content editor below.");
+      } else {
+        toast.error(response.data.error || "Failed to fetch README. Check the GitHub URL and token.");
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.error || "Failed to fetch README from GitHub.");
+    } finally {
+      setIsFetchingReadme(false);
     }
   };
 
@@ -211,11 +243,32 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
             <Field>
               <FieldLabel>Github Repository</FieldLabel>
               <FieldContent>
-                <Input 
-                    placeholder="https://github.com/..." 
-                    value={data.github || ''}
-                    onChange={(e) => setData('github', e.target.value)} 
-                />
+                <div className="flex gap-2">
+                  <Input 
+                      className="flex-1"
+                      placeholder="https://github.com/..." 
+                      value={data.github || ''}
+                      onChange={(e) => setData('github', e.target.value)} 
+                  />
+                  {initialData?.id && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleFetchReadme}
+                      disabled={isFetchingReadme || !data.github}
+                      className="shrink-0"
+                    >
+                      <RiGithubFill className="size-4 mr-1" />
+                      {isFetchingReadme ? "Fetching..." : "Fetch README"}
+                    </Button>
+                  )}
+                </div>
+                {!initialData?.id && (
+                  <p className="text-[10px] text-muted-foreground mt-1">
+                    Save the project first, then you can fetch the README from GitHub.
+                  </p>
+                )}
                 {errors.github && <FieldError errors={[errors.github]} />}
               </FieldContent>
             </Field>

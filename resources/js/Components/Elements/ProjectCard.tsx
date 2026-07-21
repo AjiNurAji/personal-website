@@ -127,6 +127,16 @@ export const ProjectCard = ({
                 View Project <RiArrowRightLine className="w-4 h-4" />
             </Link>
         </div>
+
+        {/* Source indicator pill */}
+        {github && (
+          <div className="absolute top-4 right-4 z-20">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-semibold bg-black/50 backdrop-blur-md text-white border border-white/20 shadow-lg">
+              <RiGithubFill className="size-3" />
+              GitHub
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Content Body */}
@@ -149,14 +159,14 @@ export const ProjectCard = ({
 
         {/* Badges */}
         <div className="flex flex-wrap gap-2 mt-auto">
-          {badgeList.slice(0, isFeatured ? 5 : 3).map((badge) => (
+          {badgeList.slice(0, isFeatured ? 6 : 4).map((badge) => (
             <Badge key={badge} variant="secondary" className="text-[10px] sm:text-xs py-1 px-3 bg-zinc-200/50 dark:bg-zinc-800/50 hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors border-transparent text-foreground">
               {badge}
             </Badge>
           ))}
-          {badgeList.length > (isFeatured ? 5 : 3) && (
+          {badgeList.length > (isFeatured ? 6 : 4) && (
             <Badge variant="secondary" className="text-[10px] sm:text-xs py-1 px-2 bg-zinc-200/50 dark:bg-zinc-800/50 text-muted-foreground border-transparent">
-              +{badgeList.length - (isFeatured ? 5 : 3)}
+              +{badgeList.length - (isFeatured ? 6 : 4)}
             </Badge>
           )}
         </div>

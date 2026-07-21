@@ -50,6 +50,7 @@ export default function SettingsIndex({ settings }: Props) {
     nav_links: initialNavLinks,
     contact_email: settings.contact_email || "contact@example.com",
     github_url: settings.github_url || "https://github.com/ajinuraji",
+    github_token: settings.github_token || "",
     about_image: settings.about_image || "https://github.com/ajinuraji.png",
     is_available: settings.is_available === '1' || settings.is_available === true || settings.is_available === 'true',
     social_links: settings.social_links ? (typeof settings.social_links === 'string' ? JSON.parse(settings.social_links) : settings.social_links) : [
@@ -271,6 +272,25 @@ export default function SettingsIndex({ settings }: Props) {
                                         </FieldContent>
                                     </Field>
                                 </div>
+                                
+                                <Field>
+                                    <FieldLabel className="flex items-center gap-2">
+                                        GitHub Personal Access Token
+                                        <span className="text-xs text-muted-foreground font-normal">(for private repos)</span>
+                                    </FieldLabel>
+                                    <FieldContent>
+                                        <Input 
+                                            type="password"
+                                            value={data.github_token}
+                                            onChange={(e) => setData('github_token', e.target.value)}
+                                            placeholder="ghp_xxxxxxxxxxxx"
+                                        />
+                                        <p className="text-xs text-muted-foreground mt-1">
+                                            Create at <a href="https://github.com/settings/tokens" target="_blank" className="underline">github.com/settings/tokens</a> with <code>repo</code> scope.
+                                        </p>
+                                        {errors.github_token && <FieldError errors={[errors.github_token]} />}
+                                    </FieldContent>
+                                </Field>
                                 
                                 <Field className="flex flex-row items-center justify-between rounded-lg border p-4 space-y-0">
                                     <div className="space-y-0.5">
