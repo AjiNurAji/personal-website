@@ -21,12 +21,11 @@ class SettingController extends Controller
 
     public function update(Request $request)
     {
-        $validated = $request->validate([
+        $rules = [
             'about_title' => 'nullable|string',
             'about_description' => 'nullable|string',
             'hero_title' => 'nullable|string',
             'hero_subtitle' => 'nullable|string',
-            'about_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
             'nav_links' => 'nullable|array',
             'nav_links.*.label' => 'required|string',
             'nav_links.*.href' => 'required|string',
@@ -38,7 +37,15 @@ class SettingController extends Controller
             'social_links' => 'nullable|array',
             'social_links.*.platform' => 'required|string',
             'social_links.*.url' => 'required|string',
-        ]);
+        ];
+
+        // Only validate about_image as image file when a new file is uploaded.
+        // When no new image, the form sends the existing path as a string.
+        if ($request->hasFile('about_image')) {
+            $rules['about_image'] = 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120';
+        }
+
+        $validated = $request->validate($rules);
 
         if ($request->hasFile('about_image')) {
             $oldImageSetting = Setting::where('key', 'about_image')->first();
