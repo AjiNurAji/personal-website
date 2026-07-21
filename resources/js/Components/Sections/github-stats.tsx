@@ -29,9 +29,9 @@ export default function GithubStats({ githubUrl }: GithubStatsProps) {
     const statsTheme = theme === 'dark' ? 'tokyonight' : 'default';
 
     // Disable caching for real-time (or rely on vercel cache)
-    const statsUrl = `https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&theme=${statsTheme}&hide_border=true&bg_color=00000000`;
-    const langsUrl = `https://github-readme-stats.vercel.app/api/top-langs/?username=${username}&layout=compact&theme=${statsTheme}&hide_border=true&bg_color=00000000`;
-
+    const statsUrl = `https://gh-readme-stats.vercel.app/api?username=${username}&show_icons=true&theme=${statsTheme}&hide_border=true&bg_color=00000000`;
+    const langsUrl = `https://gh-readme-stats.vercel.app/api/top-langs/?username=${username}&layout=compact&theme=${statsTheme}&hide_border=true&bg_color=00000000`;
+    
     return (
         <section className="relative bg-transparent border-t border-b border-zinc-200 dark:border-zinc-800 overflow-hidden z-10" id="code-metrics">
             {/* Background Decorations */}
@@ -98,8 +98,8 @@ export default function GithubStats({ githubUrl }: GithubStatsProps) {
                         <div className="absolute bottom-0 right-0 w-64 h-64 bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none translate-y-1/2 translate-x-1/2"></div>
                         <h3 className="font-bold mb-6 self-start text-xl w-full border-b pb-4 relative z-10">Contribution Calendar</h3>
                         <div className="w-full max-w-4xl flex justify-center overflow-hidden py-4 relative z-10">
-                            <GitHubCalendar 
-                                username={username} 
+                            <GitHubCalendar
+                                username={username}
                                 colorScheme={theme === 'dark' ? 'dark' : 'light'}
                                 blockSize={11}
                                 blockMargin={4}

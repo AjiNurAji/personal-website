@@ -1,1 +1,0 @@
-import{ht as e,lt as t}from"./app-D7P6TwMq.js";var n=e(t(),1);function r(e){let t=n.useRef({value:e,previous:e});return n.useMemo(()=>(t.current.value!==e&&(t.current.previous=t.current.value,t.current.value=e),t.current.previous),[e])}export{r as t};
