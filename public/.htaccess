@@ -1,3 +1,82 @@
+# =============================================
+# SECURITY: Block access to sensitive files
+# =============================================
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<FilesMatch "\.(env|json|lock|md|yml|yaml|xml|dist|sql|log|sh|bak|phar|gitignore|gitattributes|editorconfig)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<FilesMatch "(composer\.(json|lock)|package\.json|pnpm-lock\.yaml|phpunit\.xml|artisan|server\.php)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Allow the root index.php, asset files, and well-known paths
+<FilesMatch "^index\.php$">
+    Order deny,allow
+    Allow from all
+</FilesMatch>
+
+# Allow access to necessary static files
+<FilesMatch "\.(css|js|svg|png|jpg|jpeg|gif|ico|webp|woff2?|ttf|eot|mp4|webm|map)$">
+    Order deny,allow
+    Allow from all
+</FilesMatch>
+
+# Block access to storage/framework and storage/logs
+RedirectMatch 404 ^/storage/framework/
+RedirectMatch 404 ^/storage/logs/
+
+# =============================================
+# BROWSER CACHING (Performance)
+# =============================================
+<IfModule mod_expires.c>
+    ExpiresActive On
+
+    # Images — 1 year
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+
+    # CSS, JS — 1 year (Vite uses content hashing)
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+
+    # Fonts — 1 year
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType application/font-woff "access plus 1 year"
+</IfModule>
+
+# =============================================
+# COMPRESSION (Performance)
+# =============================================
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript
+    AddOutputFilterByType DEFLATE application/javascript application/json application/xml
+    AddOutputFilterByType DEFLATE font/ttf font/otf image/svg+xml
+</IfModule>
+
+# =============================================
+# HTTPS REDIRECT (Uncomment when SSL is active)
+# =============================================
+# <IfModule mod_rewrite.c>
+#     RewriteEngine On
+#     RewriteCond %{HTTPS} off
+#     RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+# </IfModule>
+
+# =============================================
+# LARAVEL REWRITE RULES
+# =============================================
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes

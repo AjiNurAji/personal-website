@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Skill;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
 class SkillController extends Controller
@@ -40,6 +41,8 @@ class SkillController extends Controller
 
         Skill::create($validated);
 
+        Cache::forget('home_page_data');
+
         return redirect()->route('admin.skills.index')->with('success', 'Skill created successfully.');
     }
 
@@ -54,12 +57,15 @@ class SkillController extends Controller
 
         $skill->update($validated);
 
+        Cache::forget('home_page_data');
+
         return redirect()->route('admin.skills.index')->with('success', 'Skill updated successfully.');
     }
 
     public function destroy(Skill $skill)
     {
         $skill->delete();
+        Cache::forget('home_page_data');
         return redirect()->route('admin.skills.index')->with('success', 'Skill deleted successfully.');
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Achievement;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -91,6 +92,8 @@ class AchievementController extends Controller
 
         Achievement::create($validated);
 
+        Cache::forget('home_page_data');
+
         return redirect()->route('admin.achievements.index')->with('success', 'Achievement created successfully.');
     }
 
@@ -150,6 +153,8 @@ class AchievementController extends Controller
 
         $achievement->update($validated);
 
+        Cache::forget('home_page_data');
+
         return redirect()->route('admin.achievements.index')->with('success', 'Achievement updated successfully.');
     }
 
@@ -163,6 +168,7 @@ class AchievementController extends Controller
         }
         
         $achievement->delete();
+        Cache::forget('home_page_data');
         return redirect()->route('admin.achievements.index')->with('success', 'Achievement deleted successfully.');
     }
 }

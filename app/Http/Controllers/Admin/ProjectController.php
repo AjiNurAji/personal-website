@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -48,6 +49,8 @@ class ProjectController extends Controller
         }
 
         Project::create($validated);
+
+        Cache::forget('home_page_data');
 
         return redirect()->route('admin.projects.index')->with('success', 'Project created successfully.');
     }
@@ -99,6 +102,8 @@ class ProjectController extends Controller
 
         $project->update($validated);
 
+        Cache::forget('home_page_data');
+
         return redirect()->route('admin.projects.index')->with('success', 'Project updated successfully.');
     }
 
@@ -108,6 +113,9 @@ class ProjectController extends Controller
             Storage::disk('public')->delete($project->image);
         }
         $project->delete();
+
+        Cache::forget('home_page_data');
+
         return redirect()->route('admin.projects.index')->with('success', 'Project deleted successfully.');
     }
 }

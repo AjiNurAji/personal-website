@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -25,7 +26,7 @@ class SettingController extends Controller
             'about_description' => 'nullable|string',
             'hero_title' => 'nullable|string',
             'hero_subtitle' => 'nullable|string',
-            'about_image' => 'nullable',
+            'about_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
             'nav_links' => 'nullable|array',
             'nav_links.*.label' => 'required|string',
             'nav_links.*.href' => 'required|string',
@@ -56,6 +57,8 @@ class SettingController extends Controller
                 ['value' => is_array($value) ? json_encode($value) : $value]
             );
         }
+
+        Cache::forget('home_page_data');
 
         return redirect()->route('admin.settings.index')->with('success', 'Settings updated successfully.');
     }

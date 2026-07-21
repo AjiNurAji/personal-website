@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Experience;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
 
@@ -51,6 +52,8 @@ class ExperienceController extends Controller
 
         Experience::create($validated);
 
+        Cache::forget('home_page_data');
+
         return redirect()->route('admin.experiences.index')->with('success', 'Experience created successfully.');
     }
 
@@ -78,6 +81,8 @@ class ExperienceController extends Controller
 
         $experience->update($validated);
 
+        Cache::forget('home_page_data');
+
         return redirect()->route('admin.experiences.index')->with('success', 'Experience updated successfully.');
     }
 
@@ -87,6 +92,7 @@ class ExperienceController extends Controller
             Storage::disk('public')->delete($experience->logo);
         }
         $experience->delete();
+        Cache::forget('home_page_data');
 
         return redirect()->route('admin.experiences.index')->with('success', 'Experience deleted successfully.');
     }

@@ -1,75 +1,34 @@
 <p align="center">
-  <img src="public/ana.svg" alt="Aji Nur Aji Logo" width="120" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=260&section=header&text=Personal%20Website&fontSize=60&animation=fadeIn&fontAlignY=38&desc=Laravel%20%2B%20Inertia%20%2B%20React&descAlignY=52&descAlign=62" />
 </p>
-
-<h1 align="center">Aji Nur Aji - Personal Portfolio Website</h1>
 
 <p align="center">
-  <a href="https://github.com/AjiNurAji/personal-website/stargazers"><img src="https://img.shields.io/github/stars/AjiNurAji/personal-website?style=for-the-badge&color=eab308" alt="GitHub Stars"/></a>
-  <a href="https://github.com/AjiNurAji/personal-website/network/members"><img src="https://img.shields.io/github/forks/AjiNurAji/personal-website?style=for-the-badge&color=3b82f6" alt="GitHub Forks"/></a>
-  <img src="https://komarev.com/ghpvc/?username=AjiNurAji-portfolio&label=Profile%20Views&color=10b981&style=for-the-badge" alt="Profile Views" />
+  <img src="https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" />
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
+  <img src="https://img.shields.io/badge/Tailwind-38BDF8?style=for-the-badge&logo=tailwindcss&logoColor=black" />
 </p>
 
-A modern, highly interactive personal portfolio website built with a focus on premium aesthetics, following "UI/UX Pro Max" principles. It features a stunning glassmorphism design, interactive bento grids, and dynamic animations.
+---
 
-## 🚀 Tech Stack
+### About
 
-- **Framework**: Laravel 11
-- **Frontend**: React 18, TypeScript, Inertia.js
-- **Styling**: Tailwind CSS, Framer Motion
-- **Icons**: Remix Icons
-- **Database**: MySQL / SQLite (configured via `.env`)
-- **Image Processing**: Intervention Image v4
+A personal website and portfolio built with **Laravel**, **Inertia.js**, and **React**. Uses a modern UI stack with strong typing, smooth animation, and maintainable component patterns.
 
-## ✨ Key Features
+### Tech Stack
 
-### 🎨 Public Interface (Landing Page)
-- **Hero Section**: Engaging introduction with dynamic elements.
-- **Experience & Education**: Interactive tab system with a modern masonry layout.
-- **Projects Showcase**: Detailed project cards with technology tags.
-- **Achievements Gallery**: Infinite-scroll style gallery with live search and category filtering for awards, certifications, and events.
-- **Dark/Light Mode**: Full support for system-wide or manual theme toggling.
+- Laravel 13
+- PHP 8.3
+- React 18
+- Inertia.js
+- Tailwind CSS
+- TypeScript
+- Image processing via Intervention Image
 
-### 🔒 Admin Dashboard (`/admin`)
-- **Secure Authentication**: Built with Laravel Breeze.
-- **Content Management**: Full CRUD capabilities for Projects, Skills, Experiences, and Achievements.
-- **Optimized Data Tables**: Features list layouts with built-in search functionality and pagination to handle large datasets effortlessly.
-- **Image Uploads**: Automatic image resizing and preview generation.
+### Development
 
-## 🛠️ Installation & Setup
-
-1. **Clone the repository**
-2. **Install PHP Dependencies**:
-   ```bash
-   composer install
-   ```
-3. **Install Node Dependencies**:
-   ```bash
-   npm install
-   ```
-4. **Environment Setup**:
-   Copy `.env.example` to `.env` and configure your database settings.
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
-5. **Run Migrations**:
-   ```bash
-   php artisan migrate
-   ```
-6. **Storage Link**:
-   ```bash
-   php artisan storage:link
-   ```
-7. **Run Development Servers**:
-   ```bash
-   # Terminal 1: Start Laravel server
-   php artisan serve
-
-   # Terminal 2: Start Vite dev server
-   npm run dev
-   ```
-
-## 📜 License
-
-This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+composer install
+npm install
+npm run dev
+```
