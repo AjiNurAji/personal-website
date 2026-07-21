@@ -281,10 +281,10 @@ export default function SettingsIndex({ settings }: Props) {
                                     </FieldLabel>
                                     <FieldContent>
                                         <Input 
-                                            type="password"
+                                            type="text"
                                             value={data.github_token}
                                             onChange={(e) => setData('github_token', e.target.value)}
-                                            placeholder="ghp_xxxxxxxxxxxx"
+                                            placeholder="ghp_..."
                                         />
                                         <p className="text-xs text-muted-foreground mt-1">
                                             Create at <a href="https://github.com/settings/tokens" target="_blank" className="underline">github.com/settings/tokens</a> with <code>repo</code> scope.
