@@ -21,17 +21,18 @@ class HomeController extends Controller
                 ->orderBy('priority', 'asc')
                 ->get();
 
-            $settings = \App\Models\Setting::all()->pluck('value', 'key');
+            $settings = \App\Models\Setting::all()->pluck('value', 'key')->toArray();
 
             return [
                 'projects' => Project::where('featured', true)
                     ->latest()
                     ->take(6)
-                    ->get(),
-                'skills' => Skill::orderBy('priority', 'asc')->get(),
-                'achievements' => Achievement::latest()->take(6)->get(),
-                'work_experiences' => $experiences->where('type', 'work')->values(),
-                'education_experiences' => $experiences->where('type', 'education')->values(),
+                    ->get()
+                    ->toArray(),
+                'skills' => Skill::orderBy('priority', 'asc')->get()->toArray(),
+                'achievements' => Achievement::latest()->take(6)->get()->toArray(),
+                'work_experiences' => $experiences->where('type', 'work')->values()->toArray(),
+                'education_experiences' => $experiences->where('type', 'education')->values()->toArray(),
                 'settings' => $settings,
             ];
         });

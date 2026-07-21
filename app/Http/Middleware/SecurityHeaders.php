@@ -43,7 +43,7 @@ class SecurityHeaders
                 "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
                 "img-src 'self' data: https: blob:",
                 "font-src 'self' fonts.gstatic.com",
-                "connect-src 'self' https://api.github.com",
+                "connect-src 'self' https://api.github.com https://github-contributions-api.jogruber.de https://github-readme-stats.vercel.app",
                 "frame-src 'self'",
                 "object-src 'none'",
                 "base-uri 'self'",
