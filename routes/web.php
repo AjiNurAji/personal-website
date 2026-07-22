@@ -47,6 +47,7 @@ Route::middleware('auth')->group(function () {
 // Public API routes
 Route::prefix('api')->name('api.')->group(function () {
     Route::get('/wakatime/{username}/{shareId}', [App\Http\Controllers\Api\WakaTimeController::class, 'show'])->name('wakatime.show');
+    Route::get('/github/{username}', [App\Http\Controllers\Api\GitHubController::class, 'show'])->name('github.show');
 });
 
 require __DIR__.'/auth.php';
