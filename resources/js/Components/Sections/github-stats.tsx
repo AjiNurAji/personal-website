@@ -31,7 +31,7 @@ export default function GithubStats({ githubUrl }: GithubStatsProps) {
     // Disable caching for real-time (or rely on vercel cache)
     const statsUrl = `https://gh-readme-stats.vercel.app/api?username=${username}&show_icons=true&theme=${statsTheme}&hide_border=true&bg_color=00000000`;
     const langsUrl = `https://gh-readme-stats.vercel.app/api/top-langs/?username=${username}&layout=compact&theme=${statsTheme}&hide_border=true&bg_color=00000000`;
-    
+
     return (
         <section className="relative bg-transparent border-t border-b border-zinc-200 dark:border-zinc-800 overflow-hidden z-10" id="code-metrics">
             {/* Background Decorations */}

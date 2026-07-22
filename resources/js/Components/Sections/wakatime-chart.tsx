@@ -4,16 +4,51 @@ import { useTheme } from "@/hooks/use-theme";
 import { useMemo } from "react";
 
 export interface DailyData {
+    /** Day date (Coding Activity) or item name (Languages/Editors) */
     date: string;
+    /** Human-readable time text */
     text: string;
     grand_total: {
         hours: number;
         minutes: number;
         total_seconds: number;
         digital: string;
-        decimal: number;
+        decimal: string;
         text: string;
     };
+}
+
+/**
+ * Normalize WakaTime JSON response to DailyData[].
+ *
+ * WakaTime has two response shapes:
+ *   1. Coding Activity: { grand_total: {...}, date: "..." }[]
+ *   2. Languages / Editors / OS: { total_seconds, name, percent, ... }[]
+ *
+ * This normalizes both to a common DailyData shape so the chart doesn't crash.
+ */
+export function normalizeWakaData(raw: any[]): DailyData[] {
+    return raw.map((item) => {
+        if (item.grand_total) {
+            // Coding Activity format — pass through
+            return item as DailyData;
+        }
+
+        // Languages / Editors / OS format — wrap flat fields into grand_total
+        const seconds = item.total_seconds ?? 0;
+        return {
+            date: item.name || item.date || "Unknown",
+            text: item.text || "0 secs",
+            grand_total: {
+                hours: item.hours ?? Math.floor(seconds / 3600),
+                minutes: item.minutes ?? Math.floor((seconds % 3600) / 60),
+                total_seconds: seconds,
+                digital: item.digital || "0:00",
+                decimal: item.decimal ?? 0,
+                text: item.text || "0 secs",
+            },
+        };
+    });
 }
 
 interface WakaTimeChartProps {

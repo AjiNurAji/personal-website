@@ -6,7 +6,7 @@ import { Badge } from "@/Components/UI/badge";
 import { SafeImage } from "@/Components/Elements/SafeImage";
 import { RiTimeLine } from "@remixicon/react";
 import { useTheme } from "@/hooks/use-theme";
-import WakaTimeChart, { DailyData } from "./wakatime-chart";
+import WakaTimeChart, { DailyData, normalizeWakaData } from "./wakatime-chart";
 
 interface WakaTimeShare {
     label: string;
@@ -57,11 +57,11 @@ function ShareContent({ username, share, format }: { username: string; share: Wa
                 return res.json();
             })
             .then((raw: any) => {
-                // raw is an array of daily summaries
+                // Normalize both Coding Activity and Languages/Editors JSON shapes
                 if (Array.isArray(raw)) {
-                    setJsonData(raw);
+                    setJsonData(normalizeWakaData(raw));
                 } else if (raw.data && Array.isArray(raw.data)) {
-                    setJsonData(raw.data);
+                    setJsonData(normalizeWakaData(raw.data));
                 } else {
                     throw new Error("Unexpected response format");
                 }
