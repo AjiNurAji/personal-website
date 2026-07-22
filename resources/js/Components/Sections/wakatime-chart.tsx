@@ -177,16 +177,18 @@ function TimeSeriesChart({ data, colors }: { data: DailyData[]; colors: ReturnTy
 /* ───────────── Category (Languages / Editors / OS) ───────────── */
 
 function CategoryChart({ data, label, colors }: { data: DailyData[]; label: string; colors: ReturnType<typeof makeColors> }) {
-    const totalSecs = useMemo(() => data.reduce((sum, d) => sum + d.grand_total.total_seconds, 0), [data]);
+    // Use percent from WakaTime directly (always available for category charts).
+    // Fallback to total_seconds ratio if percent is missing.
+    const maxPercent = useMemo(() => Math.max(...data.map((d) => d.percent ?? 0), 1), [data]);
 
     if (!data.length) return null;
 
-    const labelW = 70;
-    const padRight = 56;
+    const labelW = 72;
+    const padRight = 60;
     const rowH = 32;
     const gap = 6;
     const topPad = 4;
-    const chartW = 380;
+    const chartW = 400;
     const chartH = topPad + data.length * (rowH + gap) + 4;
     const barAreaW = chartW - labelW - padRight;
     const barH = rowH - 4;
@@ -202,15 +204,15 @@ function CategoryChart({ data, label, colors }: { data: DailyData[]; label: stri
         >
             {data.map((item, i) => {
                 const y = topPad + i * (rowH + gap);
-                const pct = totalSecs > 0 ? (item.grand_total.total_seconds / totalSecs) * 100 : 0;
-                const barW = totalSecs > 0 ? (item.grand_total.total_seconds / totalSecs) * barAreaW : 0;
-                const barWClamped = Math.max(barW, 4);
+                const pct = item.percent ?? (maxPercent > 0 ? (item.grand_total.total_seconds / data.reduce((s, d) => s + d.grand_total.total_seconds, 0)) * 100 : 0);
+                const barW = (pct / maxPercent) * barAreaW;
+                const barWClamped = Math.max(barW, pct > 0 ? 4 : 0);
 
                 return (
                     <g key={item.date}>
                         {/* Name label */}
                         <text
-                            x={labelW - 4}
+                            x={labelW - 6}
                             y={y + rowH / 2 + 4}
                             textAnchor="end"
                             fontSize={11}
@@ -232,25 +234,26 @@ function CategoryChart({ data, label, colors }: { data: DailyData[]; label: stri
                         />
 
                         {/* Active bar */}
-                        <rect
-                            x={labelW}
-                            y={y + 2}
-                            width={barWClamped}
-                            height={barH}
-                            rx={3}
-                            fill={colors.bar}
-                        />
+                        {barWClamped > 0 && (
+                            <rect
+                                x={labelW}
+                                y={y + 2}
+                                width={barWClamped}
+                                height={barH}
+                                rx={3}
+                                fill={colors.bar}
+                            />
+                        )}
 
                         {/* Duration + percent text */}
                         <text
-                            x={labelW + barWClamped + 6}
+                            x={labelW + (barWClamped > 0 ? barWClamped + 8 : 4)}
                             y={y + rowH / 2 + 4}
                             fontSize={10}
                             fill={colors.textDim}
                             fontFamily="system-ui, sans-serif"
                         >
-                            {item.grand_total.digital}
-                            {item.percent != null ? ` (${Math.round(item.percent)}%)` : ` (${Math.round(pct)}%)`}
+                            {item.grand_total.digital} ({Math.round(pct)}%)
                         </text>
                     </g>
                 );
