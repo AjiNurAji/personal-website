@@ -104,7 +104,7 @@ export default function SettingsIndex({ settings }: Props) {
   }
 
   function addWakaShare() {
-    setData('wakatime_share_ids', [...data.wakatime_share_ids, { label: "", id: "" }]);
+    setData('wakatime_share_ids', [...data.wakatime_share_ids, { label: "", url: "" }]);
   }
 
   function removeWakaShare(index: number) {
@@ -113,7 +113,7 @@ export default function SettingsIndex({ settings }: Props) {
     setData('wakatime_share_ids', newShares);
   }
 
-  function updateWakaShare(index: number, field: 'label' | 'id', value: string) {
+  function updateWakaShare(index: number, field: 'label' | 'url', value: string) {
     const newShares = [...data.wakatime_share_ids];
     newShares[index][field] = value;
     setData('wakatime_share_ids', newShares);
@@ -341,7 +341,7 @@ export default function SettingsIndex({ settings }: Props) {
                                         <div>
                                             <h3 className="text-lg font-semibold">WakaTime Chart Embeds</h3>
                                             <p className="text-xs text-muted-foreground mt-0.5">
-                                                Create shareables at <a href="https://wakatime.com/dashboard" target="_blank" className="underline">WakaTime Dashboard → Shareables</a>. Add one per chart type (Languages, Editors, Activity, etc).
+                                                Get embed URLs at <a href="https://wakatime.com/share/embed" target="_blank" className="underline">WakaTime → Share → Embed</a>. Choose chart type, click "Get Embeddable Code", copy the URL.
                                             </p>
                                         </div>
                                         <Button type="button" variant="outline" size="sm" onClick={addWakaShare}>
@@ -360,11 +360,11 @@ export default function SettingsIndex({ settings }: Props) {
                                                     />
                                                 </Field>
                                                 <Field className="flex-[2]">
-                                                    <FieldLabel>Share ID (UUID)</FieldLabel>
+                                                    <FieldLabel>Embed URL</FieldLabel>
                                                     <Input 
-                                                        value={share.id}
-                                                        onChange={(e) => updateWakaShare(index, 'id', e.target.value)}
-                                                        placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                                                        value={share.url}
+                                                        onChange={(e) => updateWakaShare(index, 'url', e.target.value)}
+                                                        placeholder="https://wakatime.com/share/..."
                                                     />
                                                 </Field>
                                                 <Button 

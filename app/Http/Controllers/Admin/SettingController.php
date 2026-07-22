@@ -36,7 +36,7 @@ class SettingController extends Controller
             'wakatime_username' => 'nullable|string',
             'wakatime_share_ids' => 'nullable|array',
             'wakatime_share_ids.*.label' => 'required|string',
-            'wakatime_share_ids.*.id' => 'required|string',
+            'wakatime_share_ids.*.url' => 'required|string',
             'social_links' => 'nullable|array',
             'social_links.*.platform' => 'required|string',
             'social_links.*.url' => 'required|string',

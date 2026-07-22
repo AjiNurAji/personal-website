@@ -8,7 +8,7 @@ import { useTheme } from "@/hooks/use-theme";
 
 interface WakaTimeShare {
     label: string;
-    id: string;
+    url: string;
 }
 
 interface WakaTimeStatsProps {
@@ -57,21 +57,34 @@ export default function WakaTimeStats({ wakatimeUsername, wakatimeShareIds }: Wa
                 {shares.length > 0 ? (
                     <div className={`grid gap-6 ${shares.length === 1 ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2'}`}>
                         {shares.map((share, index) => {
-                            const chartUrl = `https://wakatime.com/share/@${wakatimeUsername}/${share.id}.svg${theme === 'dark' ? '?theme=dark' : ''}`;
+                            const isSvg = share.url.endsWith('.svg');
+                            const separator = share.url.includes('?') ? '&' : '?';
+                            const chartUrl = isSvg
+                                ? `${share.url}${separator}theme=${theme === 'dark' ? 'dark' : 'light'}`
+                                : share.url;
                             return (
-                                <AnimateIn key={share.id} variant="blur-fade" delay={index * 0.1}>
+                                <AnimateIn key={share.url} variant="blur-fade" delay={index * 0.1}>
                                     <div className="w-full p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900/40 border shadow-sm hover:shadow-lg transition-shadow relative overflow-hidden group h-full flex flex-col">
                                         <div className="absolute bottom-0 right-0 w-48 h-48 bg-emerald-500/10 blur-[80px] rounded-full pointer-events-none translate-y-1/2 translate-x-1/2"></div>
                                         <h3 className="font-semibold text-lg mb-4 relative z-10 border-b pb-3 border-zinc-200 dark:border-zinc-800">
                                             {share.label}
                                         </h3>
                                         <div className="relative z-10 flex-1 flex items-center justify-center min-h-[160px]">
-                                            <SafeImage
-                                                src={chartUrl}
-                                                alt={`WakaTime ${share.label}`}
-                                                className="w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]"
-                                                loading="lazy"
-                                            />
+                                            {isSvg ? (
+                                                <img
+                                                    src={chartUrl}
+                                                    alt={`WakaTime ${share.label}`}
+                                                    className="w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]"
+                                                    loading="lazy"
+                                                />
+                                            ) : (
+                                                <SafeImage
+                                                    src={chartUrl}
+                                                    alt={`WakaTime ${share.label}`}
+                                                    className="w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]"
+                                                    loading="lazy"
+                                                />
+                                            )}
                                         </div>
                                     </div>
                                 </AnimateIn>
@@ -82,7 +95,7 @@ export default function WakaTimeStats({ wakatimeUsername, wakatimeShareIds }: Wa
                     <AnimateIn variant="blur-fade" delay={0.1}>
                         <div className="w-full p-8 rounded-3xl bg-zinc-50 dark:bg-zinc-900/40 border shadow-sm text-center">
                             <p className="text-muted-foreground">
-                                Configure WakaTime share IDs in{" "}
+                                Configure WakaTime chart embeds in{" "}
                                 <a href="/admin/settings" className="underline text-primary">Admin Settings</a>
                                 {" "}to display coding stats.
                             </p>
