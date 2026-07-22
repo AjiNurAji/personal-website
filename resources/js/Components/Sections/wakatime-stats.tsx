@@ -4,15 +4,26 @@ import { AnimateIn } from "@/Components/Elements/AnimateIn";
 import { Badge } from "@/Components/UI/badge";
 import { SafeImage } from "@/Components/Elements/SafeImage";
 import { RiTimeLine } from "@remixicon/react";
+import { useTheme } from "@/hooks/use-theme";
+
+interface WakaTimeShare {
+    label: string;
+    id: string;
+}
 
 interface WakaTimeStatsProps {
     wakatimeUsername?: string;
+    wakatimeShareIds?: WakaTimeShare[];
 }
 
-export default function WakaTimeStats({ wakatimeUsername }: WakaTimeStatsProps) {
+export default function WakaTimeStats({ wakatimeUsername, wakatimeShareIds }: WakaTimeStatsProps) {
+    const { theme } = useTheme();
+
     if (!wakatimeUsername) return null;
 
-    const chartUrl = `https://github-readme-stats.vercel.app/api/wakatime?username=${wakatimeUsername}&layout=compact&theme=transparent&hide_border=true&bg_color=00000000&custom_title=Coding%20Activity%20(Last%207%20Days)`;
+    const shares: WakaTimeShare[] = wakatimeShareIds && wakatimeShareIds.length > 0
+        ? wakatimeShareIds
+        : [];
 
     return (
         <section
@@ -43,29 +54,52 @@ export default function WakaTimeStats({ wakatimeUsername }: WakaTimeStatsProps) 
                     </div>
                 </AnimateIn>
 
-                <AnimateIn variant="blur-fade" delay={0.1}>
-                    <div className="w-full p-6 md:p-10 rounded-3xl bg-zinc-50 dark:bg-zinc-900/40 border shadow-sm hover:shadow-lg transition-shadow relative overflow-hidden group">
-                        <div className="absolute bottom-0 right-0 w-64 h-64 bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none translate-y-1/2 translate-x-1/2"></div>
-                        <div className="relative z-10 w-full flex justify-center">
-                            <SafeImage
-                                src={chartUrl}
-                                alt="WakaTime Coding Activity"
-                                className="w-full min-h-[120px] object-contain transition-transform duration-500 group-hover:scale-[1.02]"
-                                loading="lazy"
-                            />
-                        </div>
-                        <div className="relative z-10 text-center mt-6">
-                            <a
-                                href={`https://wakatime.com/@${wakatimeUsername}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-sm text-muted-foreground hover:text-primary transition-colors underline underline-offset-2"
-                            >
-                                View full profile on WakaTime →
-                            </a>
-                        </div>
+                {shares.length > 0 ? (
+                    <div className={`grid gap-6 ${shares.length === 1 ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2'}`}>
+                        {shares.map((share, index) => {
+                            const chartUrl = `https://wakatime.com/share/@${wakatimeUsername}/${share.id}.svg${theme === 'dark' ? '?theme=dark' : ''}`;
+                            return (
+                                <AnimateIn key={share.id} variant="blur-fade" delay={index * 0.1}>
+                                    <div className="w-full p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900/40 border shadow-sm hover:shadow-lg transition-shadow relative overflow-hidden group h-full flex flex-col">
+                                        <div className="absolute bottom-0 right-0 w-48 h-48 bg-emerald-500/10 blur-[80px] rounded-full pointer-events-none translate-y-1/2 translate-x-1/2"></div>
+                                        <h3 className="font-semibold text-lg mb-4 relative z-10 border-b pb-3 border-zinc-200 dark:border-zinc-800">
+                                            {share.label}
+                                        </h3>
+                                        <div className="relative z-10 flex-1 flex items-center justify-center min-h-[160px]">
+                                            <SafeImage
+                                                src={chartUrl}
+                                                alt={`WakaTime ${share.label}`}
+                                                className="w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]"
+                                                loading="lazy"
+                                            />
+                                        </div>
+                                    </div>
+                                </AnimateIn>
+                            );
+                        })}
                     </div>
-                </AnimateIn>
+                ) : (
+                    <AnimateIn variant="blur-fade" delay={0.1}>
+                        <div className="w-full p-8 rounded-3xl bg-zinc-50 dark:bg-zinc-900/40 border shadow-sm text-center">
+                            <p className="text-muted-foreground">
+                                Configure WakaTime share IDs in{" "}
+                                <a href="/admin/settings" className="underline text-primary">Admin Settings</a>
+                                {" "}to display coding stats.
+                            </p>
+                        </div>
+                    </AnimateIn>
+                )}
+
+                <div className="relative z-10 text-center mt-8">
+                    <a
+                        href={`https://wakatime.com/@${wakatimeUsername}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-muted-foreground hover:text-primary transition-colors underline underline-offset-2"
+                    >
+                        View full profile on WakaTime →
+                    </a>
+                </div>
             </div>
         </section>
     );

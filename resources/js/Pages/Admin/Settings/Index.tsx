@@ -42,6 +42,19 @@ export default function SettingsIndex({ settings }: Props) {
     { label: "Achievement", href: "#achievement" },
   ];
 
+  const initialSocialLinks = settings.social_links ? (typeof settings.social_links === 'string' ? JSON.parse(settings.social_links) : settings.social_links) : [
+    { platform: "github", url: "https://github.com/ajinuraji" },
+    { platform: "instagram", url: "#" },
+    { platform: "tiktok", url: "#" },
+    { platform: "coffee", url: "#" },
+  ];
+
+  const parseWakaShares = () => {
+    if (!settings.wakatime_share_ids) return [];
+    const raw = typeof settings.wakatime_share_ids === 'string' ? JSON.parse(settings.wakatime_share_ids) : settings.wakatime_share_ids;
+    return Array.isArray(raw) ? raw : [];
+  };
+
   const { data, setData, post, processing, errors } = useForm({
     about_title: settings.about_title || "Passionate about creating impactful web experiences",
     about_description: settings.about_description || "I have hands-on experience in developing responsive interfaces and managing backend systems...",
@@ -52,14 +65,10 @@ export default function SettingsIndex({ settings }: Props) {
     github_url: settings.github_url || "https://github.com/ajinuraji",
     github_token: settings.github_token || "",
     wakatime_username: settings.wakatime_username || "",
+    wakatime_share_ids: parseWakaShares(),
     about_image: settings.about_image || "https://github.com/ajinuraji.png",
     is_available: settings.is_available === '1' || settings.is_available === true || settings.is_available === 'true',
-    social_links: settings.social_links ? (typeof settings.social_links === 'string' ? JSON.parse(settings.social_links) : settings.social_links) : [
-      { platform: "github", url: "https://github.com/ajinuraji" },
-      { platform: "instagram", url: "#" },
-      { platform: "tiktok", url: "#" },
-      { platform: "coffee", url: "#" },
-    ],
+    social_links: initialSocialLinks,
   });
 
   function addNavLink() {
@@ -92,6 +101,22 @@ export default function SettingsIndex({ settings }: Props) {
     const newLinks = [...data.social_links];
     newLinks[index][field] = value;
     setData('social_links', newLinks);
+  }
+
+  function addWakaShare() {
+    setData('wakatime_share_ids', [...data.wakatime_share_ids, { label: "", id: "" }]);
+  }
+
+  function removeWakaShare(index: number) {
+    const newShares = [...data.wakatime_share_ids];
+    newShares.splice(index, 1);
+    setData('wakatime_share_ids', newShares);
+  }
+
+  function updateWakaShare(index: number, field: 'label' | 'id', value: string) {
+    const newShares = [...data.wakatime_share_ids];
+    newShares[index][field] = value;
+    setData('wakatime_share_ids', newShares);
   }
 
   const [activeTab, setActiveTab] = useState<'general' | 'about' | 'socials' | 'navigation'>('general');
@@ -309,6 +334,57 @@ export default function SettingsIndex({ settings }: Props) {
                                         </p>
                                     </FieldContent>
                                 </Field>
+
+                                {/* WakaTime Share Embeds */}
+                                <div className="space-y-6">
+                                    <div className="flex items-center justify-between border-b pb-2">
+                                        <div>
+                                            <h3 className="text-lg font-semibold">WakaTime Chart Embeds</h3>
+                                            <p className="text-xs text-muted-foreground mt-0.5">
+                                                Create shareables at <a href="https://wakatime.com/dashboard" target="_blank" className="underline">WakaTime Dashboard → Shareables</a>. Add one per chart type (Languages, Editors, Activity, etc).
+                                            </p>
+                                        </div>
+                                        <Button type="button" variant="outline" size="sm" onClick={addWakaShare}>
+                                            <RiAddLine className="mr-2 h-4 w-4" /> Add Chart
+                                        </Button>
+                                    </div>
+                                    <div className="space-y-4">
+                                        {data.wakatime_share_ids.map((share: any, index: number) => (
+                                            <div key={index} className="flex gap-4 items-end border p-4 rounded-lg bg-zinc-50/50 dark:bg-zinc-900/50">
+                                                <Field className="flex-1">
+                                                    <FieldLabel>Label</FieldLabel>
+                                                    <Input 
+                                                        value={share.label}
+                                                        onChange={(e) => updateWakaShare(index, 'label', e.target.value)}
+                                                        placeholder="Languages"
+                                                    />
+                                                </Field>
+                                                <Field className="flex-[2]">
+                                                    <FieldLabel>Share ID (UUID)</FieldLabel>
+                                                    <Input 
+                                                        value={share.id}
+                                                        onChange={(e) => updateWakaShare(index, 'id', e.target.value)}
+                                                        placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                                                    />
+                                                </Field>
+                                                <Button 
+                                                    type="button" 
+                                                    variant="ghost" 
+                                                    size="icon" 
+                                                    className="text-red-500 mb-0.5"
+                                                    onClick={() => removeWakaShare(index)}
+                                                >
+                                                    <RiDeleteBinLine className="h-4 w-4" />
+                                                </Button>
+                                            </div>
+                                        ))}
+                                        {data.wakatime_share_ids.length === 0 && (
+                                            <p className="text-sm text-muted-foreground text-center py-4">
+                                                No chart embeds yet. Click "Add Chart" to start.
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
                                 
                                 <Field className="flex flex-row items-center justify-between rounded-lg border p-4 space-y-0">
                                     <div className="space-y-0.5">

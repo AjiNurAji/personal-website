@@ -48,7 +48,7 @@ export default function Home({ projects, skills, achievements, work_experiences,
                     educationExperiences={education_experiences} 
                 />
                 <GithubStats githubUrl={settings.github_url} />
-                <WakaTimeStats wakatimeUsername={settings.wakatime_username} />
+                <WakaTimeStats wakatimeUsername={settings.wakatime_username} wakatimeShareIds={settings.wakatime_share_ids ? (typeof settings.wakatime_share_ids === 'string' ? JSON.parse(settings.wakatime_share_ids) : settings.wakatime_share_ids) : null} />
                 <ProjectsSection initialProjects={projects} />
                 <AchievementsSection initialAchievements={achievements} />
             </main>
