@@ -6,7 +6,7 @@ import { Badge } from "@/Components/UI/badge";
 import { SafeImage } from "@/Components/Elements/SafeImage";
 import { RiTimeLine } from "@remixicon/react";
 import { useTheme } from "@/hooks/use-theme";
-import WakaTimeChart, { DailyData, normalizeWakaData } from "./wakatime-chart";
+import WakaTimeChart, { ChartKind, DailyData, normalizeWakaData } from "./wakatime-chart";
 
 interface WakaTimeShare {
     label: string;
@@ -18,19 +18,17 @@ interface WakaTimeStatsProps {
     wakatimeShareIds?: WakaTimeShare[];
 }
 
-interface ChartShare {
-    share: WakaTimeShare;
-    // "svg" | "png" | "json" | "unknown"
-    format: string;
-}
-
 function extractShareId(url: string): string | null {
-    // Supports:
-    //   https://wakatime.com/share/@user/uuid.svg
-    //   https://wakatime.com/share/embed/uuid.svg
-    //   https://wakatime.com/share/@user/uuid
     const match = url.match(/wakatime\.com\/share\/(?:@[\w-]+\/)?(\w{8}-[\w-]+)/);
     return match ? match[1] : null;
+}
+
+/** Auto-detect chart kind from normalized data: ISO date → time-series, else category */
+function detectChartKind(data: DailyData[]): ChartKind {
+    if (!data.length) return "category";
+    // Coding Activity has ISO date strings like "2025-07-20"
+    const isoDateRe = /^\d{4}-\d{2}-\d{2}/;
+    return isoDateRe.test(data[0].date) ? "time-series" : "category";
 }
 
 function ShareContent({ username, share, format }: { username: string; share: WakaTimeShare; format: string }) {
@@ -57,7 +55,6 @@ function ShareContent({ username, share, format }: { username: string; share: Wa
                 return res.json();
             })
             .then((raw: any) => {
-                // Normalize both Coding Activity and Languages/Editors JSON shapes
                 if (Array.isArray(raw)) {
                     setJsonData(normalizeWakaData(raw));
                 } else if (raw.data && Array.isArray(raw.data)) {
@@ -80,6 +77,12 @@ function ShareContent({ username, share, format }: { username: string; share: Wa
         ? `${share.url}${separator}theme=${theme === "dark" ? "dark" : "light"}`
         : share.url;
 
+    // Auto-detect chart kind from the data once loaded
+    const chartKind: ChartKind | null = useMemo(
+        () => (jsonData ? detectChartKind(jsonData) : null),
+        [jsonData],
+    );
+
     return (
         <AnimateIn variant="blur-fade" delay={0.1}>
             <div className="w-full p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900/40 border shadow-sm hover:shadow-lg transition-shadow relative overflow-hidden group h-full flex flex-col">
@@ -96,8 +99,8 @@ function ShareContent({ username, share, format }: { username: string; share: Wa
                             </div>
                         ) : error ? (
                             <p className="text-sm text-red-500">{error}</p>
-                        ) : jsonData && jsonData.length > 0 ? (
-                            <WakaTimeChart data={jsonData} label={share.label} />
+                        ) : jsonData && jsonData.length > 0 && chartKind ? (
+                            <WakaTimeChart data={jsonData} label={share.label} kind={chartKind} />
                         ) : (
                             <p className="text-sm text-muted-foreground">No data available</p>
                         )
@@ -139,8 +142,6 @@ export default function WakaTimeStats({ wakatimeUsername, wakatimeShareIds }: Wa
             } else if (url.endsWith(".png")) {
                 format = "png";
             } else {
-                // Check if it's a raw share path like @user/uuid
-                // These default to SVG embed from WakaTime
                 format = url.includes("/share/") ? "svg" : "unknown";
             }
             return { share, format };
@@ -152,7 +153,6 @@ export default function WakaTimeStats({ wakatimeUsername, wakatimeShareIds }: Wa
             id="wakatime"
             className="relative z-10 bg-transparent border-t border-b border-zinc-200 dark:border-zinc-800 overflow-hidden px-4 sm:px-0"
         >
-            {/* Background Decorations */}
             <div className="absolute top-10 left-10 text-8xl md:text-9xl font-black text-zinc-500/5 dark:text-zinc-400/5 pointer-events-none select-none -z-10">
                 CODE
             </div>
