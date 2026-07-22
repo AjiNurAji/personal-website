@@ -177,11 +177,43 @@ function TimeSeriesChart({ data, colors }: { data: DailyData[]; colors: ReturnTy
 /* ───────────── Category (Languages / Editors / OS) ───────────── */
 
 function CategoryChart({ data, label, colors }: { data: DailyData[]; label: string; colors: ReturnType<typeof makeColors> }) {
-    // Use percent from WakaTime directly (always available for category charts).
-    // Fallback to total_seconds ratio if percent is missing.
-    const maxPercent = useMemo(() => Math.max(...data.map((d) => d.percent ?? 0), 1), [data]);
+    // Top 5 + "Others" aggregate
+    const top5 = useMemo(() => data.slice(0, 5), [data]);
+    const others = useMemo(() => data.slice(5), [data]);
+    const othersTotal = useMemo(
+        () => others.reduce((s, d) => s + d.grand_total.total_seconds, 0),
+        [others],
+    );
+    const othersPercent = useMemo(
+        () => others.reduce((s, d) => s + (d.percent ?? 0), 0),
+        [others],
+    );
 
-    if (!data.length) return null;
+    // Build display list: top 5, then "Others" row if needed
+    const items = useMemo(() => {
+        const list = [...top5];
+        if (others.length > 0) {
+            list.push({
+                date: "Others",
+                text: `${othersTotal} secs`,
+                percent: othersPercent,
+                grand_total: {
+                    hours: Math.floor(othersTotal / 3600),
+                    minutes: Math.floor((othersTotal % 3600) / 60),
+                    total_seconds: othersTotal,
+                    digital:
+                        othersTotal > 0
+                            ? `${Math.floor(othersTotal / 3600)}:${String(Math.floor((othersTotal % 3600) / 60)).padStart(2, "0")}`
+                            : "0:00",
+                    decimal: 0,
+                    text: `${othersTotal} secs`,
+                },
+            });
+        }
+        return list;
+    }, [top5, others, othersTotal, othersPercent]);
+
+    const maxPercent = useMemo(() => Math.max(...items.map((d) => d.percent ?? 0), 1), [items]);
 
     const labelW = 72;
     const padRight = 60;
@@ -189,7 +221,7 @@ function CategoryChart({ data, label, colors }: { data: DailyData[]; label: stri
     const gap = 6;
     const topPad = 4;
     const chartW = 400;
-    const chartH = topPad + data.length * (rowH + gap) + 4;
+    const chartH = topPad + items.length * (rowH + gap) + 4;
     const barAreaW = chartW - labelW - padRight;
     const barH = rowH - 4;
 
@@ -202,7 +234,7 @@ function CategoryChart({ data, label, colors }: { data: DailyData[]; label: stri
             role="img"
             aria-label={`WakaTime chart: ${label}`}
         >
-            {data.map((item, i) => {
+            {items.map((item, i) => {
                 const y = topPad + i * (rowH + gap);
                 const pct = item.percent ?? (maxPercent > 0 ? (item.grand_total.total_seconds / data.reduce((s, d) => s + d.grand_total.total_seconds, 0)) * 100 : 0);
                 const barW = (pct / maxPercent) * barAreaW;
