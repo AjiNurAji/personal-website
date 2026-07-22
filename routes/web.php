@@ -44,4 +44,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// Public API routes
+Route::prefix('api')->name('api.')->group(function () {
+    Route::get('/wakatime/{username}/{shareId}', [App\Http\Controllers\Api\WakaTimeController::class, 'show'])->name('wakatime.show');
+});
+
 require __DIR__.'/auth.php';
