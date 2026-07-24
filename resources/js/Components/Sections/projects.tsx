@@ -6,7 +6,6 @@ import { AnimateIn } from "@/Components/Elements/AnimateIn";
 import { Badge } from "@/Components/UI/badge";
 import { buttonVariants } from "@/Components/UI/button";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
 
 const ProjectsSection = ({ initialProjects = [] }: { initialProjects?: any[] }) => {
     const featuredProjects = initialProjects.slice(0, 4);
@@ -46,9 +45,8 @@ const ProjectsSection = ({ initialProjects = [] }: { initialProjects?: any[] }) 
                 </div>
 
                 {/* Grid */}
-                <motion.div
+                <div
                     className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16"
-                    layout
                 >
                     {featuredProjects.map((project: any, index: number) => (
                         <AnimateIn
