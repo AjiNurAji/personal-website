@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Typography\FontFactory;
 
 class OgImageController extends Controller
 {
@@ -28,92 +26,77 @@ class OgImageController extends Controller
 
     private function render(string $title, string $desc): string
     {
-        $manager = new ImageManager(['driver' => 'gd']);
         $w = 1200;
         $h = 630;
 
-        $img = $manager->create($w, $h)->fill('#0a0a14');
+        $img = imagecreatetruecolor($w, $h);
+        if (!$img) {
+            throw new \RuntimeException('GD imagecreatetruecolor failed');
+        }
 
-        // Gradient accent — draw thin horizontal lines at varying opacity
-        for ($y = 0; $y < $h; $y++) {
-            $alpha = ($h - $y) / $h * 0.08;
-            if ($alpha > 0) {
-                $r = (int)(80 * $alpha * 15);
-                $g = (int)(40 * $alpha * 15);
-                $b = (int)(150 * $alpha * 15);
-                $img->drawRectangle(0, $y, function ($d) use ($r, $g, $b) {
-                    $d->size($d->width(), 1);
-                    $d->background("rgb({$r},{$g},{$b})");
-                });
+        // Dark background
+        $bg = imagecolorallocate($img, 10, 10, 20);
+        imagefill($img, 0, 0, $bg);
+
+        // Purple accent circle top-right
+        $circle = imagecolorallocatealpha($img, 100, 50, 180, 105);
+        imagefilledellipse($img, $w + 100, -100, 500, 500, $circle);
+
+        // Accent line
+        $accent = imagecolorallocate($img, 108, 92, 231);
+        imagefilledrectangle($img, 80, 195, 400, 199, $accent);
+
+        // Colors
+        $white = imagecolorallocate($img, 240, 240, 255);
+        $muted = imagecolorallocate($img, 136, 136, 170);
+        $dim   = imagecolorallocate($img, 80, 80, 96);
+
+        // Font
+        $font = $this->findFont();
+        if ($font) {
+            imagettftext($img, 48, 0, 80, 270, $white, $font, $this->truncate($title, 48, 1000));
+            if ($desc) {
+                imagettftext($img, 24, 0, 80, 350, $muted, $font, $this->truncate($desc, 24, 950));
+            }
+            // Brand
+            imagettftext($img, 14, 0, 820, $h - 40, $dim, $font, 'ajinuraji.my.id / Fullstack Developer');
+        }
+
+        ob_start();
+        imagepng($img, null, 5);
+        $data = ob_get_clean();
+        imagedestroy($img);
+
+        return $data;
+    }
+
+    private function findFont(): ?string
+    {
+        $paths = [
+            public_path('fonts/Inter-Bold.ttf'),
+            public_path('fonts/Inter-Regular.ttf'),
+            '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
+            '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
+            '/usr/share/fonts/TTF/DejaVuSans-Bold.ttf',
+            '/usr/share/fonts/TTF/DejaVuSans.ttf',
+        ];
+
+        foreach ($paths as $path) {
+            if (file_exists($path)) {
+                return $path;
             }
         }
 
-        // Purple accent circle top-right
-        $img->drawEllipse($w + 100, -100, 400, 400, function ($d) {
-            $d->background('rgba(100, 50, 180, 0.12)');
-            $d->border('transparent', 0);
-        });
-
-        // Accent line
-        $img->drawRectangle(80, 195, function ($d) {
-            $d->size(320, 4);
-            $d->background('#6c5ce7');
-        });
-
-        // Title text
-        $img->text($title, 80, 280, function (FontFactory $font) {
-            $font->filename($this->fontPath('bold'));
-            $font->size(52);
-            $font->color('#f0f0ff');
-        });
-
-        // Description
-        if ($desc) {
-            $img->text($desc, 80, 370, function (FontFactory $font) {
-                $font->filename($this->fontPath('regular'));
-                $font->size(28);
-                $font->color('#8888aa');
-            });
-        }
-
-        // Bottom-right brand
-        $img->text('ajinuraji.my.id / Fullstack Developer', $w - 80, $h - 60, function (FontFactory $font) {
-            $font->filename($this->fontPath('regular'));
-            $font->size(16);
-            $font->color('#505060');
-            $font->align('right');
-        });
-
-        // "AJ" logo circle top-right
-        $s = 100;
-        $cx = $w - 120;
-        $cy = 90;
-        $img->drawEllipse($cx, $cy, $s, $s, function ($d) {
-            $d->background('#1a1a30');
-            $d->border('#6c5ce7', 2);
-        });
-
-        return (string) $img->encodeByExtension('png', quality: 90);
+        return null;
     }
 
-    private function fontPath(string $weight): string
+    private function truncate(string $text, int $size, int $maxWidth): string
     {
-        // Try project fonts first, fall back to system
-        $local = [
-            'bold'    => public_path('fonts/Inter-Bold.ttf'),
-            'regular' => public_path('fonts/Inter-Regular.ttf'),
-        ];
-
-        if (isset($local[$weight]) && file_exists($local[$weight])) {
-            return $local[$weight];
+        // Rough char-based truncation for when no font available
+        $maxChars = (int)($maxWidth / ($size * 0.55));
+        if (mb_strlen($text) <= $maxChars) {
+            return $text;
         }
-
-        // Windows system fonts
-        $system = [
-            'bold'    => 'C:/Windows/Fonts/arialbd.ttf',
-            'regular' => 'C:/Windows/Fonts/arial.ttf',
-        ];
-
-        return $system[$weight] ?? $system['regular'];
+        return mb_substr($text, 0, $maxChars - 1) . '…';
     }
 }
