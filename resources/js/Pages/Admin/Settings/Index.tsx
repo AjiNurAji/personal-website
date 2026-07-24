@@ -21,7 +21,7 @@ import {
   SelectValue,
 } from "@/Components/UI/select";
 import { FormEvent, useState } from "react";
-import { RiAddLine, RiDeleteBinLine, RiUserLine, RiLayoutLine, RiSettings4Line } from "@remixicon/react";
+import { RiAddLine, RiDeleteBinLine, RiUserLine, RiLayoutLine, RiSettings4Line, RiGlobalLine } from "@remixicon/react";
 import MDEditor from "@uiw/react-md-editor";
 import { useTheme } from "@/hooks/use-theme";
 import { Checkbox } from "@/Components/UI/checkbox";
@@ -69,6 +69,9 @@ export default function SettingsIndex({ settings }: Props) {
     about_image: settings.about_image || "https://github.com/ajinuraji.png",
     is_available: settings.is_available === '1' || settings.is_available === true || settings.is_available === 'true',
     social_links: initialSocialLinks,
+    site_title: settings.site_title || "",
+    site_description: settings.site_description || "",
+    google_site_verification: settings.google_site_verification || "",
   });
 
   function addNavLink() {
@@ -119,7 +122,7 @@ export default function SettingsIndex({ settings }: Props) {
     setData('wakatime_share_ids', newShares);
   }
 
-  const [activeTab, setActiveTab] = useState<'general' | 'about' | 'socials' | 'navigation'>('general');
+  const [activeTab, setActiveTab] = useState<'general' | 'about' | 'socials' | 'navigation' | 'seo'>('general');
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -134,6 +137,7 @@ export default function SettingsIndex({ settings }: Props) {
     { id: 'general', label: 'Hero Section', icon: RiLayoutLine },
     { id: 'about', label: 'About Me', icon: RiUserLine },
     { id: 'socials', label: 'Socials & Status', icon: RiSettings4Line },
+    { id: 'seo', label: 'SEO', icon: RiGlobalLine },
     { id: 'navigation', label: 'Navigation', icon: RiAddLine },
   ];
 
@@ -454,6 +458,56 @@ export default function SettingsIndex({ settings }: Props) {
                                     ))}
                                 </div>
                             </div>
+                        </div>
+                    )}
+
+                    {/* SEO Tab */}
+                    {activeTab === 'seo' && (
+                        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                            <h2 className="text-xl font-semibold border-b pb-2">Search Engine & Meta</h2>
+
+                            <Field>
+                                <FieldLabel>Site Title</FieldLabel>
+                                <FieldContent>
+                                    <Input 
+                                        value={data.site_title}
+                                        onChange={(e) => setData('site_title', e.target.value)}
+                                        placeholder="Aji Nur Aji — Fullstack Developer Portfolio"
+                                        maxLength={120}
+                                    />
+                                    <p className="text-xs text-muted-foreground mt-1">Appears in browser tab and search results (max 120 chars).</p>
+                                </FieldContent>
+                            </Field>
+
+                            <Field>
+                                <FieldLabel>Site Description</FieldLabel>
+                                <FieldContent>
+                                    <Textarea 
+                                        value={data.site_description}
+                                        onChange={(e) => setData('site_description', e.target.value)}
+                                        placeholder="Portfolio of Aji Nur Aji, a passionate Fullstack Developer..."
+                                        maxLength={300}
+                                        rows={3}
+                                    />
+                                    <p className="text-xs text-muted-foreground mt-1">Appears in search result snippets (max 300 chars).</p>
+                                </FieldContent>
+                            </Field>
+
+                            <Field>
+                                <FieldLabel className="flex items-center gap-2">
+                                    Google Search Console Verification
+                                </FieldLabel>
+                                <FieldContent>
+                                    <Input 
+                                        value={data.google_site_verification}
+                                        onChange={(e) => setData('google_site_verification', e.target.value)}
+                                        placeholder="Paste the code from google-site-verification meta tag"
+                                    />
+                                    <p className="text-xs text-muted-foreground mt-1">
+                                        From GSC → HTML tag → copy only the <code>content="..."</code> value. Saves into your site's <code>&lt;meta name="google-site-verification"&gt;</code> tag.
+                                    </p>
+                                </FieldContent>
+                            </Field>
                         </div>
                     )}
 
