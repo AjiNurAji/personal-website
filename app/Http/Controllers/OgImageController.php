@@ -58,8 +58,13 @@ class OgImageController extends Controller
             if ($desc) {
                 imagettftext($img, 24, 0, 80, 350, $muted, $font, $this->truncate($desc, 24, 950));
             }
-            // Brand
-            imagettftext($img, 14, 0, 820, $h - 40, $dim, $font, 'ajinuraji.my.id / Fullstack Developer');
+            imagettftext($img, 14, 0, 820, $h - 40, $dim, $font, 'ajinuraji.my.id');
+        } else {
+            imagestring($img, 5, 80, 270, $this->truncate($title, 48, 1000), $white);
+            if ($desc) {
+                imagestring($img, 4, 80, 350, $this->truncate($desc, 24, 950), $muted);
+            }
+            imagestring($img, 2, 820, $h - 40, 'ajinuraji.my.id', $dim);
         }
 
         ob_start();
