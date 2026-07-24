@@ -5,6 +5,24 @@
     $twitter   = \App\Models\Setting::getValue('twitter_username', '');
     $canonical = url()->current();
     $ogImage   = url('/og-image');
+
+    $jsonLd = json_encode([
+        '@context' => 'https://schema.org',
+        '@graph' => [
+            [
+                '@type' => 'WebSite',
+                'name' => $siteTitle,
+                'url' => url('/'),
+                'description' => \Illuminate\Support\Str::limit($siteDesc, 200, ''),
+            ],
+            [
+                '@type' => 'Person',
+                'name' => 'Aji Nur Aji',
+                'jobTitle' => 'Fullstack Developer',
+                'url' => url('/'),
+            ],
+        ],
+    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 @endphp
 <!DOCTYPE html>
 <html lang="id" translate="no">
@@ -40,9 +58,9 @@
         <meta name="twitter:title" content="{{ $siteTitle }}">
         <meta name="twitter:description" content="{{ $siteDesc }}">
         <meta name="twitter:image" content="{{ $ogImage }}">
-        <?php if ($twitter): ?>
-        <meta name="twitter:site" content="@{{ $twitter }}">
-        <?php endif; ?>
+        @if ($twitter)
+            <meta name="twitter:site" content="{{ '@' . $twitter }}">
+        @endif
 
         <!-- Canonical -->
         <link rel="canonical" href="{{ $canonical }}">
@@ -55,25 +73,7 @@
         <link rel="manifest" href="{{ asset('site.webmanifest') }}">
 
         <!-- JSON-LD Structured Data -->
-        <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@graph": [
-                {
-                    "@type": "WebSite",
-                    "name": "{{ $siteTitle }}",
-                    "url": "{{ url('/') }}",
-                    "description": "{{ \Illuminate\Support\Str::limit($siteDesc, 200, '') }}"
-                },
-                {
-                    "@type": "Person",
-                    "name": "Aji Nur Aji",
-                    "jobTitle": "Fullstack Developer",
-                    "url": "{{ url('/') }}"
-                }
-            ]
-        }
-        </script>
+        <script type="application/ld+json">{!! $jsonLd !!}</script>
 
         <!-- Preconnect for performance -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -89,7 +89,7 @@
         <!-- Scripts -->
         @routes
         @viteReactRefresh
-        @vite(['resources/js/app.tsx', "resources/js/Pages/{$page['component']}.tsx"])
+        @vite(["resources/js/app.tsx", "resources/js/Pages/{$page['component']}.tsx"])
         @inertiaHead
     </head>
     <body class="font-sans antialiased">

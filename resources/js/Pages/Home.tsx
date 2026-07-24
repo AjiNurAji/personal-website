@@ -32,30 +32,30 @@ export default function Home({ projects, skills, achievements, work_experiences,
             <InteractiveCursor />
             <Navbar customLinks={navLinks} isAvailable={isAvailable} />
             <main className="min-h-screen w-full">
-                <Hero 
-                    title={settings.hero_title} 
-                    subtitle={settings.hero_subtitle} 
+                <Hero
+                    title={settings.hero_title}
+                    subtitle={settings.hero_subtitle}
                     isAvailable={isAvailable}
                 />
-                <About 
-                    title={settings.about_title} 
-                    description={settings.about_description} 
+                <About
+                    title={settings.about_title}
+                    description={settings.about_description}
                     githubUrl={settings.github_url}
                     contactEmail={settings.contact_email}
                     image={settings.about_image}
                 />
                 <Skills initialSkills={skills} />
-                <Experience 
-                    workExperiences={work_experiences} 
-                    educationExperiences={education_experiences} 
+                <Experience
+                    workExperiences={work_experiences}
+                    educationExperiences={education_experiences}
                 />
                 <GithubStats githubUrl={settings.github_url} />
                 <WakaTimeStats wakatimeUsername={settings.wakatime_username} wakatimeShareIds={settings.wakatime_share_ids ? (typeof settings.wakatime_share_ids === 'string' ? JSON.parse(settings.wakatime_share_ids) : settings.wakatime_share_ids) : null} />
                 <ProjectsSection initialProjects={projects} />
                 <AchievementsSection initialAchievements={achievements} />
             </main>
-            <Footer 
-                customLinks={navLinks} 
+            <Footer
+                customLinks={navLinks}
                 socialLinks={settings.social_links ? (typeof settings.social_links === 'string' ? JSON.parse(settings.social_links) : settings.social_links) : null}
             />
         </div>
