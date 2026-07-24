@@ -78,7 +78,7 @@ const ProjectsSection = ({ initialProjects = [] }: { initialProjects?: any[] }) 
                             </p>
                         </div>
                     )}
-                </motion.div>
+                </div>
 
                 {/* CTA */}
                 <AnimateIn variant="blur-fade" delay={0.3} className="flex justify-center">
