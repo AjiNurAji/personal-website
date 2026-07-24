@@ -115,7 +115,11 @@ export default function ProjectShow({ project }: Props) {
 
     return (
         <div className="font-sans bg-background text-foreground selection:bg-primary/10 selection:text-primary">
-            <Head title={project.title} />
+            <Head>
+                <title>{project.title} — Aji Nur Aji</title>
+                <meta name="description" content={project.description} />
+                <link rel="canonical" href={`https://ajinuraji.my.id/projects/${project.slug}`} />
+            </Head>
             <InteractiveCursor />
             <Navbar />
             <main className="min-h-screen w-full pt-24 pb-16">

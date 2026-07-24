@@ -31,7 +31,11 @@ export default function ProjectsIndex({ projects }: Props) {
 
     return (
         <div className="font-sans bg-background text-foreground selection:bg-primary/10 selection:text-primary">
-            <Head title="All Projects" />
+            <Head>
+                <title>Projects — Aji Nur Aji</title>
+                <meta name="description" content="Browse all projects by Aji Nur Aji — web applications, experiments, and open-source contributions built with modern technologies." />
+                <link rel="canonical" href="https://ajinuraji.my.id/projects" />
+            </Head>
             <InteractiveCursor />
             <Navbar />
             <main className="min-h-screen w-full pt-24 pb-16">

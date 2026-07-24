@@ -83,7 +83,11 @@ export default function AchievementsIndex({ achievements }: Props) {
 
   return (
     <div className="font-sans bg-background text-foreground selection:bg-primary/10 selection:text-primary">
-      <Head title="Achievements - Portfolio" />
+      <Head>
+        <title>Achievements — Aji Nur Aji</title>
+        <meta name="description" content="Awards, certifications, and event participations throughout Aji Nur Aji's professional journey." />
+        <link rel="canonical" href="https://ajinuraji.my.id/achievements" />
+      </Head>
       <InteractiveCursor />
       <Navbar />
 

@@ -44,6 +44,58 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// SEO routes
+Route::get('/og-image', [App\Http\Controllers\OgImageController::class, '__invoke'])->name('og-image');
+Route::get('/sitemap.xml', function () {
+    $projects = \App\Models\Project::all();
+    $achievements = \App\Models\Achievement::all();
+
+    $urls = collect();
+
+    // Home
+    $urls->push(['loc' => url('/'), 'changefreq' => 'daily', 'priority' => '1.0']);
+
+    // Projects index
+    $urls->push(['loc' => url('/projects'), 'changefreq' => 'weekly', 'priority' => '0.9']);
+
+    // Project detail pages
+    foreach ($projects as $p) {
+        $urls->push([
+            'loc' => url("/projects/{$p->slug}"),
+            'lastmod' => $p->updated_at?->toAtomString(),
+            'changefreq' => 'monthly',
+            'priority' => '0.7',
+        ]);
+    }
+
+    // Achievements index
+    $urls->push(['loc' => url('/achievements'), 'changefreq' => 'weekly', 'priority' => '0.8']);
+
+    // Achievement detail pages
+    foreach ($achievements as $a) {
+        $urls->push([
+            'loc' => url("/achievements/{$a->id}"),
+            'lastmod' => $a->updated_at?->toAtomString(),
+            'changefreq' => 'monthly',
+            'priority' => '0.6',
+        ]);
+    }
+
+    $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+    $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+    foreach ($urls as $u) {
+        $xml .= "  <url>\n";
+        $xml .= "    <loc>{$u['loc']}</loc>\n";
+        if (!empty($u['lastmod'])) $xml .= "    <lastmod>{$u['lastmod']}</lastmod>\n";
+        $xml .= "    <changefreq>{$u['changefreq']}</changefreq>\n";
+        $xml .= "    <priority>{$u['priority']}</priority>\n";
+        $xml .= "  </url>\n";
+    }
+    $xml .= '</urlset>';
+
+    return response($xml, 200)->header('Content-Type', 'application/xml');
+})->name('sitemap');
+
 // Public API routes
 Route::prefix('api')->name('api.')->group(function () {
     Route::get('/wakatime/{username}/{shareId}', [App\Http\Controllers\Api\WakaTimeController::class, 'show'])->name('wakatime.show');
