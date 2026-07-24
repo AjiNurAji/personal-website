@@ -10,8 +10,8 @@ class OgImageController extends Controller
 {
     public function __invoke(Request $request)
     {
-        $title = $request->query('title', Setting::getValue('site_title', 'Aji Nur Aji'));
-        $desc  = $request->query('description', Setting::getValue('site_description', 'Fullstack Developer & Portfolio'));
+        $title = $request->query('title') ?: Setting::getValue('site_title') ?: 'Aji Nur Aji';
+        $desc  = $request->query('description') ?: Setting::getValue('site_description') ?: 'Fullstack Developer & Portfolio';
 
         $cacheKey = 'og_image_' . md5($title . $desc);
 
