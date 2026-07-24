@@ -10,17 +10,17 @@
         <meta name="google-site-verification" content="{{ \App\Models\Setting::getValue('google_site_verification', '') }}">
 
         <!-- Primary Meta Tags -->
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
-        <meta name="title" content="{{ config('app.name', 'Aji Nur Aji — Fullstack Developer Portfolio') }}">
-        <meta name="description" content="Portfolio of Aji Nur Aji, a passionate Fullstack Developer specializing in building modern web applications with Laravel, React, and Node.js.">
+        <title inertia>{{ \App\Models\Setting::getValue('site_title', 'Aji Nur Aji — Fullstack Developer') }}</title>
+        <meta name="title" content="{{ \App\Models\Setting::getValue('site_title', 'Aji Nur Aji — Fullstack Developer') }}">
+        <meta name="description" content="{{ \App\Models\Setting::getValue('site_description', 'Fullstack Developer & Networking Enthusiast. Building modern web apps with Laravel, React, TypeScript, and Node.js. Explore my portfolio, projects, and open-source contributions.') }}">
         <meta name="author" content="Aji Nur Aji">
-        <meta name="keywords" content="Aji Nur Aji, Fullstack Developer, Web Development, Laravel, React, portfolio, developer, JavaScript, PHP">
+        <meta name="keywords" content="Aji Nur Aji, Fullstack Developer, Web Development, Laravel, React, portfolio, developer, JavaScript, PHP, TypeScript, Indonesia">
 
         <!-- Open Graph / Facebook -->
         <meta property="og:type" content="website">
         <meta property="og:url" content="{{ url()->current() }}">
-        <meta property="og:title" content="{{ config('app.name', 'Aji Nur Aji — Fullstack Developer Portfolio') }}">
-        <meta property="og:description" content="Explore my projects, skills, and professional journey in web development.">
+        <meta property="og:title" content="{{ \App\Models\Setting::getValue('site_title', 'Aji Nur Aji — Fullstack Developer') }}">
+        <meta property="og:description" content="{{ \App\Models\Setting::getValue('site_description', 'Fullstack Developer & Networking Enthusiast. Building modern web apps with Laravel, React, TypeScript, and Node.js.') }}">
         <meta property="og:image" content="{{ url('/og-image') }}">
         <meta property="og:image:width" content="1200">
         <meta property="og:image:height" content="630">
@@ -28,8 +28,8 @@
         <!-- Twitter -->
         <meta property="twitter:card" content="summary_large_image">
         <meta property="twitter:url" content="{{ url()->current() }}">
-        <meta property="twitter:title" content="{{ config('app.name', 'Aji Nur Aji — Fullstack Developer Portfolio') }}">
-        <meta property="twitter:description" content="Explore my projects, skills, and professional journey in web development.">
+        <meta property="twitter:title" content="{{ \App\Models\Setting::getValue('site_title', 'Aji Nur Aji — Fullstack Developer') }}">
+        <meta property="twitter:description" content="{{ \App\Models\Setting::getValue('site_description', 'Fullstack Developer & Networking Enthusiast. Building modern web apps with Laravel, React, TypeScript, and Node.js.') }}">
         <meta property="twitter:image" content="{{ url('/og-image') }}">
 
         <!-- Canonical -->
