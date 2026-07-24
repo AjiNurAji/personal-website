@@ -40,9 +40,9 @@
         <meta name="twitter:title" content="{{ $siteTitle }}">
         <meta name="twitter:description" content="{{ $siteDesc }}">
         <meta name="twitter:image" content="{{ $ogImage }}">
-@if($twitter)
+        <?php if ($twitter): ?>
         <meta name="twitter:site" content="@{{ $twitter }}">
-@endif
+        <?php endif; ?>
 
         <!-- Canonical -->
         <link rel="canonical" href="{{ $canonical }}">
