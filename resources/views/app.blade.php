@@ -25,7 +25,7 @@
     ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 @endphp
 <!DOCTYPE html>
-<html lang="id" translate="no">
+<html lang="en" translate="no">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -35,7 +35,7 @@
         <meta name="google-site-verification" content="{{ \App\Models\Setting::getValue('google_site_verification', '') }}">
 
         <!-- Primary Meta Tags -->
-        <title inertia>{{ $siteTitle }}</title>
+        <title>{{ $siteTitle }}</title>
         <meta name="title" content="{{ $siteTitle }}">
         <meta name="description" content="{{ $shortDesc }}">
         <meta name="author" content="Aji Nur Aji">

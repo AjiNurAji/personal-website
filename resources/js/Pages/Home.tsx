@@ -26,7 +26,7 @@ export default function Home({ projects, skills, achievements, work_experiences,
 
     return (
         <div className="font-sans bg-background text-foreground selection:bg-primary/10 selection:text-primary">
-            <Head>
+            <Head title={settings.meta_title}>
                 {/* SEO tags are server-rendered from app.blade.php */}
             </Head>
             <InteractiveCursor />

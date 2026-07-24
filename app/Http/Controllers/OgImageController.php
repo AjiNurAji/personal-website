@@ -13,11 +13,7 @@ class OgImageController extends Controller
         $title = $request->query('title') ?: Setting::getValue('site_title') ?: 'Aji Nur Aji';
         $desc  = $request->query('description') ?: Setting::getValue('site_description') ?: 'Fullstack Developer & Portfolio';
 
-        $cacheKey = 'og_image_' . md5($title . $desc);
-
-        $png = Cache::remember($cacheKey, now()->addHours(6), function () use ($title, $desc) {
-            return $this->render($title, $desc);
-        });
+        $png = $this->render($title, $desc);
 
         return response($png, 200)
             ->header('Content-Type', 'image/png')
