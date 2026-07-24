@@ -25,7 +25,7 @@
     ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 @endphp
 <!DOCTYPE html>
-<html lang="en" translate="no">
+<html lang="id" translate="no">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -35,7 +35,7 @@
         <meta name="google-site-verification" content="{{ \App\Models\Setting::getValue('google_site_verification', '') }}">
 
         <!-- Primary Meta Tags -->
-        <title>{{ $siteTitle }}</title>
+        <title inertia>{{ $siteTitle }}</title>
         <meta name="title" content="{{ $siteTitle }}">
         <meta name="description" content="{{ $shortDesc }}">
         <meta name="author" content="Aji Nur Aji">
@@ -58,9 +58,9 @@
         <meta name="twitter:title" content="{{ $siteTitle }}">
         <meta name="twitter:description" content="{{ $siteDesc }}">
         <meta name="twitter:image" content="{{ $ogImage }}">
-        @if ($twitter)
+        <?php if ($twitter): ?>
             <meta name="twitter:site" content="{{ '@' . $twitter }}">
-        @endif
+        <?php endif; ?>
 
         <!-- Canonical -->
         <link rel="canonical" href="{{ $canonical }}">
