@@ -427,13 +427,15 @@ export default function SettingsIndex({ settings }: Props) {
                                                     </SelectTrigger>
                                                     <SelectContent>
                                                         <SelectItem value="github">GitHub</SelectItem>
-                                                        <SelectItem value="instagram">Instagram</SelectItem>
-                                                        <SelectItem value="tiktok">TikTok</SelectItem>
-                                                        <SelectItem value="coffee">Buy Me Coffee</SelectItem>
                                                         <SelectItem value="linkedin">LinkedIn</SelectItem>
+                                                        <SelectItem value="instagram">Instagram</SelectItem>
                                                         <SelectItem value="twitter">Twitter / X</SelectItem>
+                                                        <SelectItem value="tiktok">TikTok</SelectItem>
                                                         <SelectItem value="facebook">Facebook</SelectItem>
                                                         <SelectItem value="youtube">YouTube</SelectItem>
+                                                        <SelectItem value="telegram">Telegram</SelectItem>
+                                                        <SelectItem value="whatsapp">WhatsApp</SelectItem>
+                                                        <SelectItem value="coffee">Buy Me Coffee</SelectItem>
                                                     </SelectContent>
                                                 </Select>
                                             </Field>
