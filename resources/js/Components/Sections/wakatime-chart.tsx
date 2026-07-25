@@ -283,7 +283,7 @@ function HeatmapChart({ data, colors }: { data: ActivityDay[]; colors: ReturnTyp
     const chartW = leftPad + weeks.length * cellStep + 12;
     const chartH = topPad + 7 * cellStep + 8;
 
-    const heatGreen = ["#27272a", "#0e4429", "#006d32", "#26a641", "#39d353"];
+    const heatGreen = colors.heatGreen;
 
     return (
         <svg viewBox={`0 0 ${chartW} ${chartH}`} width={chartW} height={chartH} className="mx-auto" role="img">
@@ -340,6 +340,9 @@ function makeColors(isDark: boolean) {
         textDim: isDark ? "#52525b" : "#a1a1aa",
         grid: isDark ? "#3f3f46" : "#d4d4d8",
         accent: isDark ? "#22c55e" : "#16a34a",
+        heatGreen: isDark
+            ? ["#27272a", "#0e4429", "#006d32", "#26a641", "#39d353"]
+            : ["#ebedf0", "#9be9a8", "#40c463", "#30a14e", "#216e39"],
     };
 }
 

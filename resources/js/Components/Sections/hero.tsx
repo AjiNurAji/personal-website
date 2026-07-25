@@ -122,10 +122,10 @@ const Hero = ({ title, subtitle, isAvailable = true, aboutImage, githubUrl, cont
             {/* ── Content (parallax scroll) ───────────────────────── */}
             <motion.div
                 style={{ opacity, scale, y }}
-                className="relative z-10 flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-16 h-full text-center lg:text-left px-4 max-w-6xl mx-auto"
+                className="relative z-10 flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-16 h-full text-center px-4 max-w-6xl mx-auto"
             >
                 {/* Left column: Text + CTAs */}
-                <div className="flex flex-col items-center lg:items-start max-w-2xl">
+                <div className="flex flex-col items-center max-w-2xl">
                     {/* Badges row */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -135,7 +135,7 @@ const Hero = ({ title, subtitle, isAvailable = true, aboutImage, githubUrl, cont
                     >
                         <Badge
                             variant="default"
-                            className="px-4 py-1.5 text-xs font-semibold rounded-full bg-white/[0.06] dark:bg-white/[0.08] text-zinc-200 dark:text-zinc-300 backdrop-blur-md border border-white/[0.1] shadow-lg"
+                            className="px-4 py-1.5 text-xs font-semibold rounded-full backdrop-blur-md border border-white/[0.1] shadow-lg"
                         >
                             <RiFlashlightFill className="w-3.5 h-3.5 mr-2" />
                             Full Stack Developer

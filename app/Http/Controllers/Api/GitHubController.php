@@ -113,4 +113,50 @@ GRAPHQL;
 
         return response()->json($data);
     }
+
+    /**
+     * Fetch the README content for a given GitHub username.
+     * Uses the GitHub REST API: GET /repos/{owner}/{repo}/readme
+     * First tries the username's profile repo (username/username), then
+     * falls back to username/username (standard profile README convention).
+     *
+     * GET /api/github/{username}/readme
+     */
+    public function readme(string $username): JsonResponse
+    {
+        $cacheKey = "github_readme_{$username}";
+
+        $data = Cache::remember($cacheKey, now()->addHours(6), function () use ($username) {
+            $token = Setting::getValue('github_token');
+
+            $headers = ['Accept' => 'application/vnd.github.v3.raw'];
+            if ($token) {
+                $headers['Authorization'] = 'Bearer ' . $token;
+            }
+
+            // GitHub README convention: look in the user's profile repo
+            // Standard profile README: owner/repo = username/username
+            $repo = $username . '/' . $username;
+
+            $response = Http::timeout(15)
+                ->withHeaders($headers)
+                ->get("https://api.github.com/repos/{$repo}/readme");
+
+            if (! $response->successful()) {
+                // Fallback: try fetching from a differently-named repo, or return error
+                return ['error' => 'README not found for this user', 'status' => $response->status()];
+            }
+
+            return [
+                'content' => $response->body(),
+                'username' => $username,
+            ];
+        });
+
+        if (isset($data['error'])) {
+            return response()->json($data, $data['status'] ?? 404);
+        }
+
+        return response()->json($data);
+    }
 }

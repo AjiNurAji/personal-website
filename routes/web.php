@@ -100,6 +100,7 @@ Route::get('/sitemap.xml', function () {
 Route::prefix('api')->name('api.')->group(function () {
     Route::get('/wakatime/{username}/{shareId}', [App\Http\Controllers\Api\WakaTimeController::class, 'show'])->name('wakatime.show');
     Route::get('/github/{username}', [App\Http\Controllers\Api\GitHubController::class, 'show'])->name('github.show');
+    Route::get('/github/{username}/readme', [App\Http\Controllers\Api\GitHubController::class, 'readme'])->name('github.readme');
 });
 
 require __DIR__.'/auth.php';

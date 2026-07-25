@@ -1,98 +1,134 @@
+"use client";
+
 import { Link } from "@inertiajs/react";
-import { RiArrowRightLine } from "@remixicon/react";
-import { ProjectCard } from "@/Components/Elements/ProjectCard";
-import { LetterAnimation } from "@/Components/Elements/LetterAnimation";
-import { AnimateIn } from "@/Components/Elements/AnimateIn";
-import { Badge } from "@/Components/UI/badge";
-import { buttonVariants } from "@/Components/UI/button";
-import { cn } from "@/lib/utils";
+import { RiArrowRightUpLine } from "@remixicon/react";
+import { SafeImage } from "@/Components/Elements/SafeImage";
 
 const ProjectsSection = ({ initialProjects = [] }: { initialProjects?: any[] }) => {
-    const featuredProjects = initialProjects.slice(0, 4);
+    const featuredProjects = initialProjects.slice(0, 6);
+
+    const getImageUrl = (image: string) => {
+        if (!image) return "";
+        if (image.startsWith("http://") || image.startsWith("https://") || image.startsWith("/")) {
+            return image;
+        }
+        return `/storage/${image}`;
+    };
+
+    const getProjectLink = (project: any) => {
+        return project.demo || project.github || project.link || `/projects/${project.slug}`;
+    };
+
+    const isExternalLink = (url: string) => {
+        return url.startsWith("http://") || url.startsWith("https://");
+    };
 
     return (
-        <section
-            id="projects"
-            className="relative z-4 bg-transparent border-t overflow-hidden px-4 sm:px-0"
-        >
-            {/* Background glow */}
-            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
-                <div className="absolute top-[10%] right-[-5%] w-[500px] h-[500px] rounded-full bg-purple-500/[0.04] blur-[140px]" />
-                <div className="absolute bottom-[-5%] left-[-5%] w-[500px] h-[500px] rounded-full bg-cyan-500/[0.04] blur-[140px]" />
+        <section id="projects" className="mb-16 scroll-mt-16 md:mb-24 lg:scroll-mt-24">
+            <div className="sticky top-0 z-20 -mx-6 mb-4 bg-background/75 px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:relative lg:top-auto lg:mx-0 lg:px-0 lg:py-0 lg:bg-transparent lg:backdrop-blur-none lg:mb-6">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-primary block mb-1">03 . selected works</span>
+                <h2 className="text-sm font-bold uppercase tracking-widest text-foreground">Projects</h2>
             </div>
 
-            <div className="max-w-5xl mx-auto border-x py-24 px-6 relative z-10">
-                {/* Section header */}
-                <div className="flex flex-col items-center justify-center gap-4 text-center mb-16">
-                    <AnimateIn variant="blur-fade">
-                        <Badge variant="secondary" className="glass px-4 py-1.5 text-sm">
-                            Selected Projects
-                        </Badge>
-                    </AnimateIn>
-                    <LetterAnimation
-                        isHeading
-                        inView
-                        className="text-5xl sm:text-6xl md:text-7xl font-black tracking-tighter"
-                    >
-                        Featured Work
-                    </LetterAnimation>
-                    <AnimateIn variant="blur-fade" delay={0.1}>
-                        <p className="text-xl text-zinc-400 max-w-2xl mt-4">
-                            A showcase of recent projects, highlighting problem-solving and
-                            clean architecture.
-                        </p>
-                    </AnimateIn>
-                </div>
+            <div className="space-y-12">
+                {featuredProjects.length > 0 ? (
+                    <>
+                        <div className="grid grid-cols-1 gap-4">
+                            {featuredProjects.map((project: any) => {
+                                const projectUrl = getProjectLink(project);
+                                const isExt = isExternalLink(projectUrl);
+                                const badgeList = Array.isArray(project.badges)
+                                    ? project.badges
+                                    : typeof project.badges === "string"
+                                    ? JSON.parse(project.badges)
+                                    : [];
 
-                {/* Grid */}
-                <div
-                    className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16"
-                >
-                    {featuredProjects.map((project: any, index: number) => (
-                        <AnimateIn
-                            key={project.id}
-                            variant="blur-fade"
-                            delay={index * 0.1}
-                        >
-                            <ProjectCard
-                                title={project.title}
-                                slug={project.slug}
-                                description={project.description}
-                                image={project.image}
-                                link={project.link}
-                                github={project.github}
-                                demo={project.demo}
-                                badges={project.badges}
-                            />
-                        </AnimateIn>
-                    ))}
+                                const ContentCard = (
+                                    <div className="group relative grid gap-4 transition-all sm:grid-cols-8 sm:gap-6 md:gap-4 hover:bg-accent/30 -mx-4 p-4 rounded-lg border border-transparent hover:border-border/50 bg-card/10">
+                                        {/* Left Column: Thumbnail Image */}
+                                        <div className="z-10 sm:col-span-2">
+                                            {project.image ? (
+                                                <div className="w-full aspect-video sm:aspect-auto sm:h-20 rounded border border-border/80 bg-muted/20 overflow-hidden shadow-sm">
+                                                    <SafeImage
+                                                        src={getImageUrl(project.image)}
+                                                        alt={project.title}
+                                                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                                        loading="lazy"
+                                                    />
+                                                </div>
+                                            ) : (
+                                                <div className="w-full aspect-video sm:aspect-auto sm:h-20 rounded border border-dashed border-border/80 bg-muted/10 flex flex-col items-center justify-center p-2 text-center">
+                                                    <span className="text-[10px] text-muted-foreground/40 uppercase tracking-wider font-semibold">No Preview</span>
+                                                </div>
+                                            )}
+                                        </div>
 
-                    {featuredProjects.length === 0 && (
-                        <div className="col-span-full py-32 text-center">
-                            <div className="w-20 h-20 rounded-full glass flex items-center justify-center mx-auto mb-6">
-                                <RiArrowRightLine className="w-8 h-8 text-zinc-600" />
-                            </div>
-                            <h3 className="text-2xl font-bold mb-2">Work in Progress</h3>
-                            <p className="text-zinc-500">
-                                Awesome things are being built. Check back soon!
-                            </p>
+                                        {/* Right Column: Text Content */}
+                                        <div className="z-10 sm:col-span-6 flex flex-col justify-between">
+                                            <div>
+                                                <h3 className="font-semibold leading-snug text-foreground text-sm sm:text-base group-hover:text-primary transition-colors flex items-center gap-1.5">
+                                                    {project.title}
+                                                    <RiArrowRightUpLine className="size-4 shrink-0 opacity-70 group-hover:opacity-100 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                                                </h3>
+                                                {project.description && (
+                                                    <p className="mt-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                                                        {project.description}
+                                                    </p>
+                                                )}
+                                            </div>
+
+                                            {/* Badge Tags (placed directly below description) */}
+                                            {badgeList.length > 0 && (
+                                                <ul className="mt-3 flex flex-wrap gap-1.5" aria-label="Technologies used">
+                                                    {badgeList.map((tag: string, index: number) => (
+                                                        <li
+                                                            key={index}
+                                                            className="flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium leading-5 text-primary"
+                                                        >
+                                                            {tag}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+
+                                return (
+                                    <div key={project.id}>
+                                        {isExt ? (
+                                            <a
+                                                href={projectUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="block focus:outline-none"
+                                            >
+                                                {ContentCard}
+                                            </a>
+                                        ) : (
+                                            <Link
+                                                href={projectUrl}
+                                                className="block focus:outline-none"
+                                            >
+                                                {ContentCard}
+                                            </Link>
+                                        )}
+                                    </div>
+                                );
+                            })}
                         </div>
-                    )}
-                </div>
 
-                {/* CTA */}
-                <AnimateIn variant="blur-fade" delay={0.3} className="flex justify-center">
-                    <Link
-                        href="/projects"
-                        className={cn(
-                            buttonVariants({ variant: "outline", size: "lg" }),
-                            "glass rounded-full gap-2 group px-8 hover:bg-white/[0.06]"
-                        )}
-                    >
-                        Explore All Projects
-                        <RiArrowRightLine className="size-4 group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                </AnimateIn>
+                        <Link
+                            href="/projects"
+                            className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors group"
+                        >
+                            View Full Project Archive
+                            <RiArrowRightUpLine className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                        </Link>
+                    </>
+                ) : (
+                    <p className="text-sm text-muted-foreground/60 italic">Projects coming soon.</p>
+                )}
             </div>
         </section>
     );

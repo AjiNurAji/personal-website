@@ -40,6 +40,7 @@ class SettingController extends Controller
             'social_links' => 'nullable|array',
             'social_links.*.platform' => 'required|string',
             'social_links.*.url' => 'required|string',
+            'role' => 'nullable|string|max:120',
             'site_title' => 'nullable|string|max:120',
             'site_description' => 'nullable|string|max:300',
             'google_site_verification' => 'nullable|string',
