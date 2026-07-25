@@ -23,6 +23,7 @@ interface Props {
 export default function Home({ projects, skills, achievements, work_experiences, education_experiences, settings }: Props) {
     const navLinks = settings.nav_links ? (typeof settings.nav_links === 'string' ? JSON.parse(settings.nav_links) : settings.nav_links) : null;
     const isAvailable = settings.is_available === '1' || settings.is_available === true || settings.is_available === 'true';
+    const socialLinks = settings.social_links ? (typeof settings.social_links === 'string' ? JSON.parse(settings.social_links) : settings.social_links) : null;
 
     return (
         <div className="font-sans bg-background text-foreground selection:bg-primary/10 selection:text-primary">
