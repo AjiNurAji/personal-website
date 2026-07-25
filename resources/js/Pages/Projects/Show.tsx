@@ -207,8 +207,12 @@ export default function ProjectShow({ project }: Props) {
 
                                     {/* Content */}
                                     {activeTab === 'content' && hasContent && (
-                                        <div className="prose prose-zinc dark:prose-invert max-w-none">
-                                            <div dangerouslySetInnerHTML={{ __html: project.content || '' }} />
+                                        <div data-color-mode={theme} className="prose prose-zinc dark:prose-invert max-w-none bg-transparent">
+                                            <MDEditor.Markdown 
+                                                source={project.content || ''} 
+                                                style={{ backgroundColor: 'transparent' }}
+                                                components={{ img: MarkdownImage }}
+                                            />
                                         </div>
                                     )}
 
