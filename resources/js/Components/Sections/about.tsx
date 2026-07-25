@@ -83,9 +83,35 @@ export default function About({ title, description, githubUrl, contactEmail, ima
         {contactEmail && (
           <a
             href={`mailto:${contactEmail}`}
-            className="inline-block mt-6 text-sm font-bold uppercase tracking-widest text-foreground hover:text-muted-foreground transition-colors"
+            className="group inline-flex items-center gap-2.5 mt-6 px-5 py-2.5 rounded-full border border-border bg-card text-sm font-semibold text-foreground shadow-sm transition-all duration-300 hover:border-primary/60 hover:bg-primary/5 hover:shadow-[0_0_18px_0px_rgba(255,0,13,0.18)] hover:text-primary active:scale-95"
           >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="size-4 shrink-0 transition-transform duration-300 group-hover:-translate-y-0.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect width="20" height="16" x="2" y="4" rx="2" />
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+            </svg>
             Get in Touch
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="size-3.5 shrink-0 opacity-50 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M7 7h10v10" />
+              <path d="M7 17 17 7" />
+            </svg>
           </a>
         )}
       </div>
