@@ -61,7 +61,7 @@ export default function AchievementShow({ achievement }: Props) {
   return (
     <div className="font-sans bg-background text-foreground selection:bg-primary/10 selection:text-primary">
       <Head>
-        <title>{achievement.title} — Aji Nur Aji</title>
+        <title>{`${achievement.title} — Aji Nur Aji`}</title>
         <meta name="description" content={achievement.description || `${achievement.title} — ${achievement.organization} (${achievement.year})`} />
         <link rel="canonical" href={`https://ajinuraji.my.id/achievements/${achievement.id}`} />
       </Head>

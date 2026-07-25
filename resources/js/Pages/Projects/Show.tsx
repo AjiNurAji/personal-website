@@ -3,7 +3,7 @@ import { Footer } from "@/Components/Elements/footer";
 import { Head, Link } from "@inertiajs/react";
 import { InteractiveCursor } from "@/Components/Elements/InteractiveCursor";
 import { AnimateIn } from "@/Components/Elements/AnimateIn";
-import { RiArrowLeftLine, RiExternalLinkLine, RiGithubFill, RiFileTextLine, RiInformationLine, RiRefreshLine } from "@remixicon/react";
+import { RiArrowLeftLine, RiExternalLinkLine, RiGithubFill, RiFileTextLine, RiRefreshLine } from "@remixicon/react";
 import { Button, buttonVariants } from "@/Components/UI/button";
 import { Badge } from "@/Components/UI/badge";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/Components/UI/dialog";
@@ -26,12 +26,24 @@ interface Project {
     link?: string | null;
     github?: string | null;
     demo?: string | null;
-    badges: string;
+    badges: string | string[];
 }
 
 interface Props {
     project: Project;
 }
+
+/** Normalize badges — Eloquent casts JSON to array, but we also handle raw JSON string for edge cases */
+const parseBadges = (badges: string | string[]): string[] => {
+    if (Array.isArray(badges)) return badges;
+    if (typeof badges === 'string' && badges.trim()) {
+        try {
+            const parsed = JSON.parse(badges);
+            return Array.isArray(parsed) ? parsed : [];
+        } catch { return []; }
+    }
+    return [];
+};
 
 const MarkdownImage = ({ node, ...props }: any) => (
   <Dialog>
@@ -50,8 +62,8 @@ const MarkdownImage = ({ node, ...props }: any) => (
 
 export default function ProjectShow({ project }: Props) {
     const { theme } = useTheme();
-    const badgesArray = project.badges ? JSON.parse(project.badges) : [];
-    const imageUrl = project.image.startsWith('http') ? project.image : `/storage/${project.image}`;
+    const badgesArray = parseBadges(project.badges);
+    const imageUrl = project.image?.startsWith('http') ? project.image : `/storage/${project.image}`;
 
     const [readmeContent, setReadmeContent] = useState<string | null>(null);
     const [isLoadingReadme, setIsLoadingReadme] = useState<boolean>(!!project.github);
@@ -116,138 +128,106 @@ export default function ProjectShow({ project }: Props) {
     return (
         <div className="font-sans bg-background text-foreground selection:bg-primary/10 selection:text-primary">
             <Head>
-                <title>{project.title} — Aji Nur Aji</title>
-                <meta name="description" content={project.description} />
-                <link rel="canonical" href={`https://ajinuraji.my.id/projects/${project.slug}`} />
+                <title>{`${project.title} — Aji Nur Aji`}</title>
+                <meta name="description" content={project.description || ''} />
             </Head>
+
             <InteractiveCursor />
             <Navbar />
-            <main className="min-h-screen w-full pt-24 pb-16">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                    {/* Back Link */}
-                    <AnimateIn variant="blur-fade">
-                        <Link 
-                            href="/projects" 
-                            className="inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors mb-8 group"
-                        >
-                            <RiArrowLeftLine className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
-                            Back to Projects
-                        </Link>
 
-                        {/* Header */}
-                        <div className="mb-12">
-                            <h1 className="text-4xl md:text-5xl font-black mb-6 tracking-tight">{project.title}</h1>
-                            <div className="flex flex-wrap gap-2 mb-8">
-                                {badgesArray.map((badge: string) => (
-                                    <Badge key={badge} variant="secondary" className="px-3 py-1">
-                                        {badge}
-                                    </Badge>
-                                ))}
-                            </div>
-                            <p className="text-xl text-muted-foreground leading-relaxed">
-                                {project.description}
-                            </p>
-                        </div>
-                    </AnimateIn>
+            <main className="min-h-screen pt-24 pb-16">
+                {/* Back button */}
+                <div className="max-w-6xl mx-auto px-4 sm:px-6 mb-8">
+                    <Link 
+                        href="/projects" 
+                        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group"
+                    >
+                        <RiArrowLeftLine className="size-4 group-hover:-translate-x-1 transition-transform" />
+                        Back to Projects
+                    </Link>
+                </div>
 
-                    {/* Project Image */}
-                    <AnimateIn variant="blur-fade" delay={0.2}>
-                        <div className="aspect-video w-full rounded-2xl overflow-hidden border bg-zinc-50 dark:bg-zinc-900 mb-12">
-                            <SafeImage 
-                                src={imageUrl} 
-                                alt={project.title} 
-                                className="w-full h-full object-cover"
-                                containerClassName="w-full h-full"
-                            />
-                        </div>
-                    </AnimateIn>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div className="max-w-6xl mx-auto px-4 sm:px-6">
+                    <div className="grid lg:grid-cols-[1fr_300px] gap-12">
                         {/* Main Content */}
-                        <div className="md:col-span-2">
-                            {/* Tabs */}
-                            {showTabs && (
-                                <AnimateIn variant="blur-fade" delay={0.25}>
-                                    <div className="flex gap-1 mb-8 p-1 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl">
-                                        <button
-                                            onClick={() => setActiveTab('content')}
-                                            className={cn(
-                                                "flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all",
-                                                activeTab === 'content'
-                                                    ? "bg-white dark:bg-zinc-700 text-foreground shadow-sm"
-                                                    : "text-muted-foreground hover:text-foreground"
-                                            )}
-                                        >
-                                            <RiInformationLine className="size-4" />
-                                            Details
-                                        </button>
-                                        <button
-                                            onClick={() => setActiveTab('readme')}
-                                            className={cn(
-                                                "flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all",
-                                                activeTab === 'readme'
-                                                    ? "bg-white dark:bg-zinc-700 text-foreground shadow-sm"
-                                                    : "text-muted-foreground hover:text-foreground"
-                                            )}
-                                        >
-                                            <RiFileTextLine className="size-4" />
-                                            README
-                                        </button>
-                                    </div>
-                                </AnimateIn>
-                            )}
-
-                            <AnimateIn variant="blur-fade" delay={0.15}>
-                                <div className="prose prose-zinc dark:prose-invert max-w-none min-h-[300px]">
-                                    {/* Content Tab — always render project.content */}
-                                    {(activeTab === 'content' || !showTabs) && (
-                                        <>
-                                            {hasContent ? (
-                                                <div data-color-mode={theme} className="bg-transparent">
-                                                    <MDEditor.Markdown 
-                                                      source={project.content || ''} 
-                                                      style={{ backgroundColor: 'transparent' }} 
-                                                      components={{ img: MarkdownImage }}
-                                                    />
-                                                </div>
-                                            ) : (
-                                                <div className="text-center py-16">
-                                                    <RiInformationLine className="size-12 mx-auto text-muted-foreground/30 mb-4" />
-                                                    <p className="text-muted-foreground italic">
-                                                        No detailed description has been added for this project yet.
-                                                    </p>
-                                                </div>
-                                            )}
-                                        </>
+                        <div className="space-y-8">
+                            <AnimateIn variant="blur-fade" delay={0.1}>
+                                <div className="space-y-6">
+                                    {/* Project Image */}
+                                    {project.image && (
+                                        <div className="aspect-video rounded-2xl overflow-hidden border bg-zinc-50/50 dark:bg-zinc-900/50">
+                                            <SafeImage 
+                                                src={imageUrl} 
+                                                alt={project.title}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
                                     )}
 
-                                    {/* README Tab — only when tabs are visible */}
-                                    {showTabs && activeTab === 'readme' && (
+                                    <div>
+                                        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4">
+                                            {project.title}
+                                        </h1>
+                                        <p className="text-lg text-muted-foreground leading-relaxed">
+                                            {project.description}
+                                        </p>
+                                    </div>
+                                </div>
+                            </AnimateIn>
+
+                            <AnimateIn variant="blur-fade" delay={0.3}>
+                                <div className="prose prose-zinc dark:prose-invert max-w-none">
+                                    {/* Tabs */}
+                                    {showTabs && (
+                                        <div className="flex gap-1 p-1 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl mb-8">
+                                            <button
+                                                onClick={() => setActiveTab('content')}
+                                                className={cn(
+                                                    "flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+                                                    activeTab === 'content'
+                                                        ? "bg-white dark:bg-zinc-700 text-foreground shadow-sm"
+                                                        : "text-muted-foreground hover:text-foreground"
+                                                )}
+                                            >
+                                                Overview
+                                            </button>
+                                            <button
+                                                onClick={() => setActiveTab('readme')}
+                                                className={cn(
+                                                    "flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+                                                    activeTab === 'readme'
+                                                        ? "bg-white dark:bg-zinc-700 text-foreground shadow-sm"
+                                                        : "text-muted-foreground hover:text-foreground"
+                                                )}
+                                            >
+                                                README
+                                            </button>
+                                        </div>
+                                    )}
+
+                                    {/* Content */}
+                                    {activeTab === 'content' && hasContent && (
+                                        <div className="prose prose-zinc dark:prose-invert max-w-none">
+                                            <div dangerouslySetInnerHTML={{ __html: project.content || '' }} />
+                                        </div>
+                                    )}
+
+                                    {/* README */}
+                                    {(activeTab === 'readme' || (!hasContent && hasReadme)) && (
                                         <>
-                                            {isLoadingReadme ? (
-                                                <div className="space-y-4 animate-pulse">
-                                                    <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-3/4"></div>
-                                                    <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-full"></div>
-                                                    <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-5/6"></div>
-                                                    <div className="h-64 bg-zinc-200 dark:bg-zinc-800 rounded w-full mt-6"></div>
-                                                </div>
-                                            ) : readmeContent ? (
-                                                <>
-                                                    <div className="flex items-center justify-between mb-4 pb-4 border-b border-zinc-200 dark:border-zinc-800">
-                                                        <span className="text-sm text-muted-foreground flex items-center gap-2">
-                                                            <RiGithubFill className="size-4" />
-                                                            README.md from GitHub
-                                                        </span>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
+                                            {hasReadme ? (
+                                                <div className="space-y-4">
+                                                    <div className="flex items-center gap-3">
+                                                        <RiRefreshLine 
+                                                            className={cn(
+                                                                "size-5 cursor-pointer text-muted-foreground hover:text-foreground transition-colors",
+                                                                isRefreshing && "animate-spin"
+                                                            )}
                                                             onClick={handleRefreshReadme}
-                                                            disabled={isRefreshing}
-                                                            className="gap-1.5"
-                                                        >
-                                                            <RiRefreshLine className={cn("size-4", isRefreshing && "animate-spin")} />
-                                                            {isRefreshing ? "Refreshing..." : "Refresh"}
-                                                        </Button>
+                                                        />
+                                                        <span className="text-sm text-muted-foreground">
+                                                            README — from GitHub
+                                                        </span>
                                                     </div>
                                                     <div data-color-mode={theme} className="bg-transparent">
                                                         <MDEditor.Markdown 
@@ -256,7 +236,7 @@ export default function ProjectShow({ project }: Props) {
                                                           components={{ img: MarkdownImage }}
                                                         />
                                                     </div>
-                                                </>
+                                                </div>
                                             ) : readmeError ? (
                                                 <div className="text-center py-12">
                                                     <RiGithubFill className="size-12 mx-auto text-muted-foreground/30 mb-4" />
@@ -280,7 +260,7 @@ export default function ProjectShow({ project }: Props) {
                                         </>
                                     )}
 
-                                    {/* No tabs, no content, loading README */}
+                                    {/* Loading */}
                                     {!showTabs && !hasContent && isLoadingReadme && (
                                         <div className="space-y-4 animate-pulse">
                                             <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-3/4"></div>
@@ -294,18 +274,7 @@ export default function ProjectShow({ project }: Props) {
                                         </div>
                                     )}
 
-                                    {/* No tabs, no content, README loaded → show README directly */}
-                                    {!showTabs && !hasContent && hasReadme && (
-                                        <div data-color-mode={theme} className="bg-transparent">
-                                            <MDEditor.Markdown 
-                                              source={readmeContent || ''} 
-                                              style={{ backgroundColor: 'transparent' }} 
-                                              components={{ img: MarkdownImage }}
-                                            />
-                                        </div>
-                                    )}
-
-                                    {/* No tabs, no content, no README, not loading → empty */}
+                                    {/* Empty state */}
                                     {!showTabs && !hasContent && !hasReadme && !isLoadingReadme && (
                                         <div className="text-center py-12">
                                             <RiFileTextLine className="size-12 mx-auto text-muted-foreground/30 mb-4" />

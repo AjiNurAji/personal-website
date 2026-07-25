@@ -38,7 +38,7 @@ export const AnimateIn = ({
       className={cn(className)}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: false, amount: 0.2 }}
+      viewport={{ once: true, amount: 0.1, margin: "-50px" }}
       variants={variants[variant]}
       transition={{ duration, delay, ease: "easeOut" }}
     >

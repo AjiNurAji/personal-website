@@ -36,21 +36,30 @@ class SecurityHeaders
                 'camera=(), microphone=(), geolocation=(), interest-cohort=()'
             );
 
-            // Content Security Policy
-            $csp = implode('; ', array_filter([
+            $scriptSrc = "'self' 'unsafe-inline' 'unsafe-eval'";
+            $connectSrc = "'self' https://api.github.com https://wakatime.com";
+
+            if (app()->environment('local')) {
+                $scriptSrc .= " http://localhost:5173 http://127.0.0.1:5173";
+
+                $connectSrc .= " http://localhost:5173 http://127.0.0.1:5173";
+                $connectSrc .= " ws://localhost:5173 ws://127.0.0.1:5173";
+            }
+
+            $csp = implode('; ', [
                 "default-src 'self'",
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+                "script-src {$scriptSrc}",
                 "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
                 "img-src 'self' data: https: blob:",
                 "font-src 'self' fonts.gstatic.com",
-                "connect-src 'self' https://api.github.com https://wakatime.com",
+                "connect-src {$connectSrc}",
                 "frame-src 'self'",
                 "object-src 'none'",
                 "base-uri 'self'",
                 "form-action 'self'",
                 "frame-ancestors 'self'",
-                "upgrade-insecure-requests",
-            ]));
+                app()->environment('production') ? "upgrade-insecure-requests" : null,
+            ]);
 
             $response->header('Content-Security-Policy', $csp);
         }
