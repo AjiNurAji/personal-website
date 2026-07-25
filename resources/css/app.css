@@ -213,3 +213,8 @@
   color: transparent;
   background-image: linear-gradient(to right, #c4b5fd, #f472b6, #fb7185);
 }
+
+/* Shimmer animation for image loading skeleton */
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}

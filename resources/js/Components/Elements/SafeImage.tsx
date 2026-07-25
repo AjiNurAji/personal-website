@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Skeleton } from "@/Components/UI/skeleton";
 import { cn } from "@/lib/utils";
 import { ImageOff } from "lucide-react";
 
@@ -36,24 +35,29 @@ export const SafeImage = ({
     setError(true);
     if (fallback) {
       setImgSrc(fallback);
+      setError(false);
     }
   };
 
   return (
     <div className={cn("relative overflow-hidden w-full h-full", containerClassName)}>
-      {isLoading && !error && (
-        <Skeleton className="absolute inset-0 z-10 w-full h-full" />
+      {/* Skeleton shimmer — shown while loading */}
+      {isLoading && (
+        <div className="absolute inset-0 z-10 w-full h-full overflow-hidden rounded-[inherit]">
+          <div className="w-full h-full bg-muted relative">
+            <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.4s_infinite] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+          </div>
+        </div>
       )}
 
+      {/* Error state — no image and no fallback */}
       {error && !fallback ? (
         <div className={cn(
-          "flex flex-col items-center justify-center w-full rounded-2xl border-2 border-dashed border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 text-zinc-500 dark:text-zinc-400 overflow-hidden",
+          "flex flex-col items-center justify-center w-full h-full rounded-[inherit] border border-dashed border-border bg-muted/30 text-muted-foreground",
           className
         )}>
-          <div className="p-3 sm:p-4 mb-2 sm:mb-3  rounded-full bg-white dark:bg-zinc-800 shadow-sm border border-zinc-100 dark:border-zinc-700 transition-transform duration-300 hover:scale-105">
-             <ImageOff className="w-5 h-5 sm:w-6 sm:h-6 text-zinc-400 dark:text-zinc-500" strokeWidth={1.5} />
-          </div>
-          <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500/80">Image Unavailable</span>
+          <ImageOff className="w-4 h-4 mb-1 opacity-40" strokeWidth={1.5} />
+          <span className="text-[9px] font-medium uppercase tracking-wider opacity-40">No Image</span>
         </div>
       ) : (
         <img
