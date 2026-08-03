@@ -33,7 +33,7 @@ class AchievementController extends Controller
 
         return Inertia::render('Achievements/Index', [
             'achievements' => $achievements,
-            'settings' => \App\Models\Setting::publicValues(),
+            'settings' => \App\Models\Setting::localizedPublicValues(),
         ]);
     }
 
@@ -41,7 +41,7 @@ class AchievementController extends Controller
     {
         return Inertia::render('Achievements/Show', [
             'achievement' => $achievement,
-            'settings' => \App\Models\Setting::publicValues(),
+            'settings' => \App\Models\Setting::localizedPublicValues(),
         ]);
     }
 }

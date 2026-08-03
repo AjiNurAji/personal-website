@@ -53,10 +53,26 @@ function parseSettingArray(value: unknown, fallback: string[]) {
     }
 }
 
+function normalizeNavigationHref(href: unknown) {
+    const value = String(href || "/").trim();
+
+    if (value === "#") return "/";
+    if (value.startsWith("/#") || value.startsWith("http://") || value.startsWith("https://")) return value;
+    if (value.startsWith("#")) return `/${value}`;
+    if (value.startsWith("/")) return value;
+
+    return `/${value}`;
+}
+
 function getNavigation(settings: Record<string, any>) {
     try {
         const parsed = typeof settings.nav_links === "string" ? JSON.parse(settings.nav_links) : settings.nav_links;
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed.map((link) => ({
+                ...link,
+                href: normalizeNavigationHref(link?.href),
+            }));
+        }
     } catch {
         // Fall back to the application navigation.
     }

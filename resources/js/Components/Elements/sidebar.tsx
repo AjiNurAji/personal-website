@@ -18,7 +18,7 @@ import {
 } from "@remixicon/react";
 import { ThemeToggle } from "@/Components/UI/theme-toggle";
 import { Logo } from "./logo";
-import { Link, router } from "@inertiajs/react";
+import { Link, router, usePage } from "@inertiajs/react";
 import { Button } from "@/Components/UI/button";
 import { useEffect, useState } from "react";
 import { useTranslation, supportedLocales } from "@/lib/i18n";
@@ -108,6 +108,7 @@ function NavLabel({ label, isActive }: { label: string; isActive: boolean }) {
 
 export const Sidebar = ({ name, role, tagline, socialLinks, navSections, activeSection, contactEmail, avatarUrl, availabilityMessages: customAvailabilityMessages }: SidebarProps) => {
   const { locale, t } = useTranslation();
+  const { url } = usePage();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   useEffect(() => {
@@ -176,13 +177,14 @@ export const Sidebar = ({ name, role, tagline, socialLinks, navSections, activeS
             <ul className="space-y-2">
               {navSections.map((section) => {
                 const translatedLabel = t(section.label);
-                const isActive = activeSection === section.label || activeSection === translatedLabel || activeSection === section.href || activeSection === `#${section.label.toLowerCase()}`;
+                const normalizedHref = section.href.startsWith("/") ? section.href : `/${section.href}`;
+                const isActive = activeSection === section.label || activeSection === translatedLabel || activeSection === section.href || activeSection === `#${section.label.toLowerCase()}` || url.split('?')[0] === normalizedHref;
                 return (
                   <li key={section.label}>
-                    {section.href.startsWith("#") ? (
+                    {normalizedHref.startsWith("/#") && url.split('?')[0] === "/" ? (
                       <a
-                        href={section.href}
-                        onClick={(e) => handleNavClick(e, section.href)}
+                        href={normalizedHref}
+                        onClick={(e) => handleNavClick(e, normalizedHref)}
                         className={`group flex items-center justify-between gap-4 rounded-xl px-3 py-2.5 transition-colors ${isActive ? "bg-card text-foreground" : "hover:bg-card/60"}`}
                       >
                         <NavLabel label={translatedLabel} isActive={isActive} />
