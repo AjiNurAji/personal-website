@@ -14,7 +14,8 @@ class ProjectController extends Controller
     public function index()
     {
         return Inertia::render('Projects/Index', [
-            'projects' => Project::latest()->get()
+            'projects' => Project::latest()->get(),
+            'settings' => Setting::publicValues(),
         ]);
     }
 
@@ -24,6 +25,7 @@ class ProjectController extends Controller
 
         return Inertia::render('Projects/Show', [
             'project' => $project,
+            'settings' => Setting::publicValues(),
         ]);
     }
 

@@ -32,14 +32,16 @@ class AchievementController extends Controller
         }
 
         return Inertia::render('Achievements/Index', [
-            'achievements' => $achievements
+            'achievements' => $achievements,
+            'settings' => \App\Models\Setting::publicValues(),
         ]);
     }
 
     public function show(Achievement $achievement)
     {
         return Inertia::render('Achievements/Show', [
-            'achievement' => $achievement
+            'achievement' => $achievement,
+            'settings' => \App\Models\Setting::publicValues(),
         ]);
     }
 }

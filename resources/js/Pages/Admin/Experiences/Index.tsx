@@ -68,7 +68,7 @@ export default function ExperiencesIndex({ experiences }: ExperiencesIndexProps)
             </Link>
         </div>
 
-        <div className="rounded-md border bg-white dark:bg-zinc-950 shadow-sm">
+        <div className="rounded-xl border bg-card shadow-sm">
             <Table>
             <TableHeader>
                 <TableRow>
@@ -93,11 +93,11 @@ export default function ExperiencesIndex({ experiences }: ExperiencesIndexProps)
                     <TableCell>
                       <div className="flex items-center gap-3">
                         {exp.logo ? (
-                          <div className="h-8 w-8 rounded border overflow-hidden bg-white shrink-0">
+                          <div className="h-8 w-8 shrink-0 overflow-hidden rounded border bg-background">
                             <img src={`/storage/${exp.logo}`} alt="" className="h-full w-full object-contain" />
                           </div>
                         ) : (
-                          <div className="h-8 w-8 rounded border bg-zinc-50 dark:bg-zinc-900 shrink-0" />
+                          <div className="h-8 w-8 shrink-0 rounded border bg-muted" />
                         )}
                         <div>
                           <div className="font-medium">{exp.company}</div>

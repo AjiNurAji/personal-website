@@ -63,7 +63,7 @@ export function SkillForm({ initialData }: SkillFormProps) {
         </Link>
       </div>
 
-      <form onSubmit={onSubmit} className="space-y-4 max-w-2xl border p-6 rounded-xl bg-white dark:bg-zinc-950 shadow-sm">
+      <form onSubmit={onSubmit} className="max-w-2xl space-y-4 rounded-xl border bg-card p-6 text-card-foreground shadow-sm">
         <Field>
           <FieldLabel>Name</FieldLabel>
           <FieldContent>

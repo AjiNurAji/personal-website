@@ -10,7 +10,6 @@ import {
   RiFolder2Line,
   RiToolsLine,
   RiAwardLine,
-  RiUserLine,
   RiArrowRightUpLine,
   RiGithubFill,
   RiSettings4Line,
@@ -18,6 +17,7 @@ import {
 import { Link } from "@inertiajs/react";
 import { Button } from "@/Components/UI/button";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/lib/i18n";
 
 interface DashboardProps {
   stats: {
@@ -34,70 +34,62 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ stats, githubCommits = [] }: DashboardProps) {
+  const { t } = useTranslation();
   const statCards = [
     {
-      title: "Projects",
+      title: t("Projects"),
       value: stats.projects,
-      description: "Active portfolio items",
+      description: t("Active portfolio items"),
       icon: RiFolder2Line,
-      color: "text-blue-600",
-      bg: "bg-blue-50 dark:bg-blue-900/10",
-      border: "border-blue-100 dark:border-blue-900/20",
+      color: "text-primary",
+      bg: "bg-primary/10",
+      border: "border-primary/20",
     },
     {
-      title: "Technical Skills",
+      title: t("Technical Skills"),
       value: stats.skills,
-      description: "Expertise categories",
+      description: t("Expertise categories"),
       icon: RiToolsLine,
-      color: "text-amber-600",
-      bg: "bg-amber-50 dark:bg-amber-900/10",
-      border: "border-amber-100 dark:border-amber-900/20",
+      color: "text-foreground",
+      bg: "bg-muted",
+      border: "border-border",
     },
     {
-      title: "Achievements",
+      title: t("Achievements"),
       value: stats.achievements,
-      description: "Awards and certifications",
+      description: t("Awards and certifications"),
       icon: RiAwardLine,
-      color: "text-purple-600",
-      bg: "bg-purple-50 dark:bg-purple-900/10",
-      border: "border-purple-100 dark:border-purple-900/20",
-    },
-    {
-      title: "Admin Sessions",
-      value: 1, // Example static value or get from sessions
-      description: "Currently active",
-      icon: RiUserLine,
-      color: "text-emerald-600",
-      bg: "bg-emerald-50 dark:bg-emerald-900/10",
-      border: "border-emerald-100 dark:border-emerald-900/20",
+      color: "text-foreground",
+      bg: "bg-muted",
+      border: "border-border",
     },
   ];
 
   return (
     <AdminLayout title="Dashboard">
-      <div className="space-y-8 max-w-7xl mx-auto">
+      <div className="mx-auto w-full max-w-7xl space-y-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <h1 className="text-4xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-zinc-900 to-zinc-500 dark:from-zinc-100 dark:to-zinc-500">
-              Dashboard
+            <h1 className="text-4xl font-extrabold tracking-tight text-foreground">
+              {t("Dashboard")}
             </h1>
             <p className="text-muted-foreground text-lg">
-              Welcome back! Track and manage your digital presence.
+              {t("Welcome back! Track and manage your digital presence.")}
             </p>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" asChild>
               <a href="/" target="_blank" rel="noopener noreferrer">
-                View Site
+                {t("View Site")}
               </a>
             </Button>
             <Button size="sm" asChild>
-              <Link href="/admin/projects">Manage Projects</Link>
+              <Link href="/admin/projects">{t("Manage Projects")}</Link>
             </Button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:gap-6">
           {statCards.map((stat) => (
             <Card
               key={stat.title}
@@ -122,7 +114,7 @@ export default function Dashboard({ stats, githubCommits = [] }: DashboardProps)
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-extrabold tracking-tighter">
+                <div className="text-4xl font-extrabold tracking-tight">
                   {stat.value}
                 </div>
               </CardContent>
@@ -132,17 +124,17 @@ export default function Dashboard({ stats, githubCommits = [] }: DashboardProps)
 
         <div className="grid grid-cols-1 lg:grid-cols-7 gap-6">
           <Card className="lg:col-span-4 border shadow-none overflow-hidden group">
-            <CardHeader className="bg-zinc-50/50 dark:bg-zinc-900/50 border-b">
+            <CardHeader className="border-b bg-muted/30">
               <CardTitle className="flex items-center gap-2">
                 <RiGithubFill className="size-5" />
-                Recent Commits
+                {t("Recent Commits")}
               </CardTitle>
               <CardDescription>
-                Latest updates from AjiNurAji/personal-website
+                {t("Latest updates from AjiNurAji/personal-website")}
               </CardDescription>
             </CardHeader>
             <CardContent className="p-0">
-              <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
+              <div className="divide-y divide-border">
                 {githubCommits.length > 0 ? (
                   githubCommits.map((commit, i) => (
                     <a
@@ -150,10 +142,10 @@ export default function Dashboard({ stats, githubCommits = [] }: DashboardProps)
                       href={commit.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-4 flex items-center justify-between hover:bg-zinc-50/50 dark:hover:bg-zinc-900/50 transition-colors group/item block"
+                      className="p-4 flex items-center justify-between hover:bg-muted/50 transition-colors group/item block"
                     >
                       <div className="flex flex-col gap-1">
-                        <span className="text-sm font-medium group-hover/item:text-blue-600 dark:group-hover/item:text-blue-400 transition-colors">{commit.message}</span>
+                        <span className="text-sm font-medium group-hover/item:text-primary transition-colors">{commit.message}</span>
                         <span className="text-xs text-muted-foreground">{commit.date}</span>
                       </div>
                       <span className="text-[10px] font-mono text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded-md">
@@ -163,7 +155,7 @@ export default function Dashboard({ stats, githubCommits = [] }: DashboardProps)
                   ))
                 ) : (
                   <div className="p-8 text-center text-muted-foreground text-sm">
-                    No recent commits found or unable to connect to GitHub.
+                    {t("No recent commits found or unable to connect to GitHub.")}
                   </div>
                 )}
               </div>
@@ -171,40 +163,40 @@ export default function Dashboard({ stats, githubCommits = [] }: DashboardProps)
           </Card>
 
           <Card className="lg:col-span-3 border shadow-none overflow-hidden">
-            <CardHeader className="bg-zinc-50/50 dark:bg-zinc-900/50 border-b">
-              <CardTitle>System Actions</CardTitle>
-              <CardDescription>Quick management shortcuts</CardDescription>
+            <CardHeader className="border-b bg-muted/30">
+              <CardTitle>{t("System Actions")}</CardTitle>
+              <CardDescription>{t("Quick management shortcuts")}</CardDescription>
             </CardHeader>
             <CardContent className="p-6 grid grid-cols-1 gap-4">
               <Link href="/admin/projects" className="block">
-                <div className="p-4 rounded-xl border border-zinc-100 dark:border-zinc-800 hover:border-zinc-950 dark:hover:border-zinc-200 cursor-pointer transition-all flex items-center justify-between group">
+                <div className="flex cursor-pointer items-center justify-between rounded-xl border border-border p-4 transition-all hover:border-primary/50 hover:bg-muted/40 group">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-zinc-100 dark:bg-zinc-800 group-hover:bg-zinc-950 group-hover:text-white dark:group-hover:bg-zinc-200 dark:group-hover:text-zinc-950 transition-colors">
+                    <div className="rounded-lg bg-muted p-2 transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                       <RiFolder2Line className="size-5" />
                     </div>
-                    <span className="font-bold">Manage Projects</span>
+                    <span className="font-bold">{t("Manage Projects")}</span>
                   </div>
                   <RiArrowRightUpLine className="size-5 text-muted-foreground" />
                 </div>
               </Link>
               <Link href="/admin/skills" className="block">
-                <div className="p-4 rounded-xl border border-zinc-100 dark:border-zinc-800 hover:border-zinc-950 dark:hover:border-zinc-200 cursor-pointer transition-all flex items-center justify-between group">
+                <div className="flex cursor-pointer items-center justify-between rounded-xl border border-border p-4 transition-all hover:border-primary/50 hover:bg-muted/40 group">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-zinc-100 dark:bg-zinc-800 group-hover:bg-zinc-950 group-hover:text-white dark:group-hover:bg-zinc-200 dark:group-hover:text-zinc-950 transition-colors">
+                    <div className="rounded-lg bg-muted p-2 transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                       <RiToolsLine className="size-5" />
                     </div>
-                    <span className="font-bold">Update Skills</span>
+                    <span className="font-bold">{t("Update Skills")}</span>
                   </div>
                   <RiArrowRightUpLine className="size-5 text-muted-foreground" />
                 </div>
               </Link>
               <Link href="/admin/settings" className="block">
-                <div className="p-4 rounded-xl border border-zinc-100 dark:border-zinc-800 hover:border-zinc-950 dark:hover:border-zinc-200 cursor-pointer transition-all flex items-center justify-between group">
+                <div className="flex cursor-pointer items-center justify-between rounded-xl border border-border p-4 transition-all hover:border-primary/50 hover:bg-muted/40 group">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-zinc-100 dark:bg-zinc-800 group-hover:bg-zinc-950 group-hover:text-white dark:group-hover:bg-zinc-200 dark:group-hover:text-zinc-950 transition-colors">
+                    <div className="rounded-lg bg-muted p-2 transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                       <RiSettings4Line className="size-5" />
                     </div>
-                    <span className="font-bold">Site Settings</span>
+                    <span className="font-bold">{t("Site Settings")}</span>
                   </div>
                   <RiArrowRightUpLine className="size-5 text-muted-foreground" />
                 </div>

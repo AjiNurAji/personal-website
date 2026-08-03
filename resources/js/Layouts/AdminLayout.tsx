@@ -9,6 +9,7 @@ import { Separator } from "@/Components/UI/separator";
 import { TooltipProvider } from "@/Components/UI/tooltip";
 import { Head } from "@inertiajs/react";
 import { ThemeToggle } from "@/Components/UI/theme-toggle";
+import { useTranslation } from "@/lib/i18n";
 
 import { PreviewModal } from "@/Components/Dashboard/PreviewModal";
 
@@ -18,6 +19,8 @@ interface AdminLayoutProps {
 }
 
 export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayoutProps) {
+  const { t } = useTranslation();
+
   return (
     <>
         <Head title={title} />
@@ -30,7 +33,7 @@ export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayo
                     <SidebarTrigger className="-ml-1" />
                     <Separator orientation="vertical" className="mr-2 h-4" />
                     <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium">{title}</span>
+                        <span className="text-sm font-medium">{t(title)}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -38,7 +41,7 @@ export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayo
                     <ThemeToggle />
                   </div>
                 </header>
-                <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 bg-zinc-50/50 dark:bg-zinc-950/20">
+                <main className="flex-1 overflow-y-auto bg-muted/20 p-4 md:p-6 lg:p-8">
                   {children}
                 </main>
             </SidebarInset>

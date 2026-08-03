@@ -1,32 +1,56 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to this project are documented here.
+
+The project follows a Keep a Changelog-style format. Dates reflect the local development history and are not a substitute for release tags.
+
+## [Unreleased]
+
+### Added
+
+- Laravel-backed locale switching with English (`en`) as the default and Indonesian (`id`) support.
+- Session-persisted locale selection through `POST /locale/{locale}`.
+- Inertia-shared locale and translation catalog data.
+- Bilingual Admin > Site Settings fields for hero, home, about, skills, availability, navigation, WakaTime labels, and SEO metadata.
+- Locale-aware public settings resolution with backwards-compatible fallback to legacy single-language settings.
+- Mobile public navigation with a menu button, overlay, close action, scroll lock, and automatic close after navigation.
+- Responsive admin settings layout with sticky section navigation and a sticky save action.
+
+### Changed
+
+- Public navigation, sidebar copy, home content, about content, status messages, and page metadata now follow the active locale.
+- Admin settings now display English and Indonesian inputs side by side on desktop and stacked on mobile.
+- Navigation Hrefs and technical integration values remain shared between locales.
+- Admin dashboard statistics now use real metrics only; the placeholder admin-session metric was removed.
+- Admin dashboard colors now use semantic shadcn theme tokens instead of hardcoded color families.
+- Documentation now reflects the current bilingual settings architecture, mobile navigation, build workflow, and deployment process.
+
+### Fixed
+
+- Locale changes no longer leave stale Inertia page props visible.
+- Long admin settings forms no longer hide the Save All Settings action below the viewport.
+- Public settings cache keys are separated by locale and invalidated after settings updates.
 
 ## [1.2.0] - 2026-06-24
 
 ### Added
-- **Profile Image Upload**: Added the ability to upload a custom profile image directly in the Admin Settings (About tab), overriding the default GitHub avatar URL. Includes an auto-cleanup mechanism to delete old images from local storage.
-- **Bento Grid Design System**: Overhauled the Landing Page (Hero, About, Skills, Projects, Experience, Achievements) to use a premium "UI/UX Pro Max" Bento Grid architecture with `glassmorphism` and dynamic `emerald/cyan` glowing meshes.
-- **Spring Physics Animations**: Upgraded Framer Motion transitions across all sections from linear/ease to `spring` physics for fluid, Apple-style micro-animations.
+
+- Profile image upload from Admin Settings with cleanup of the previous local image.
+- Global live preview modal in the admin layout.
+- Responsive preview toggles for desktop, tablet, and mobile.
+- Skill icon picker using Simple Icons.
 
 ### Changed
-- **Typography Upgrade**: Integrated `Inter` for body text to maximize readability and `Outfit` for headings to enforce a modern, bold character.
+
+- Skill and experience ordering follows ascending priority.
+- Admin Skills table displays the rendered icon beside its priority.
+- Public skill icon rendering uses the saved Simple Icons slug.
+- Portfolio visual language and section layout were refined for a consistent dark portfolio experience.
 
 ### Fixed
-- **Section Spacing Consistency**: Standardized padding (`py-24`) and restored missing border dividers between sections to ensure a seamless continuous flow through the new Bento grids.
 
-### Added
-- **Global Live Preview**: Added a `PreviewModal` component to the `AdminLayout` header, allowing administrators to preview the frontend landing page directly from any admin page without opening a new tab.
-- **Responsive Preview Toggles**: The Live Preview modal includes device simulation toggles (Desktop, Tablet, Mobile) to ensure cross-device compatibility checks.
-- **Skill Icon Picker**: Integrated `react-icons/si` (Simple Icons) into a custom `IconPicker` component for the `SkillForm`, providing a visual search interface to select technology logos instead of typing text.
-
-### Changed
-- **Skill Priority Sorting**: Modified the `HomeController` to sort Skills and Experiences in ascending order (`asc`) based on priority, aligning the frontend display logic with the admin instruction (`lower = higher up`).
-- **Skills Admin Table UI**: Rearranged the columns in the Admin Skills table to display the rendered SVG Icon directly next to the priority column for better visual context.
-- **Skill Icon Rendering**: Updated the public `skills.tsx` section to dynamically extract the slug from the saved `react-icons/si` string (e.g., `SiLaravel` -> `laravel`) to fetch the exact logo from the SimpleIcons CDN, rather than guessing the logo from the skill name.
-
-### Fixed
-- **Live Preview Modal Alignment**: Disabled the default absolute-positioned close button in Shadcn's `DialogContent` and manually placed a `DialogClose` button in the header's flex container for perfect vertical alignment with other header actions.
+- Live Preview modal close-button alignment.
 
 ---
-*This log corresponds to commit `6a9830b` on the master branch.*
+
+Older changes remain available in Git history.

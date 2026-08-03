@@ -11,10 +11,18 @@ import {
   RiTelegramFill,
   RiWhatsappFill,
   RiCupLine,
-  RiGlobalLine
+  RiGlobalLine,
+  RiArrowRightSLine,
+  RiCloseLine,
+  RiMenuLine,
 } from "@remixicon/react";
 import { ThemeToggle } from "@/Components/UI/theme-toggle";
 import { Logo } from "./logo";
+import { Link, router } from "@inertiajs/react";
+import { Button } from "@/Components/UI/button";
+import { useEffect, useState } from "react";
+import { useTranslation, supportedLocales } from "@/lib/i18n";
+import { HiBadgeCheck } from "react-icons/hi";
 
 interface SidebarProps {
   name: string;
@@ -24,6 +32,9 @@ interface SidebarProps {
   socialLinks?: Array<{ platform: string; url: string }>;
   navSections: Array<{ label: string; href: string }>;
   activeSection?: string;
+  contactEmail?: string;
+  avatarUrl?: string;
+  availabilityMessages?: string[];
 }
 
 const getSocialIcon = (platform: string) => {
@@ -45,7 +56,67 @@ const getSocialIcon = (platform: string) => {
   }
 };
 
-export const Sidebar = ({ name, role, tagline, githubUrl, socialLinks, navSections, activeSection }: SidebarProps) => {
+const availabilityMessages = ["Open to work", "Let's build together", "Available for projects"];
+
+function AvailabilityBadge({ messages = availabilityMessages }: { messages?: string[] }) {
+  const { t } = useTranslation();
+  const [messageIndex, setMessageIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    if (isPaused) return;
+    const timer = window.setInterval(() => {
+      setMessageIndex((index) => (index + 1) % Math.max(messages.length, 1));
+    }, 3200);
+    return () => window.clearInterval(timer);
+  }, [isPaused, messages.length]);
+
+  return (
+    <Button
+      type="button"
+      variant="outline"
+      size="sm"
+      aria-label="Availability status"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onFocus={() => setIsPaused(true)}
+      onBlur={() => setIsPaused(false)}
+      className="mt-4 h-7 gap-1.5 rounded-full border-primary/50 bg-primary/5 px-2.5 text-[9px] font-bold uppercase tracking-[0.12em] text-primary hover:bg-primary/10 hover:text-primary"
+    >
+      <span className="relative flex size-2" aria-hidden="true">
+        <span className="absolute inline-flex size-full animate-ping rounded-full bg-primary/50" />
+        <span className="relative inline-flex size-2 rounded-full bg-primary" />
+      </span>
+      <span className="min-w-[8rem] text-left">{t(messages[messageIndex] || availabilityMessages[0])}</span>
+    </Button>
+  );
+}
+
+function NavLabel({ label, isActive }: { label: string; isActive: boolean }) {
+  return (
+    <>
+      <span className={`flex items-center gap-3 text-xs font-bold uppercase tracking-widest transition-colors duration-300 ${
+        isActive ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"
+      }`}>
+        <span className={`h-px transition-all duration-300 ${isActive ? "w-8 bg-foreground" : "w-5 bg-muted-foreground/30 group-hover:w-8 group-hover:bg-foreground"}`} />
+        {label}
+      </span>
+      {isActive && <RiArrowRightSLine className="size-4 text-muted-foreground" />}
+    </>
+  );
+}
+
+export const Sidebar = ({ name, role, tagline, socialLinks, navSections, activeSection, contactEmail, avatarUrl, availabilityMessages: customAvailabilityMessages }: SidebarProps) => {
+  const { locale, t } = useTranslation();
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  useEffect(() => {
+    document.body.style.overflow = isMobileOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMobileOpen]);
+
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     if (!href.startsWith("#")) return;
     e.preventDefault();
@@ -55,77 +126,124 @@ export const Sidebar = ({ name, role, tagline, githubUrl, socialLinks, navSectio
       el.scrollIntoView({ behavior: "smooth" });
       window.history.pushState(null, "", href);
     }
+    setIsMobileOpen(false);
+  };
+
+  const changeLocale = (nextLocale: string) => {
+    if (nextLocale === locale) return;
+    router.post(`/locale/${nextLocale}`, {}, { preserveScroll: true, preserveState: false });
   };
 
   return (
-    <aside className="lg:sticky lg:top-0 lg:flex lg:max-h-screen lg:w-[48%] lg:flex-col lg:justify-between lg:py-24">
-      <div className="space-y-10">
-        {/* Logo */}
+    <>
+      <div className="flex items-center justify-between border-b border-border/70 py-4 lg:hidden">
         <Logo />
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          aria-label={isMobileOpen ? "Close navigation" : "Open navigation"}
+          aria-expanded={isMobileOpen}
+          onClick={() => setIsMobileOpen((open) => !open)}
+        >
+          {isMobileOpen ? <RiCloseLine className="size-5" /> : <RiMenuLine className="size-5" />}
+        </Button>
+      </div>
+      {isMobileOpen && <button type="button" aria-label="Close navigation" onClick={() => setIsMobileOpen(false)} className="fixed inset-0 z-40 bg-background/70 backdrop-blur-sm lg:hidden" />}
+      <aside className={`z-50 flex w-full flex-col justify-between py-8 lg:sticky lg:top-0 lg:z-auto lg:h-screen lg:max-h-screen ${isMobileOpen ? "fixed inset-x-0 top-[73px] max-h-[calc(100vh-73px)] overflow-y-auto border-b border-border bg-background px-6 shadow-xl sm:px-10 lg:static lg:border-0 lg:bg-transparent lg:px-0 lg:shadow-none" : "hidden lg:flex"}`}>
+      <div className="space-y-10 sm:space-y-12">
+        {/* Logo */}
+        <div className="hidden lg:block">
+          <Logo />
+        </div>
 
-        {/* Name & tagline */}
-        <div>
-          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-            {name}
+        {/* Profile identity */}
+        <div className="max-w-xs lg:text-center flex justify-center flex-col items-center">
+          {avatarUrl && <img src={avatarUrl} alt={`${name} GitHub profile`} className="mb-5 size-25 rounded-full border border-border object-cover" loading="lazy" />}
+          <h1 className="flex max-w-[18ch] items-center gap-2 text-3xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-4xl">
+            <span>{name}</span>
+            <span className="inline-flex size-5 shrink-0 items-center justify-center text-sky-400" title="Verified profile" aria-label="Verified profile">
+              <HiBadgeCheck className="size-7" />
+            </span>
           </h1>
-          <h2 className="mt-3 text-lg font-medium tracking-tight text-foreground sm:text-xl">
-            {role}
-          </h2>
-          <p className="mt-4 max-w-xs leading-relaxed text-muted-foreground">
-            {tagline}
-          </p>
+          <AvailabilityBadge messages={customAvailabilityMessages} />
         </div>
 
         {/* Navigation */}
+        <div className="border-t border-border/70 pt-6">
         {navSections.length > 0 && (
-          <nav aria-label="In-page jump links">
-            <ul className="space-y-3">
+          <nav aria-label="Primary navigation">
+            <ul className="space-y-2">
               {navSections.map((section) => {
-                const isActive = activeSection === section.href;
+                const translatedLabel = t(section.label);
+                const isActive = activeSection === section.label || activeSection === translatedLabel || activeSection === section.href || activeSection === `#${section.label.toLowerCase()}`;
                 return (
                   <li key={section.label}>
-                    <a
-                      href={section.href}
-                      onClick={(e) => handleNavClick(e, section.href)}
-                      className="group flex items-center gap-3 py-1"
-                    >
-                      <span className={`h-px transition-all duration-300 ${
-                        isActive
-                          ? "w-16 bg-foreground"
-                          : "w-8 bg-muted-foreground/30 group-hover:w-16 group-hover:bg-foreground"
-                      }`} />
-                      <span className={`text-xs font-bold uppercase tracking-widest transition-colors duration-300 ${
-                        isActive
-                          ? "text-foreground"
-                          : "text-muted-foreground group-hover:text-foreground"
-                      }`}>
-                        {section.label}
-                      </span>
-                    </a>
+                    {section.href.startsWith("#") ? (
+                      <a
+                        href={section.href}
+                        onClick={(e) => handleNavClick(e, section.href)}
+                        className={`group flex items-center justify-between gap-4 rounded-xl px-3 py-2.5 transition-colors ${isActive ? "bg-card text-foreground" : "hover:bg-card/60"}`}
+                      >
+                        <NavLabel label={translatedLabel} isActive={isActive} />
+                      </a>
+                    ) : (
+                      <Link
+                        href={section.href}
+                        preserveScroll
+                        onClick={() => setIsMobileOpen(false)}
+                        className={`group flex items-center justify-between gap-4 rounded-xl px-3 py-2.5 transition-colors ${isActive ? "bg-card text-foreground" : "hover:bg-card/60"}`}
+                      >
+                        <NavLabel label={translatedLabel} isActive={isActive} />
+                      </Link>
+                    )}
                   </li>
                 );
               })}
             </ul>
           </nav>
         )}
+        </div>
+
+        <div className="flex items-center gap-3 border-t border-border/70 pt-5">
+          <div className="inline-flex overflow-hidden rounded-full border border-border bg-card text-[10px] font-bold tracking-widest" aria-label="Language">
+            {supportedLocales.map((item) => (
+              <button
+                key={item.code}
+                type="button"
+                onClick={() => changeLocale(item.code)}
+                aria-pressed={locale === item.code}
+                className={`px-3 py-1.5 transition-colors ${locale === item.code ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+          <ThemeToggle />
+        </div>
       </div>
 
-      {/* Bottom: Social links + theme toggle */}
-      <div className="mt-12 flex items-center gap-4">
+      <div className="mt-12 space-y-5">
+        <div className="flex items-center gap-5 border-t border-border/70 pt-5">
         {socialLinks?.map((link) => (
           <a
             key={link.platform}
             href={link.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-muted-foreground transition-colors hover:text-foreground"
+            className="text-muted-foreground transition-colors hover:text-foreground [&_svg]:size-[18px]"
             title={link.platform.charAt(0).toUpperCase() + link.platform.slice(1)}
           >
             {getSocialIcon(link.platform)}
           </a>
         ))}
-        <ThemeToggle />
+        </div>
+        <div className="border-t border-border/70 pt-5 text-center text-[9px] uppercase tracking-[0.18em] text-muted-foreground/60 lg:text-left">
+          <p>{t("Copyright © :year").replace(":year", String(new Date().getFullYear()))}</p>
+          <p className="mt-1 normal-case tracking-normal">{t(":name. All rights reserved.").replace(":name", name)}</p>
+        </div>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 };

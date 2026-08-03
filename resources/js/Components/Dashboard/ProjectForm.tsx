@@ -139,7 +139,7 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
         </Link>
       </div>
 
-      <form onSubmit={onSubmit} className="space-y-6 max-w-4xl border p-6 rounded-xl bg-white dark:bg-zinc-950 shadow-sm">
+      <form onSubmit={onSubmit} className="max-w-4xl space-y-6 rounded-xl border bg-card p-6 text-card-foreground shadow-sm">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field>
             <FieldLabel>Title</FieldLabel>
@@ -213,7 +213,7 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
             <FieldContent>
               <div className="space-y-2">
                 {preview && (
-                  <div className="aspect-video w-full rounded-lg border overflow-hidden bg-zinc-50 dark:bg-zinc-900">
+                  <div className="aspect-video w-full overflow-hidden rounded-lg border bg-muted">
                     <img src={preview} alt="Preview" className="h-full w-full object-cover" />
                   </div>
                 )}

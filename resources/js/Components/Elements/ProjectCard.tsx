@@ -3,7 +3,7 @@
 import React, { useRef, useState } from "react";
 import { Badge } from "../UI/badge";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "../UI/button";
+import { Button } from "../UI/button";
 import { RiExternalLinkLine, RiGithubFill, RiArrowRightLine } from "@remixicon/react";
 import { Link } from "@inertiajs/react";
 import { SafeImage } from "./SafeImage";
@@ -90,7 +90,7 @@ export const ProjectCard = ({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       className={cn(
-        "group relative flex flex-col overflow-hidden rounded-[2rem] bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-200/60 dark:border-zinc-800/60 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-500",
+        "group relative flex flex-col overflow-hidden rounded-[2rem] border border-border/70 bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl",
         className
       )}
     >
@@ -105,7 +105,7 @@ export const ProjectCard = ({
 
       {/* Image Header */}
       <div className={cn(
-        "relative w-full overflow-hidden z-10 border-b border-zinc-200/50 dark:border-zinc-800/50 bg-zinc-200 dark:bg-black",
+        "relative z-10 w-full overflow-hidden border-b border-border/70 bg-muted",
         isFeatured ? "h-72 sm:h-96" : "h-56 sm:h-64"
       )}>
         <SafeImage
@@ -116,7 +116,7 @@ export const ProjectCard = ({
         />
         
         {/* Subtle dark gradient just at the very bottom edge of image to blend with border */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
         
         {/* Floating "View Project" Pill on Hover */}
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
@@ -140,7 +140,7 @@ export const ProjectCard = ({
       </div>
 
       {/* Content Body */}
-      <div className="flex-1 flex flex-col p-6 sm:p-8 z-10 relative bg-white/50 dark:bg-zinc-900/50 backdrop-blur-xl">
+      <div className="relative z-10 flex flex-1 flex-col bg-card/90 p-6 sm:p-8">
         <Link href={`/projects/${slug}`}>
           <h3 className={cn(
               "font-black tracking-tight mb-3 hover:text-primary transition-colors cursor-pointer text-foreground",
@@ -172,7 +172,7 @@ export const ProjectCard = ({
         </div>
 
         {/* Footer Actions */}
-        <div className="mt-6 pt-5 flex items-center justify-between border-t border-zinc-200 dark:border-zinc-800">
+        <div className="mt-6 flex items-center justify-between border-t border-border/70 pt-5">
           <Link
             href={`/projects/${slug}`}
             className="text-sm font-bold text-foreground hover:text-primary transition-colors flex items-center gap-1 group/link"
@@ -183,26 +183,18 @@ export const ProjectCard = ({
           {(demo || github) && (
             <div className="flex gap-2">
               {demo && (
-                <Link
-                  href={demo}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-full"
-                  title="Live Demo"
-                >
-                  <RiExternalLinkLine className="w-5 h-5" />
-                </Link>
+                <a href={demo} target="_blank" rel="noopener noreferrer" title="Live Demo">
+                  <Button variant="ghost" size="icon" aria-label="Live Demo">
+                    <RiExternalLinkLine className="size-5" />
+                  </Button>
+                </a>
               )}
               {github && (
-                <Link
-                  href={github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-full"
-                  title="Source Code"
-                >
-                  <RiGithubFill className="w-5 h-5" />
-                </Link>
+                <a href={github} target="_blank" rel="noopener noreferrer" title="Source Code">
+                  <Button variant="ghost" size="icon" aria-label="Source Code">
+                    <RiGithubFill className="size-5" />
+                  </Button>
+                </a>
               )}
             </div>
           )}

@@ -30,13 +30,74 @@ interface Props {
   settings: Record<string, any>;
 }
 
+interface BilingualFieldProps {
+  label: string;
+  en: string;
+  id: string;
+  multiline?: boolean;
+  onChange: (locale: 'en' | 'id', value: string) => void;
+}
+
+function BilingualField({ label, en, id, multiline = false, onChange }: BilingualFieldProps) {
+  return (
+    <Field>
+      <FieldLabel>{label}</FieldLabel>
+      <FieldContent>
+        <div className="grid gap-3 md:grid-cols-2">
+          {(['en', 'id'] as const).map((locale) => (
+            <div key={locale} className="space-y-1.5">
+              <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                {locale === 'en' ? 'English' : 'Indonesia'}
+              </span>
+              {multiline ? (
+                <Textarea
+                  rows={4}
+                  value={locale === 'en' ? en : id}
+                  onChange={(event) => onChange(locale, event.target.value)}
+                />
+              ) : (
+                <Input
+                  value={locale === 'en' ? en : id}
+                  onChange={(event) => onChange(locale, event.target.value)}
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      </FieldContent>
+    </Field>
+  );
+}
+
+function bilingualValue(settings: Record<string, any>, key: string, englishFallback: string, indonesianFallback: string) {
+  return {
+    en: settings[`${key}_en`] || settings[key] || englishFallback,
+    id: settings[`${key}_id`] || indonesianFallback,
+  };
+}
+
+function parseArray(value: unknown, fallback: any[]) {
+  try {
+    const parsed = typeof value === 'string' ? JSON.parse(value) : value;
+    return Array.isArray(parsed) ? parsed : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function localizedArrayValue(settings: Record<string, any>, key: string, englishFallback: any[], indonesianFallback: any[]) {
+  return {
+    en: parseArray(settings[`${key}_en`] || settings[key], englishFallback),
+    id: parseArray(settings[`${key}_id`], indonesianFallback),
+  };
+}
+
 export default function SettingsIndex({ settings }: Props) {
   const { theme } = useTheme();
   // Parse nav_links if it's a string
   const initialNavLinks = settings.nav_links ? (typeof settings.nav_links === 'string' ? JSON.parse(settings.nav_links) : settings.nav_links) : [
     { label: "Home", href: "#" },
     { label: "About", href: "#about" },
-    { label: "Skills", href: "#skills" },
     { label: "Projects", href: "#projects" },
     { label: "Experience", href: "#experience" },
     { label: "Achievement", href: "#achievement" },
@@ -49,45 +110,141 @@ export default function SettingsIndex({ settings }: Props) {
     { platform: "coffee", url: "#" },
   ];
 
-  const parseWakaShares = () => {
-    if (!settings.wakatime_share_ids) return [];
-    const raw = typeof settings.wakatime_share_ids === 'string' ? JSON.parse(settings.wakatime_share_ids) : settings.wakatime_share_ids;
+  const parseWakaShares = (key = 'wakatime_share_ids') => {
+    if (!settings[key]) return [];
+    const raw = typeof settings[key] === 'string' ? JSON.parse(settings[key]) : settings[key];
     return Array.isArray(raw) ? raw : [];
   };
 
+  const aboutTitle = bilingualValue(settings, 'about_title', "Passionate about creating impactful web experiences", "Bersemangat menciptakan pengalaman web yang berdampak");
+  const aboutDescription = bilingualValue(settings, 'about_description', "I have hands-on experience in developing responsive interfaces and managing backend systems...", "Saya berpengalaman mengembangkan antarmuka responsif dan mengelola sistem backend...");
+  const aboutPageIntro = bilingualValue(settings, 'about_page_intro', "A closer look at my background, working style, and professional journey.", "Kenali lebih dekat latar belakang, gaya kerja, dan perjalanan profesional saya.");
+  const heroTitle = bilingualValue(settings, 'hero_title', "Hi, I'm Aji Nur Aji", "Hai, saya Aji Nur Aji");
+  const heroSubtitle = bilingualValue(settings, 'hero_subtitle', "Fullstack Developer & Networking Enthusiast", "Fullstack Developer & Penggemar Networking");
+  const homeEyebrow = bilingualValue(settings, 'home_eyebrow', "Welcome / portfolio", "Selamat datang / portofolio");
+  const homeLocation = bilingualValue(settings, 'home_location', "Based in Indonesia", "Berbasis di Indonesia");
+  const homeStatus = bilingualValue(settings, 'home_status', "Open to collaboration", "Terbuka untuk kolaborasi");
+  const homeIntro = bilingualValue(settings, 'home_intro', "I am passionate about building digital products that are clean, fast, and meaningful—from intuitive web interfaces to backend systems ready to scale.", "Saya antusias membangun produk digital yang rapi, cepat, dan berdampak—dari antarmuka web yang intuitif hingga sistem backend yang siap berkembang.");
+  const homeFocus = bilingualValue(settings, 'home_focus', "I enjoy turning ideas into experiences that are simple, measurable, and delightful to use.", "Saya menikmati proses mengubah ide menjadi pengalaman yang sederhana, terukur, dan menyenangkan digunakan.");
+  const homeCta = bilingualValue(settings, 'home_cta_label', "Let's build together", "Mari membangun bersama");
+  const skillsTitle = bilingualValue(settings, 'skills_title', "Skills", "Keahlian");
+  const skillsSubtitle = bilingualValue(settings, 'skills_subtitle', "My professional skills.", "Keahlian profesional saya.");
+  const siteTitle = bilingualValue(settings, 'site_title', "Aji Nur Aji — Fullstack Developer Portfolio", "Aji Nur Aji — Portofolio Fullstack Developer");
+  const siteDescription = bilingualValue(settings, 'site_description', "Portfolio of Aji Nur Aji, a passionate Fullstack Developer.", "Portofolio Aji Nur Aji, seorang Fullstack Developer.");
+  const availabilityMessages = localizedArrayValue(settings, 'availability_messages', ["Open to work", "Let's build together", "Available for projects"], ["Terbuka untuk pekerjaan", "Mari membangun bersama", "Tersedia untuk proyek"]);
+  const defaultNavLinks = [
+    { label: "Home", href: "#" },
+    { label: "About", href: "#about" },
+    { label: "Projects", href: "#projects" },
+    { label: "Experience", href: "#experience" },
+    { label: "Achievement", href: "#achievement" },
+  ];
+  const defaultNavLinksId = [
+    { label: "Beranda", href: "#" },
+    { label: "Tentang Saya", href: "#about" },
+    { label: "Proyek", href: "#projects" },
+    { label: "Pengalaman", href: "#experience" },
+    { label: "Pencapaian", href: "#achievement" },
+  ];
+  const navLinksEn = parseArray(settings.nav_links_en || settings.nav_links, defaultNavLinks);
+  const navLinksId = parseArray(settings.nav_links_id, defaultNavLinksId);
+
   const { data, setData, post, processing, errors } = useForm({
-    about_title: settings.about_title || "Passionate about creating impactful web experiences",
-    about_description: settings.about_description || "I have hands-on experience in developing responsive interfaces and managing backend systems...",
-    hero_title: settings.hero_title || "Hi, I'm Aji Nur Aji",
-    hero_subtitle: settings.hero_subtitle || "Fullstack Developer & Networking Enthusiast",
+    about_title: aboutTitle.en,
+    about_title_en: aboutTitle.en,
+    about_title_id: aboutTitle.id,
+    about_description: aboutDescription.en,
+    about_description_en: aboutDescription.en,
+    about_description_id: aboutDescription.id,
+    about_page_intro: aboutPageIntro.en,
+    about_page_intro_en: aboutPageIntro.en,
+    about_page_intro_id: aboutPageIntro.id,
+    hero_subtitle: heroSubtitle.en,
+    hero_subtitle_en: heroSubtitle.en,
+    hero_subtitle_id: heroSubtitle.id,
+    hero_title: heroTitle.en,
+    hero_title_en: heroTitle.en,
+    hero_title_id: heroTitle.id,
+    role: settings.role || "Fullstack Developer",
+    role_en: settings.role_en || settings.role || "Fullstack Developer",
+    role_id: settings.role_id || "Fullstack Developer",
+    home_eyebrow: homeEyebrow.en,
+    home_eyebrow_en: homeEyebrow.en,
+    home_eyebrow_id: homeEyebrow.id,
+    home_location: homeLocation.en,
+    home_location_en: homeLocation.en,
+    home_location_id: homeLocation.id,
+    home_status: homeStatus.en,
+    home_status_en: homeStatus.en,
+    home_status_id: homeStatus.id,
+    home_intro: homeIntro.en,
+    home_intro_en: homeIntro.en,
+    home_intro_id: homeIntro.id,
+    home_focus: homeFocus.en,
+    home_focus_en: homeFocus.en,
+    home_focus_id: homeFocus.id,
+    home_cta_label: homeCta.en,
+    home_cta_label_en: homeCta.en,
+    home_cta_label_id: homeCta.id,
+    skills_title: skillsTitle.en,
+    skills_title_en: skillsTitle.en,
+    skills_title_id: skillsTitle.id,
+    skills_subtitle: skillsSubtitle.en,
+    skills_subtitle_en: skillsSubtitle.en,
+    skills_subtitle_id: skillsSubtitle.id,
+    availability_messages: availabilityMessages.en,
+    availability_messages_en: availabilityMessages.en,
+    availability_messages_id: availabilityMessages.id,
     nav_links: initialNavLinks,
+    nav_links_en: navLinksEn,
+    nav_links_id: navLinksId,
     contact_email: settings.contact_email || "contact@example.com",
     github_url: settings.github_url || "https://github.com/ajinuraji",
     github_token: settings.github_token || "",
     wakatime_username: settings.wakatime_username || "",
-    wakatime_share_ids: parseWakaShares(),
+    wakatime_share_ids: parseWakaShares('wakatime_share_ids_en'),
+    wakatime_share_ids_en: parseWakaShares('wakatime_share_ids_en').length ? parseWakaShares('wakatime_share_ids_en') : parseWakaShares(),
+    wakatime_share_ids_id: parseWakaShares('wakatime_share_ids_id').length ? parseWakaShares('wakatime_share_ids_id') : parseWakaShares(),
     about_image: settings.about_image || "https://github.com/ajinuraji.png",
     is_available: settings.is_available === '1' || settings.is_available === true || settings.is_available === 'true',
     social_links: initialSocialLinks,
-    site_title: settings.site_title || "",
-    site_description: settings.site_description || "",
+    site_title: siteTitle.en,
+    site_title_en: siteTitle.en,
+    site_title_id: siteTitle.id,
+    site_description: siteDescription.en,
+    site_description_en: siteDescription.en,
+    site_description_id: siteDescription.id,
     google_site_verification: settings.google_site_verification || "",
   });
 
+  function setLocalizedData(key: string, locale: 'en' | 'id', value: string) {
+    setData(`${key}_${locale}` as any, value);
+  }
+
   function addNavLink() {
-    setData('nav_links', [...data.nav_links, { label: "", href: "" }]);
+    const link = { label: "", href: "#" };
+    setData('nav_links', [...data.nav_links, link]);
+    setData('nav_links_en', [...data.nav_links_en, link]);
+    setData('nav_links_id', [...data.nav_links_id, link]);
   }
 
   function removeNavLink(index: number) {
-    const newLinks = [...data.nav_links];
-    newLinks.splice(index, 1);
-    setData('nav_links', newLinks);
+    setData('nav_links', data.nav_links.filter((_: any, itemIndex: number) => itemIndex !== index));
+    setData('nav_links_en', data.nav_links_en.filter((_: any, itemIndex: number) => itemIndex !== index));
+    setData('nav_links_id', data.nav_links_id.filter((_: any, itemIndex: number) => itemIndex !== index));
   }
 
   function updateNavLink(index: number, field: 'label' | 'href', value: string) {
     const newLinks = [...data.nav_links];
     newLinks[index][field] = value;
     setData('nav_links', newLinks);
+  }
+
+  function updateLocalizedNavLink(locale: 'en' | 'id', index: number, field: 'label' | 'href', value: string) {
+    const key = locale === 'en' ? 'nav_links_en' : 'nav_links_id';
+    const links = [...data[key]];
+    links[index] = { ...links[index], [field]: value };
+    setData(key, links);
   }
 
   function addSocialLink() {
@@ -107,19 +264,24 @@ export default function SettingsIndex({ settings }: Props) {
   }
 
   function addWakaShare() {
-    setData('wakatime_share_ids', [...data.wakatime_share_ids, { label: "", url: "" }]);
+    const share = { label: "", url: "" };
+    setData('wakatime_share_ids_en', [...data.wakatime_share_ids_en, share]);
+    setData('wakatime_share_ids_id', [...data.wakatime_share_ids_id, share]);
+    setData('wakatime_share_ids', [...data.wakatime_share_ids_en, share]);
   }
 
   function removeWakaShare(index: number) {
-    const newShares = [...data.wakatime_share_ids];
-    newShares.splice(index, 1);
-    setData('wakatime_share_ids', newShares);
+    setData('wakatime_share_ids_en', data.wakatime_share_ids_en.filter((_: any, itemIndex: number) => itemIndex !== index));
+    setData('wakatime_share_ids_id', data.wakatime_share_ids_id.filter((_: any, itemIndex: number) => itemIndex !== index));
+    setData('wakatime_share_ids', data.wakatime_share_ids.filter((_: any, itemIndex: number) => itemIndex !== index));
   }
 
-  function updateWakaShare(index: number, field: 'label' | 'url', value: string) {
-    const newShares = [...data.wakatime_share_ids];
-    newShares[index][field] = value;
-    setData('wakatime_share_ids', newShares);
+  function updateWakaShare(locale: 'en' | 'id', index: number, field: 'label' | 'url', value: string) {
+    const key = locale === 'en' ? 'wakatime_share_ids_en' : 'wakatime_share_ids_id';
+    const shares = [...data[key]];
+    shares[index] = { ...shares[index], [field]: value };
+    setData(key, shares);
+    if (field === 'url') setData('wakatime_share_ids', shares);
   }
 
   const [activeTab, setActiveTab] = useState<'general' | 'about' | 'socials' | 'navigation' | 'seo'>('general');
@@ -151,54 +313,41 @@ export default function SettingsIndex({ settings }: Props) {
           </p>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
             {/* Tabs Sidebar */}
-            <div className="w-full lg:w-64 flex flex-row lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
+            <div className="w-full shrink-0 lg:sticky lg:top-6 lg:w-60">
+              <div className="flex flex-row gap-1 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible lg:pb-0">
                 {tabs.map((tab) => (
-                    <button
+                    <Button
                         key={tab.id}
                         type="button"
                         onClick={() => setActiveTab(tab.id as any)}
-                        className={cn(
-                            "flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-all whitespace-nowrap",
-                            activeTab === tab.id 
-                                ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 shadow-md" 
-                                : "text-muted-foreground hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                        )}
+                        variant={activeTab === tab.id ? "default" : "ghost"}
+                        className="justify-start gap-3 whitespace-nowrap"
                     >
                         <tab.icon className="size-4" />
                         {tab.label}
-                    </button>
+                    </Button>
                 ))}
+              </div>
             </div>
 
-            <div className="flex-1">
-                <form onSubmit={onSubmit} className="space-y-8 border p-6 rounded-xl bg-white dark:bg-zinc-950 shadow-sm min-h-[500px]">
+            <div className="min-w-0 flex-1">
+                <form onSubmit={onSubmit} className="relative min-h-[500px] space-y-8 rounded-xl border bg-card p-4 text-card-foreground shadow-sm sm:p-6">
                     {/* General Tab */}
                     {activeTab === 'general' && (
                         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
                             <h2 className="text-xl font-semibold border-b pb-2">Hero Section</h2>
                             <div className="grid grid-cols-1 gap-6">
-                                <Field>
-                                    <FieldLabel>Hero Title</FieldLabel>
-                                    <FieldContent>
-                                        <Input 
-                                            value={data.hero_title}
-                                            onChange={(e) => setData('hero_title', e.target.value)}
-                                        />
-                                        {errors.hero_title && <FieldError errors={[errors.hero_title]} />}
-                                    </FieldContent>
-                                </Field>
-                                <Field>
-                                    <FieldLabel>Hero Subtitle</FieldLabel>
-                                    <FieldContent>
-                                        <Input 
-                                            value={data.hero_subtitle}
-                                            onChange={(e) => setData('hero_subtitle', e.target.value)}
-                                        />
-                                        {errors.hero_subtitle && <FieldError errors={[errors.hero_subtitle]} />}
-                                    </FieldContent>
-                                </Field>
+                                <BilingualField label="Hero Title" en={data.hero_title_en} id={data.hero_title_id} onChange={(locale, value) => setLocalizedData('hero_title', locale, value)} />
+                                <BilingualField label="Role / Sidebar Label" en={data.role_en} id={data.role_id} onChange={(locale, value) => setLocalizedData('role', locale, value)} />
+                                <BilingualField label="Hero Subtitle" en={data.hero_subtitle_en} id={data.hero_subtitle_id} onChange={(locale, value) => setLocalizedData('hero_subtitle', locale, value)} />
+                                <BilingualField label="Home Eyebrow" en={data.home_eyebrow_en} id={data.home_eyebrow_id} onChange={(locale, value) => setLocalizedData('home_eyebrow', locale, value)} />
+                                <BilingualField label="Home CTA Label" en={data.home_cta_label_en} id={data.home_cta_label_id} onChange={(locale, value) => setLocalizedData('home_cta_label', locale, value)} />
+                                <BilingualField label="Home Location" en={data.home_location_en} id={data.home_location_id} onChange={(locale, value) => setLocalizedData('home_location', locale, value)} />
+                                <BilingualField label="Home Status" en={data.home_status_en} id={data.home_status_id} onChange={(locale, value) => setLocalizedData('home_status', locale, value)} />
+                                <BilingualField label="Home Intro" multiline en={data.home_intro_en} id={data.home_intro_id} onChange={(locale, value) => setLocalizedData('home_intro', locale, value)} />
+                                <BilingualField label="Home Focus" multiline en={data.home_focus_en} id={data.home_focus_id} onChange={(locale, value) => setLocalizedData('home_focus', locale, value)} />
                             </div>
                         </div>
                     )}
@@ -207,16 +356,7 @@ export default function SettingsIndex({ settings }: Props) {
                     {activeTab === 'about' && (
                         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
                             <h2 className="text-xl font-semibold border-b pb-2">About Section</h2>
-                            <Field>
-                                <FieldLabel>About Title</FieldLabel>
-                                <FieldContent>
-                                    <Input 
-                                        value={data.about_title}
-                                        onChange={(e) => setData('about_title', e.target.value)}
-                                    />
-                                    {errors.about_title && <FieldError errors={[errors.about_title]} />}
-                                </FieldContent>
-                            </Field>
+                            <BilingualField label="About Title" en={data.about_title_en} id={data.about_title_id} onChange={(locale, value) => setData(`about_title_${locale}`, value)} />
 
                             <Field>
                                 <FieldLabel>Profile Image</FieldLabel>
@@ -255,20 +395,29 @@ export default function SettingsIndex({ settings }: Props) {
                                 </FieldContent>
                             </Field>
 
-                            <Field>
-                                <FieldLabel>About Description (Markdown)</FieldLabel>
-                                <FieldContent className="min-h-[350px]">
-                                    <div data-color-mode={theme} className="w-full">
-                                        <MDEditor
-                                            value={data.about_description}
-                                            onChange={(val) => setData("about_description", val || "")}
-                                            preview="edit"
-                                            height={350}
-                                        />
-                                    </div>
-                                    {errors.about_description && <FieldError errors={[errors.about_description]} />}
-                                </FieldContent>
-                            </Field>
+                            <BilingualField label="About Page Intro" multiline en={data.about_page_intro_en} id={data.about_page_intro_id} onChange={(locale, value) => setData(`about_page_intro_${locale}`, value)} />
+
+                            <div className="space-y-3">
+                                <span className="text-sm font-medium">About Description (Markdown)</span>
+                                <div className="grid gap-4 md:grid-cols-2">
+                                    {(['en', 'id'] as const).map((locale) => (
+                                        <div key={locale} className="space-y-2">
+                                            <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">{locale === 'en' ? 'English' : 'Indonesia'}</span>
+                                            <div data-color-mode={theme} className="w-full overflow-hidden rounded-md border">
+                                                <MDEditor
+                                                    value={locale === 'en' ? data.about_description_en : data.about_description_id}
+                                                    onChange={(value) => setData(`about_description_${locale}`, value || '')}
+                                                    preview="edit"
+                                                    height={300}
+                                                />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <BilingualField label="Skills Title" en={data.skills_title_en} id={data.skills_title_id} onChange={(locale, value) => setLocalizedData('skills_title', locale, value)} />
+                            <BilingualField label="Skills Subtitle" en={data.skills_subtitle_en} id={data.skills_subtitle_id} onChange={(locale, value) => setLocalizedData('skills_subtitle', locale, value)} />
                         </div>
                     )}
 
@@ -353,33 +502,27 @@ export default function SettingsIndex({ settings }: Props) {
                                         </Button>
                                     </div>
                                     <div className="space-y-4">
-                                        {data.wakatime_share_ids.map((share: any, index: number) => (
-                                            <div key={index} className="flex gap-4 items-end border p-4 rounded-lg bg-zinc-50/50 dark:bg-zinc-900/50">
-                                                <Field className="flex-1">
-                                                    <FieldLabel>Label</FieldLabel>
-                                                    <Input 
-                                                        value={share.label}
-                                                        onChange={(e) => updateWakaShare(index, 'label', e.target.value)}
-                                                        placeholder="Languages"
-                                                    />
-                                                </Field>
-                                                <Field className="flex-[2]">
-                                                    <FieldLabel>Embed URL</FieldLabel>
-                                                    <Input 
-                                                        value={share.url}
-                                                        onChange={(e) => updateWakaShare(index, 'url', e.target.value)}
-                                                        placeholder="https://wakatime.com/share/..."
-                                                    />
-                                                </Field>
-                                                <Button 
-                                                    type="button" 
-                                                    variant="ghost" 
-                                                    size="icon" 
-                                                    className="text-red-500 mb-0.5"
-                                                    onClick={() => removeWakaShare(index)}
-                                                >
-                                                    <RiDeleteBinLine className="h-4 w-4" />
-                                                </Button>
+                                        {data.wakatime_share_ids_en.map((share: any, index: number) => (
+                                            <div key={index} className="rounded-lg border bg-zinc-50/50 p-4 dark:bg-zinc-900/50">
+                                                <div className="grid gap-4 md:grid-cols-2">
+                                                    <Field>
+                                                        <FieldLabel>English Label</FieldLabel>
+                                                        <Input value={data.wakatime_share_ids_en[index]?.label || ''} onChange={(e) => updateWakaShare('en', index, 'label', e.target.value)} placeholder="Languages" />
+                                                    </Field>
+                                                    <Field>
+                                                        <FieldLabel>Indonesia Label</FieldLabel>
+                                                        <Input value={data.wakatime_share_ids_id[index]?.label || ''} onChange={(e) => updateWakaShare('id', index, 'label', e.target.value)} placeholder="Bahasa" />
+                                                    </Field>
+                                                </div>
+                                                <div className="mt-4 flex items-end gap-4">
+                                                    <Field className="flex-1">
+                                                        <FieldLabel>Embed URL</FieldLabel>
+                                                        <Input value={data.wakatime_share_ids_en[index]?.url || ''} onChange={(e) => updateWakaShare('en', index, 'url', e.target.value)} placeholder="https://wakatime.com/share/..." />
+                                                    </Field>
+                                                    <Button type="button" variant="ghost" size="icon" className="text-red-500 mb-0.5" onClick={() => removeWakaShare(index)}>
+                                                        <RiDeleteBinLine className="h-4 w-4" />
+                                                    </Button>
+                                                </div>
                                             </div>
                                         ))}
                                         {data.wakatime_share_ids.length === 0 && (
@@ -390,6 +533,29 @@ export default function SettingsIndex({ settings }: Props) {
                                     </div>
                                 </div>
                                 
+                                <Field>
+                                    <FieldLabel>Availability Badge Messages</FieldLabel>
+                                    <FieldContent>
+                                        <div className="grid gap-3 md:grid-cols-2">
+                                            {(['en', 'id'] as const).map((locale) => {
+                                                const key = locale === 'en' ? 'availability_messages_en' : 'availability_messages_id';
+                                                return (
+                                                    <div key={locale} className="space-y-1.5">
+                                                        <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">{locale === 'en' ? 'English' : 'Indonesia'}</span>
+                                                        <Textarea
+                                                            rows={3}
+                                                            value={data[key].join("\n")}
+                                                            onChange={(e) => setData(key, e.target.value.split("\n").map((message) => message.trim()).filter(Boolean))}
+                                                            placeholder={locale === 'en' ? "Open to work\nLet's build together\nAvailable for projects" : "Terbuka untuk pekerjaan\nMari membangun bersama\nTersedia untuk proyek"}
+                                                        />
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                        <p className="text-xs text-muted-foreground">One message per line. The sidebar rotates messages using the active language.</p>
+                                    </FieldContent>
+                                </Field>
+
                                 <Field className="flex flex-row items-center justify-between rounded-lg border p-4 space-y-0">
                                     <div className="space-y-0.5">
                                         <FieldLabel className="text-base">Available for Hire</FieldLabel>
@@ -468,32 +634,11 @@ export default function SettingsIndex({ settings }: Props) {
                         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
                             <h2 className="text-xl font-semibold border-b pb-2">Search Engine & Meta</h2>
 
-                            <Field>
-                                <FieldLabel>Site Title</FieldLabel>
-                                <FieldContent>
-                                    <Input 
-                                        value={data.site_title}
-                                        onChange={(e) => setData('site_title', e.target.value)}
-                                        placeholder="Aji Nur Aji — Fullstack Developer Portfolio"
-                                        maxLength={120}
-                                    />
-                                    <p className="text-xs text-muted-foreground mt-1">Appears in browser tab and search results (max 120 chars).</p>
-                                </FieldContent>
-                            </Field>
+                            <BilingualField label="Site Title" en={data.site_title_en} id={data.site_title_id} onChange={(locale, value) => setLocalizedData('site_title', locale, value)} />
+                            <p className="-mt-4 text-xs text-muted-foreground">Appears in browser tab and search results (max 120 chars).</p>
 
-                            <Field>
-                                <FieldLabel>Site Description</FieldLabel>
-                                <FieldContent>
-                                    <Textarea 
-                                        value={data.site_description}
-                                        onChange={(e) => setData('site_description', e.target.value)}
-                                        placeholder="Portfolio of Aji Nur Aji, a passionate Fullstack Developer..."
-                                        maxLength={300}
-                                        rows={3}
-                                    />
-                                    <p className="text-xs text-muted-foreground mt-1">Appears in search result snippets (max 300 chars).</p>
-                                </FieldContent>
-                            </Field>
+                            <BilingualField label="Site Description" multiline en={data.site_description_en} id={data.site_description_id} onChange={(locale, value) => setLocalizedData('site_description', locale, value)} />
+                            <p className="-mt-4 text-xs text-muted-foreground">Appears in search result snippets (max 300 chars).</p>
 
                             <Field>
                                 <FieldLabel className="flex items-center gap-2">
@@ -523,41 +668,47 @@ export default function SettingsIndex({ settings }: Props) {
                                 </Button>
                             </div>
                             <div className="space-y-4">
-                                {data.nav_links.map((link: any, index: number) => (
-                                    <div key={index} className="flex gap-4 items-end border p-4 rounded-lg bg-zinc-50/50 dark:bg-zinc-900/50">
-                                        <Field className="flex-1">
-                                            <FieldLabel>Label</FieldLabel>
-                                            <Input 
-                                                value={link.label}
-                                                onChange={(e) => updateNavLink(index, 'label', e.target.value)}
-                                                placeholder="Home"
-                                            />
-                                        </Field>
-                                        <Field className="flex-1">
-                                            <FieldLabel>Href</FieldLabel>
-                                            <Input 
-                                                value={link.href}
-                                                onChange={(e) => updateNavLink(index, 'href', e.target.value)}
-                                                placeholder="#about"
-                                            />
-                                        </Field>
-                                        <Button 
-                                            type="button" 
-                                            variant="ghost" 
-                                            size="icon" 
-                                            className="text-red-500"
-                                            onClick={() => removeNavLink(index)}
-                                        >
-                                            <RiDeleteBinLine className="h-4 w-4" />
-                                        </Button>
+                                {data.nav_links_en.map((link: any, index: number) => (
+                                    <div key={index} className="rounded-lg border bg-zinc-50/50 p-4 dark:bg-zinc-900/50">
+                                        <div className="grid gap-4 md:grid-cols-2">
+                                            {(['en', 'id'] as const).map((locale) => {
+                                                const localizedLink = locale === 'en' ? data.nav_links_en[index] : data.nav_links_id[index];
+                                                return (
+                                                    <Field key={locale}>
+                                                        <FieldLabel>{locale === 'en' ? 'English Label' : 'Indonesia Label'}</FieldLabel>
+                                                        <Input
+                                                            value={localizedLink?.label || ''}
+                                                            onChange={(e) => updateLocalizedNavLink(locale, index, 'label', e.target.value)}
+                                                            placeholder={locale === 'en' ? 'Home' : 'Beranda'}
+                                                        />
+                                                    </Field>
+                                                );
+                                            })}
+                                        </div>
+                                        <div className="mt-4 flex items-end gap-4">
+                                            <Field className="flex-1">
+                                                <FieldLabel>Href</FieldLabel>
+                                                <Input
+                                                    value={data.nav_links_en[index]?.href || ''}
+                                                    onChange={(e) => {
+                                                        updateLocalizedNavLink('en', index, 'href', e.target.value);
+                                                        updateLocalizedNavLink('id', index, 'href', e.target.value);
+                                                    }}
+                                                    placeholder="#about"
+                                                />
+                                            </Field>
+                                            <Button type="button" variant="ghost" size="icon" className="text-red-500" onClick={() => removeNavLink(index)}>
+                                                <RiDeleteBinLine className="h-4 w-4" />
+                                            </Button>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
                         </div>
                     )}
 
-                    <div className="pt-6 border-t mt-auto">
-                        <Button type="submit" className="w-full lg:w-auto px-10" disabled={processing}>
+                    <div className="sticky bottom-0 -mx-4 mt-auto flex justify-end border-t bg-card/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:px-6">
+                        <Button type="submit" className="w-full px-10 sm:w-auto" disabled={processing}>
                             {processing ? "Saving..." : "Save All Settings"}
                         </Button>
                     </div>

@@ -26,7 +26,7 @@ export function MobileNav({ links }: MobileNavProps) {
       // Also handle potential singular/plural mismatch (achievement vs achievements)
       let id = href.replace('/#', '');
       if (id === 'achievement') id = 'achievements';
-      
+
       const element = document.getElementById(id);
       if (element) {
         setOpen(false);

@@ -1,11 +1,8 @@
-import { Navbar } from "@/Components/Elements/navbar";
-import { Footer } from "@/Components/Elements/footer";
+import ClientLayout from "@/Layouts/ClientLayout";
 import { ProjectCard } from "@/Components/Elements/ProjectCard";
 import { Head } from "@inertiajs/react";
-import { InteractiveCursor } from "@/Components/Elements/InteractiveCursor";
 import { AnimateIn } from "@/Components/Elements/AnimateIn";
 import { Badge } from "@/Components/UI/badge";
-import { LetterAnimation } from "@/Components/Elements/LetterAnimation";
 import { RiFolderOpenLine } from "@remixicon/react";
 
 interface Project {
@@ -23,9 +20,10 @@ interface Project {
 
 interface Props {
     projects: Project[];
+    settings?: Record<string, any>;
 }
 
-export default function ProjectsIndex({ projects }: Props) {
+export default function ProjectsIndex({ projects, settings = {} }: Props) {
     const featuredProjects = projects.filter(p => p.featured);
     const otherProjects = projects.filter(p => !p.featured);
 
@@ -36,28 +34,20 @@ export default function ProjectsIndex({ projects }: Props) {
                 <meta name="description" content="Browse all projects by Aji Nur Aji — web applications, experiments, and open-source contributions built with modern technologies." />
                 <link rel="canonical" href="https://ajinuraji.my.id/projects" />
             </Head>
-            <InteractiveCursor />
-            <Navbar />
-            <main className="min-h-screen w-full pt-24 pb-16">
-                <div className="max-w-5xl mx-auto px-6">
-                    {/* Header */}
-                    <AnimateIn variant="blur-fade">
-                        <div className="text-center mb-16">
-                            <Badge variant="secondary" className="px-4 py-1.5 text-sm mb-4">
-                                Portfolio
-                            </Badge>
-                            <LetterAnimation
-                                isHeading
-                                inView
-                                className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 tracking-tighter"
-                            >
-                                All Projects
-                            </LetterAnimation>
-                            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-                                A collection of projects I've built, ranging from web applications to experiments and open-source contributions.
-                            </p>
-                        </div>
-                    </AnimateIn>
+            <ClientLayout
+                active="Projects"
+                title="Projects"
+                description="A collection of web applications, experiments, and open-source work built with care."
+                name={settings.hero_title?.replace(/<[^>]+>/g, "")}
+                role={settings.role}
+                tagline={settings.hero_subtitle}
+                contactEmail={settings.contact_email}
+                settings={settings}
+            >
+                <div className="mb-10 flex items-center gap-3 border-y border-dashed border-border py-4">
+                    <Badge variant="secondary">{projects.length} projects</Badge>
+                    <span className="text-sm text-muted-foreground">Selected work and experiments</span>
+                </div>
 
                     {projects.length === 0 ? (
                         <div className="text-center py-32">
@@ -116,9 +106,7 @@ export default function ProjectsIndex({ projects }: Props) {
                             )}
                         </>
                     )}
-                </div>
-            </main>
-            <Footer />
+            </ClientLayout>
         </div>
     );
 }

@@ -2,13 +2,11 @@
 
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Navbar } from "@/Components/Elements/navbar";
-import { Footer } from "@/Components/Elements/footer";
-import { InteractiveCursor } from "@/Components/Elements/InteractiveCursor";
+import ClientLayout from "@/Layouts/ClientLayout";
 import { Head, Link } from "@inertiajs/react";
 import { AnimateIn } from "@/Components/Elements/AnimateIn";
 import { Badge } from "@/Components/UI/badge";
-import { buttonVariants } from "@/Components/UI/button";
+import { Button, buttonVariants } from "@/Components/UI/button";
 import { Input } from "@/Components/UI/input";
 import { RiArrowRightLine, RiTrophyLine, RiMedalLine, RiStarLine, RiLoader4Line, RiSearchLine } from "@remixicon/react";
 import { cn } from "@/lib/utils";
@@ -21,9 +19,10 @@ interface PaginatedData {
 
 interface Props {
   achievements: PaginatedData;
+  settings?: Record<string, any>;
 }
 
-export default function AchievementsIndex({ achievements }: Props) {
+export default function AchievementsIndex({ achievements, settings = {} }: Props) {
   const [items, setItems] = useState<any[]>(achievements.data);
   const [page, setPage] = useState(achievements.current_page);
   const [lastPage, setLastPage] = useState(achievements.last_page);
@@ -88,21 +87,19 @@ export default function AchievementsIndex({ achievements }: Props) {
         <meta name="description" content="Awards, certifications, and event participations throughout Aji Nur Aji's professional journey." />
         <link rel="canonical" href="https://ajinuraji.my.id/achievements" />
       </Head>
-      <InteractiveCursor />
-      <Navbar />
-
-      <main className="min-h-screen w-full pt-24 pb-20">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="mb-12">
-            <AnimateIn variant="blur-fade">
-              <Badge variant="secondary" className="mb-4">Achievements</Badge>
-              <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-4">
-                Recognition & <span className="text-primary">Milestones</span>
-              </h1>
-              <p className="text-xl text-muted-foreground max-w-2xl">
-                A comprehensive gallery of my awards, certifications, and event participations throughout my journey.
-              </p>
-            </AnimateIn>
+      <ClientLayout
+        active="Achievements"
+        title="Achievements"
+        description="A searchable archive of certifications, awards, and milestones collected throughout my journey."
+        name={settings.hero_title?.replace(/<[^>]+>/g, "")}
+        role={settings.role}
+        tagline={settings.hero_subtitle}
+        contactEmail={settings.contact_email}
+        settings={settings}
+      >
+          <div className="mb-10 flex items-center gap-3 border-y border-dashed border-border py-4">
+            <Badge variant="secondary">{items.length} shown</Badge>
+            <span className="text-sm text-muted-foreground">Recognition and learning milestones</span>
           </div>
 
           {/* Filters & Search */}
@@ -111,18 +108,15 @@ export default function AchievementsIndex({ achievements }: Props) {
               {/* Category Filter */}
               <div className="flex flex-wrap gap-2">
                 {categories.map((cat) => (
-                  <button
+                  <Button
                     key={cat}
+                    type="button"
                     onClick={() => setCategory(cat)}
-                    className={cn(
-                      "px-4 py-2 rounded-full text-sm font-bold tracking-wide capitalize transition-all border",
-                      category === cat 
-                        ? "bg-primary text-primary-foreground border-primary shadow-md" 
-                        : "bg-card text-muted-foreground border-border hover:bg-muted hover:text-foreground"
-                    )}
+                    variant={category === cat ? "default" : "outline"}
+                    className="rounded-full px-4 py-2 text-sm font-bold capitalize tracking-wide"
                   >
                     {cat}
-                  </button>
+                  </Button>
                 ))}
               </div>
 
@@ -220,14 +214,13 @@ export default function AchievementsIndex({ achievements }: Props) {
           {/* Load More Button */}
           {page < lastPage && items.length > 0 && (
             <div className="mt-16 flex justify-center">
-              <button 
+              <Button
+                type="button"
                 onClick={loadMore}
                 disabled={loading}
-                className={cn(
-                  buttonVariants({ variant: "outline", size: "lg" }),
-                  "rounded-full px-8 gap-2 group transition-all",
-                  loading && "opacity-70 cursor-not-allowed"
-                )}
+                variant="outline"
+                size="lg"
+                className="group gap-2 rounded-full px-8"
               >
                 {loading ? (
                     <>
@@ -238,13 +231,10 @@ export default function AchievementsIndex({ achievements }: Props) {
                       Load More <RiArrowRightLine className="size-4 group-hover:translate-x-1 transition-transform" />
                     </>
                 )}
-              </button>
+              </Button>
             </div>
           )}
-        </div>
-      </main>
-
-      <Footer />
+      </ClientLayout>
     </div>
   );
 }

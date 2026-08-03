@@ -1,9 +1,7 @@
-import { Navbar } from "@/Components/Elements/navbar";
-import { Footer } from "@/Components/Elements/footer";
+import ClientLayout from "@/Layouts/ClientLayout";
 import { Head, Link } from "@inertiajs/react";
-import { InteractiveCursor } from "@/Components/Elements/InteractiveCursor";
 import { AnimateIn } from "@/Components/Elements/AnimateIn";
-import { RiArrowLeftLine, RiExternalLinkLine, RiGithubFill, RiFileTextLine, RiRefreshLine } from "@remixicon/react";
+import { RiArrowLeftLine, RiExternalLinkLine, RiGithubFill, RiFileTextLine } from "@remixicon/react";
 import { Button, buttonVariants } from "@/Components/UI/button";
 import { Badge } from "@/Components/UI/badge";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/Components/UI/dialog";
@@ -31,6 +29,7 @@ interface Project {
 
 interface Props {
     project: Project;
+    settings?: Record<string, any>;
 }
 
 /** Normalize badges — Eloquent casts JSON to array, but we also handle raw JSON string for edge cases */
@@ -60,7 +59,7 @@ const MarkdownImage = ({ node, ...props }: any) => (
   </Dialog>
 );
 
-export default function ProjectShow({ project }: Props) {
+export default function ProjectShow({ project, settings = {} }: Props) {
     const { theme } = useTheme();
     const badgesArray = parseBadges(project.badges);
     const imageUrl = project.image?.startsWith('http') ? project.image : `/storage/${project.image}`;
@@ -69,7 +68,7 @@ export default function ProjectShow({ project }: Props) {
     const [isLoadingReadme, setIsLoadingReadme] = useState<boolean>(!!project.github);
     const [readmeError, setReadmeError] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<'content' | 'readme'>('content');
-    const [isRefreshing, setIsRefreshing] = useState(false);
+
 
     useEffect(() => {
         if (project.github) {
@@ -102,24 +101,6 @@ export default function ProjectShow({ project }: Props) {
             });
     };
 
-    const handleRefreshReadme = () => {
-        setIsRefreshing(true);
-        setReadmeError(null);
-        axios.get(`/projects/${project.slug}/refresh-readme`)
-            .then(res => {
-                if (res.data.readme_content) {
-                    setReadmeContent(res.data.readme_content);
-                } else {
-                    setReadmeError(res.data.error || "README not available.");
-                }
-            })
-            .catch(err => {
-                setReadmeError("Failed to refresh README.");
-            })
-            .finally(() => {
-                setIsRefreshing(false);
-            });
-    };
 
     const hasContent = !!project.content;
     const hasReadme = !!readmeContent;
@@ -132,10 +113,17 @@ export default function ProjectShow({ project }: Props) {
                 <meta name="description" content={project.description || ''} />
             </Head>
 
-            <InteractiveCursor />
-            <Navbar />
-
-            <main className="min-h-screen pt-24 pb-16">
+            <ClientLayout
+                active="Projects"
+                title={project.title}
+                description={project.description || "Project details and implementation notes."}
+                name={settings.hero_title?.replace(/<[^>]+>/g, "")}
+                role={settings.role}
+                tagline={settings.hero_subtitle}
+                contactEmail={settings.contact_email}
+                settings={settings}
+            >
+            <main className="min-h-screen pb-16">
                 {/* Back button */}
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 mb-8">
                     <Link 
@@ -179,29 +167,23 @@ export default function ProjectShow({ project }: Props) {
                                 <div className="prose prose-zinc dark:prose-invert max-w-none">
                                     {/* Tabs */}
                                     {showTabs && (
-                                        <div className="flex gap-1 p-1 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl mb-8">
-                                            <button
+                                        <div className="mb-8 flex gap-1 rounded-xl bg-muted p-1">
+                                            <Button
+                                                type="button"
+                                                variant={activeTab === 'content' ? 'secondary' : 'ghost'}
+                                                className="flex-1"
                                                 onClick={() => setActiveTab('content')}
-                                                className={cn(
-                                                    "flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
-                                                    activeTab === 'content'
-                                                        ? "bg-white dark:bg-zinc-700 text-foreground shadow-sm"
-                                                        : "text-muted-foreground hover:text-foreground"
-                                                )}
                                             >
                                                 Overview
-                                            </button>
-                                            <button
+                                            </Button>
+                                            <Button
+                                                type="button"
+                                                variant={activeTab === 'readme' ? 'secondary' : 'ghost'}
+                                                className="flex-1"
                                                 onClick={() => setActiveTab('readme')}
-                                                className={cn(
-                                                    "flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
-                                                    activeTab === 'readme'
-                                                        ? "bg-white dark:bg-zinc-700 text-foreground shadow-sm"
-                                                        : "text-muted-foreground hover:text-foreground"
-                                                )}
                                             >
                                                 README
-                                            </button>
+                                            </Button>
                                         </div>
                                     )}
 
@@ -222,13 +204,6 @@ export default function ProjectShow({ project }: Props) {
                                             {hasReadme ? (
                                                 <div className="space-y-4">
                                                     <div className="flex items-center gap-3">
-                                                        <RiRefreshLine 
-                                                            className={cn(
-                                                                "size-5 cursor-pointer text-muted-foreground hover:text-foreground transition-colors",
-                                                                isRefreshing && "animate-spin"
-                                                            )}
-                                                            onClick={handleRefreshReadme}
-                                                        />
                                                         <span className="text-sm text-muted-foreground">
                                                             README — from GitHub
                                                         </span>
@@ -248,10 +223,9 @@ export default function ProjectShow({ project }: Props) {
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
-                                                        onClick={handleRefreshReadme}
-                                                        disabled={isRefreshing}
+                                                        onClick={fetchReadme}
+                                                        disabled={isLoadingReadme}
                                                     >
-                                                        <RiRefreshLine className="size-4 mr-1" />
                                                         Try Again
                                                     </Button>
                                                 </div>
@@ -340,7 +314,7 @@ export default function ProjectShow({ project }: Props) {
                     </div>
                 </div>
             </main>
-            <Footer />
+            </ClientLayout>
         </div>
     );
 }

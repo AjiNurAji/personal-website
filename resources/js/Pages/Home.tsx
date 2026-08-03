@@ -1,296 +1,148 @@
-import { useEffect, useState } from "react";
-import { Link, Head } from "@inertiajs/react";
-import { Sidebar } from "@/Components/Elements/sidebar";
-import About from "@/Components/Sections/about";
-import Experience from "@/Components/Sections/experience";
-import ProjectsSection from "@/Components/Sections/projects";
-import GithubStats from "@/Components/Sections/github-stats";
-import WakaTimeStats from "@/Components/Sections/wakatime-stats";
-import { RiTrophyLine, RiMedalLine, RiStarLine, RiArrowRightUpLine } from "@remixicon/react";
+import { Head } from "@inertiajs/react";
+import ClientLayout from "@/Layouts/ClientLayout";
+import { Badge } from "@/Components/UI/badge";
+import { Button } from "@/Components/UI/button";
+import { RiArrowRightLine, RiCodeSSlashLine, RiMailLine } from "@remixicon/react";
+import { useTranslation } from "@/lib/i18n";
 
 interface Props {
-    projects: any[];
     skills: any[];
-    achievements: any[];
-    work_experiences: any[];
-    education_experiences: any[];
     settings: Record<string, any>;
 }
 
-function parseJson<T>(val: unknown): T | null {
-    if (!val) return null;
-    if (typeof val === "string") {
-        try { return JSON.parse(val) as T; } catch { return null; }
-    }
-    return val as T;
+function cleanText(value: unknown, fallback: string) {
+    return typeof value === "string" && value.trim()
+        ? value.replace(/<[^>]+>/g, "")
+        : fallback;
 }
 
-// Skills Section
-const SkillsSection = ({ skills = [] }: { skills: any[] }) => {
-    return (
-        <section id="skills" className="mb-16 scroll-mt-16 md:mb-24 lg:scroll-mt-24">
-            <div className="sticky top-0 z-20 -mx-6 mb-4 bg-background/75 px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:relative lg:top-auto lg:mx-0 lg:px-0 lg:py-0 lg:bg-transparent lg:backdrop-blur-none lg:mb-6">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-primary block mb-1">02 . core tech stack</span>
-                <h2 className="text-sm font-bold uppercase tracking-widest text-foreground">Skills</h2>
-            </div>
-            
-            <div className="space-y-6">
-                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                    Here are some of the tools, frameworks, and technologies I work with to build scalable and optimized applications.
-                </p>
-                <div className="flex flex-wrap gap-2">
-                    {skills.map((skill: any) => {
-                        let finalSlug = "";
-                        if (skill.icon && skill.icon.startsWith("Si")) {
-                            finalSlug = skill.icon.substring(2).toLowerCase();
-                        } else {
-                            finalSlug = skill.name.toLowerCase()
-                                .replace(/\.js$/, "dotjs")
-                                .replace(/ /g, "")
-                                .replace(/\+/g, "plus")
-                                .replace(/#/g, "sharp");
-                            const slugMap: Record<string, string> = {
-                                "next.js": "nextdotjs",
-                                "node.js": "nodedotjs",
-                                "framer motion": "framer",
-                                "express.js": "express",
-                                "tailwind css": "tailwindcss",
-                            };
-                            finalSlug = slugMap[skill.name.toLowerCase()] || finalSlug;
-                        }
-                        const iconUrl = `https://cdn.simpleicons.org/${finalSlug}`;
-                        return (
-                            <div key={skill.id} className="flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground hover:bg-accent/40 transition-colors">
-                                <img 
-                                    src={iconUrl} 
-                                    alt={skill.name} 
-                                    className="size-3.5 object-contain animate-fade-in"
-                                    onError={(e) => {
-                                        (e.target as HTMLImageElement).style.display = "none";
-                                    }}
-                                />
-                                <span>{skill.name}</span>
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
-        </section>
-    );
-};
+function cleanName(value: string) {
+    return value.replace(/^\s*(hi\s*,?\s*i['’]?m|hai\s*,?\s*(saya|aku))\s+/i, "").trim() || "Aji Nur Aji";
+}
 
-// Achievements Section
-const AchievementsSection = ({ achievements = [] }: { achievements: any[] }) => {
+function getSkillSlug(skill: any) {
+    const icon = String(skill.icon || "");
+    if (icon.startsWith("Si")) return icon.substring(2).toLowerCase();
+    return String(skill.name || "")
+        .toLowerCase()
+        .replace(/\.js$/, "dotjs")
+        .replace(/ /g, "")
+        .replace(/\+/g, "plus")
+        .replace(/#/g, "sharp");
+}
+
+const skillCategories = ["All", "Frontend", "Backend", "Mobile", "Database", "Tools"];
+
+function SkillsSection({ skills = [], settings }: { skills: any[]; settings: Record<string, any> }) {
+    const { t } = useTranslation();
+
     return (
-        <section id="achievements" className="mb-16 scroll-mt-16 md:mb-24 lg:scroll-mt-24">
-            <div className="sticky top-0 z-20 -mx-6 mb-4 bg-background/75 px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:relative lg:top-auto lg:mx-0 lg:px-0 lg:py-0 lg:bg-transparent lg:backdrop-blur-none lg:mb-6">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-primary block mb-1">05 . awards & recognition</span>
-                <h2 className="text-sm font-bold uppercase tracking-widest text-foreground">Achievement</h2>
-            </div>
-            
-            <div className="space-y-8">
-                {achievements.length > 0 ? (
-                    <div className="grid grid-cols-1 gap-6">
-                        {achievements.map((item: any) => {
-                            const Icon = item.category === 'award' ? RiTrophyLine : (item.category === 'certification' ? RiMedalLine : RiStarLine);
-                            const getImageUrl = (image: string) => {
-                                if (!image) return "";
-                                if (image.startsWith("http://") || image.startsWith("https://") || image.startsWith("/")) {
-                                    return image;
-                                }
-                                return `/storage/${image}`;
-                            };
-                            return (
-                                <a
-                                    key={item.id}
-                                    href={`/achievements/${item.id}`}
-                                    className="group relative grid gap-4 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 hover:bg-accent/30 -mx-4 p-4 rounded-lg"
-                                >
-                                    {/* Kiri: Preview Image/Icon */}
-                                    <div className="z-10 sm:col-span-2">
-                                        {item.preview_image ? (
-                                            <div className="w-full aspect-video sm:aspect-auto sm:h-16 rounded border border-border bg-muted/30 overflow-hidden">
-                                                <img
-                                                    src={getImageUrl(item.preview_image)}
-                                                    alt={item.title}
-                                                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                                                    loading="lazy"
-                                                />
-                                            </div>
-                                        ) : (
-                                            <div className="w-full aspect-video sm:aspect-auto sm:h-16 rounded border border-dashed border-border bg-muted/10 flex items-center justify-center">
-                                                <Icon className="size-6 text-muted-foreground/45" />
-                                            </div>
-                                        )}
-                                    </div>
-                                    
-                                    {/* Kanan: Details */}
-                                    <div className="z-10 sm:col-span-6 flex flex-col justify-between">
-                                        <div>
-                                            <h3 className="font-semibold leading-tight text-foreground text-sm sm:text-base group-hover:text-primary transition-colors flex items-center gap-1.5">
-                                                {item.title}
-                                                <RiArrowRightUpLine className="size-4 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                                            </h3>
-                                            <p className="text-xs text-muted-foreground/80 mt-1">
-                                                {item.organization} · {item.year}
-                                            </p>
-                                            {item.description && (
-                                                <p className="mt-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                                                    {item.description}
-                                                </p>
-                                            )}
-                                        </div>
-                                    </div>
-                                </a>
-                            );
-                        })}
+        <section id="skills" className="border-t border-border/70 py-14 sm:py-20">
+            <div className="mb-7 flex items-end justify-between gap-4">
+                <div>
+                    <div className="flex items-center gap-2 text-primary">
+                        <RiCodeSSlashLine className="size-5" />
+                        <h2 className="text-2xl font-bold tracking-tight text-foreground">{t(cleanText(settings.skills_title, "Skills"))}</h2>
                     </div>
-                ) : (
-                    <p className="text-sm text-muted-foreground/60 italic">Achievements coming soon.</p>
-                )}
-                
-                <Link
-                    href="/achievements"
-                    className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors group"
-                >
-                    View All Achievements
-                    <RiArrowRightUpLine className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                </Link>
+                    <p className="mt-2 text-sm text-muted-foreground">{t(cleanText(settings.skills_subtitle, "My professional skills."))}</p>
+                </div>
+                <Badge variant="secondary" className="rounded-full">{skills.length} {t("skills")}</Badge>
+            </div>
+
+            <div className="mb-8 flex flex-wrap gap-2" aria-label="Skill categories">
+                {skillCategories.map((category, index) => (
+                    <Button
+                        key={category}
+                        type="button"
+                        size="sm"
+                        variant={index === 0 ? "default" : "outline"}
+                        className="rounded-full"
+                    >
+                        {t(category)}
+                        <span className="ml-1 rounded-full bg-background/20 px-1.5 text-[10px]">{index === 0 ? skills.length : "—"}</span>
+                    </Button>
+                ))}
+            </div>
+
+            <div className="flex flex-wrap gap-2.5">
+                {skills.map((skill: any) => {
+                    const name = String(skill.name || "");
+                    const slug = getSkillSlug(skill);
+                    return (
+                        <Badge
+                            key={skill.id || name}
+                            variant="outline"
+                            className="h-9 gap-2 rounded-full border-border bg-card px-3 text-sm font-medium text-foreground transition-colors hover:border-primary/50 hover:bg-primary/5"
+                        >
+                            {slug && (
+                                <img
+                                    src={`https://cdn.simpleicons.org/${slug}`}
+                                    alt=""
+                                    loading="lazy"
+                                    className="size-4 object-contain"
+                                    onError={(event) => { event.currentTarget.style.display = "none"; }}
+                                />
+                            )}
+                            {name}
+                        </Badge>
+                    );
+                })}
+                {skills.length === 0 && <p className="text-sm italic text-muted-foreground">{t("Skills data is coming soon.")}</p>}
             </div>
         </section>
     );
-};
+}
 
-export default function Home({ projects, skills, achievements, work_experiences, education_experiences, settings }: Props) {
-    // ── All from DB, never hardcoded ──
-    const name = (typeof settings.hero_title === "string" ? settings.hero_title.replace(/<[^>]+>/g, "") : null)
-        || "Aji Nur Aji";
-    const role = (settings.role as string) || "Fullstack Developer";
-    const tagline = (typeof settings.hero_subtitle === "string" ? settings.hero_subtitle.replace(/<[^>]+>/g, "") : null)
-        || "Crafting modern, high-performance web applications.";
-
-    // Navigation: use custom nav_links from DB
-    const rawNav = parseJson<Array<{ label: string; href: string }>>(settings.nav_links) ?? [];
-    const customNav = rawNav
-        .filter((n) => !/^home$/i.test(n.label) && n.href !== "/" && n.href !== "")
-        .map((n) => ({ ...n, href: n.href.replace(/^\/+/, "") }));
-    
-    const builtInSections = [
-        { label: "About", href: "#about" },
-        { label: "Skills", href: "#skills" },
-        { label: "Projects", href: "#projects" },
-        { label: "Experience", href: "#experience" },
-        { label: "Achievement", href: "#achievements" },
-    ];
-    const navSections = customNav?.length ? customNav : builtInSections;
-
-    // Social links from DB
-    const dbSocialLinks = parseJson<Array<{ platform: string; url: string }>>(settings.social_links) ?? [];
-    const socialLinks = dbSocialLinks.length > 0
-        ? dbSocialLinks
-        : settings.github_url
-            ? [{ platform: "github", url: settings.github_url as string }]
-            : [];
-
-    const githubUrl = (settings.github_url as string) || "https://github.com/ajinuraji";
+export default function Home({ skills, settings }: Props) {
+    const name = cleanName(cleanText(settings.hero_title, "Aji Nur Aji"));
+    const role = cleanText(settings.role, "Fullstack Developer");
     const contactEmail = settings.contact_email as string | undefined;
-    const aboutImage = settings.about_image as string | undefined;
-
-    // WakaTime
-    const wakatimeUsername = settings.wakatime_username as string | undefined;
-    const wakatimeShareIds = parseJson<Array<{ label: string; url: string }>>(settings.wakatime_share_ids) ?? [];
-
-    // Scroll-Spy logic to track which section is currently active
-    const [activeSection, setActiveSection] = useState("");
-
-    useEffect(() => {
-        // Collect all IDs to observe (including github and wakatime if enabled)
-        const idsToObserve = navSections.map((n) => n.href.replace("#", "")).filter(Boolean);
-        if (settings.github_token) idsToObserve.push("github");
-        if (wakatimeUsername) idsToObserve.push("wakatime");
-
-        const observerOptions = {
-            root: null,
-            rootMargin: "-20% 0px -60% 0px",
-            threshold: 0,
-        };
-
-        const observerCallback = (entries: IntersectionObserverEntry[]) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    setActiveSection(`#${entry.target.id}`);
-                }
-            });
-        };
-
-        const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-        idsToObserve.forEach((id) => {
-            const el = document.getElementById(id);
-            if (el) observer.observe(el);
-        });
-
-        return () => {
-            idsToObserve.forEach((id) => {
-                const el = document.getElementById(id);
-                if (el) observer.unobserve(el);
-            });
-        };
-    }, [navSections, settings.github_token, wakatimeUsername]);
+    const eyebrow = cleanText(settings.home_eyebrow, "Welcome / portfolio");
+    const location = cleanText(settings.home_location, "Based in Indonesia");
+    const status = cleanText(settings.home_status, "Open to collaboration");
+    const description = cleanText(settings.home_intro, "I am passionate about building digital products that are clean, fast, and meaningful—from intuitive web interfaces to backend systems ready to scale.");
+    const focus = cleanText(settings.home_focus, "I enjoy turning ideas into experiences that are simple, measurable, and delightful to use.");
+    const ctaLabel = cleanText(settings.home_cta_label, "Let's build together");
+    const { t } = useTranslation();
 
     return (
-        <div className="mx-auto min-h-screen max-w-screen-xl px-6 py-12 md:px-12 md:py-20 lg:px-24 lg:py-0 bg-background text-muted-foreground antialiased transition-colors duration-300">
+        <ClientLayout
+            active="Home"
+            name={name}
+            role={role}
+            tagline={cleanText(settings.hero_subtitle, "Crafting modern, high-performance web applications.")}
+            contactEmail={contactEmail}
+            settings={settings}
+            showPageHeader={false}
+        >
             <Head title={settings.site_title || name} />
-
-            <div className="lg:flex lg:gap-16">
-                <Sidebar
-                    name={name}
-                    role={role}
-                    tagline={tagline}
-                    githubUrl={githubUrl}
-                    socialLinks={socialLinks}
-                    navSections={navSections}
-                    activeSection={activeSection}
-                />
-
-                <main className="pt-12 lg:py-24 lg:w-[52%]">
-                    <About
-                        title={settings.about_title as string}
-                        description={settings.about_description as string}
-                        githubUrl={githubUrl}
-                        contactEmail={contactEmail}
-                        image={aboutImage}
-                    />
-                    
-                    <SkillsSection skills={skills} />
-                    
-                    <ProjectsSection initialProjects={projects} />
-                    
-                    <Experience
-                        workExperiences={work_experiences}
-                        educationExperiences={education_experiences}
-                    />
-                    
-                    <AchievementsSection achievements={achievements} />
-                    
-                    {settings.github_token && (
-                        <GithubStats githubUrl={githubUrl} />
+            <main className="min-w-0">
+                <section id="about" className="pb-14 pt-4 sm:pb-20 sm:pt-8">
+                    <p className="mb-5 text-xs font-semibold uppercase tracking-[0.22em] text-primary">{t(eyebrow)}</p>
+                    <h1 className="max-w-3xl text-4xl font-bold leading-tight tracking-tight text-foreground sm:text-6xl">
+                        Hi, <span className="text-primary">I&apos;m</span> {name}
+                    </h1>
+                    <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
+                        <span><i className="mr-2 inline-block size-2 rounded-full bg-primary" />{t(location)}</span>
+                        <span><i className="mr-2 inline-block size-2 rounded-full bg-primary/60" />{t(status)}</span>
+                    </div>
+                    <div className="mt-8 max-w-3xl space-y-5 text-base leading-8 text-muted-foreground sm:text-lg">
+                        <p>{t(description)}</p>
+                        <p>{t(focus)}</p>
+                    </div>
+                    {contactEmail && (
+                        <Button asChild size="lg" className="group mt-8 rounded-full px-5">
+                            <a href={`mailto:${contactEmail}`}>
+                                <RiMailLine />
+                                {t(ctaLabel)}
+                                <RiArrowRightLine className="transition-transform group-hover:translate-x-1" />
+                            </a>
+                        </Button>
                     )}
-                    
-                    {wakatimeUsername && (
-                        <WakaTimeStats
-                            wakatimeUsername={wakatimeUsername}
-                            wakatimeShareIds={wakatimeShareIds}
-                        />
-                    )}
-
-                    <footer className="mt-24 pb-8">
-                        <p className="text-xs text-muted-foreground/50 leading-relaxed">
-                            Built with Laravel, Inertia.js & React. &copy; {new Date().getFullYear()} {name}.
-                        </p>
-                    </footer>
-                </main>
-            </div>
-        </div>
+                </section>
+                <SkillsSection skills={skills} settings={settings} />
+            </main>
+        </ClientLayout>
     );
 }
+

@@ -1,134 +1,190 @@
 # Deployment Checklist — Shared Hosting
 
-Ikuti langkah-langkah ini setiap deploy ke shared hosting. Checklist ini mengasumsikan kamu pakai cPanel / DirectAdmin.
+This checklist targets cPanel, DirectAdmin, or another shared-hosting environment running Laravel.
 
-## 1. Pre-Deploy (Lokal)
+## 1. Pre-Deploy Locally
+
+Run from the project root:
 
 ```bash
-# Build frontend assets (optimized)
-pnpm run build
-
-# Pastikan tidak ada error
+composer install
+npm install
+npm run build
 php artisan config:clear
+php artisan route:list
 ```
 
-## 2. Upload ke Hosting
+`npm run build` runs the same Vite production build configured by the project. If pnpm is available and healthy, `pnpm run build` is also supported.
 
-Upload SEMUA file KECUALI:
-- `node_modules/`
+Confirm the latest frontend output exists in `public/build/`.
+
+## 2. Upload Files
+
+Upload the application files, including:
+
+- `app/`
+- `bootstrap/`
+- `config/`
+- `database/`
+- `lang/`
+- `public/`
+- `resources/`
+- `routes/`
+- `storage/` structure
+- `vendor/` if Composer is not available on the host
+- `composer.json`, `composer.lock`, and production configuration files
+
+Do not upload or expose:
+
+- `.env` from another environment
 - `.git/`
-- `storage/framework/cache/data/` (dibuat ulang otomatis)
-- File development seperti test, README, dll.
+- `node_modules/`
+- `storage/framework/cache/data/`
+- Local test artifacts or editor files
+- API tokens, passwords, or private credentials
 
-**PENTING:** Upload folder `public/build/` (hasil `pnpm run build`) — ini berisi assets yang di-compile Vite.
+The compiled frontend assets in `public/build/` must be uploaded. The server does not compile React assets at request time.
 
-## 3. Setelah Upload — Jalankan di SSH/Terminal Hosting
+## 3. Configure Production Environment
+
+Create or update the production `.env` on the server. Never paste real credentials into documentation or source control.
+
+```env
+APP_NAME="Aji Nur Aji Portfolio"
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://example.com
+APP_LOCALE=en
+APP_FALLBACK_LOCALE=en
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=database_name
+DB_USERNAME=database_user
+DB_PASSWORD=[REDACTED]
+
+SESSION_ENCRYPT=true
+SESSION_SECURE_COOKIE=true
+SESSION_SAME_SITE=strict
+
+CACHE_STORE=file
+LOG_STACK=daily
+LOG_LEVEL=error
+```
+
+Use the real domain and credentials only in the server environment.
+
+## 4. Post-Upload Commands
 
 ```bash
-# Pastikan di root folder project
-cd ~/public_html  # atau folder laravel kamu
+cd ~/public_html
 
-# Install dependencies PHP (tanpa dev)
 composer install --optimize-autoloader --no-dev
-
-# Set production environment
-cp .env.example .env
-nano .env  # Edit: APP_ENV=production, APP_DEBUG=false, APP_URL=https://domainkamu.com, DB_CONNECTION=mysql, set database credentials
-
-# Generate APP_KEY (hanya sekali)
-php artisan key:generate
-
-# Symlink storage (hanya sekali)
-php artisan storage:link
-
-# Migrasi database (hanya sekali)
+php artisan key:generate        # only for a new installation
+php artisan storage:link        # only if the link does not exist
 php artisan migrate --force
-
-# Seed admin user (hanya sekali)
-php artisan db:seed --class=AdminUserSeeder --force
-
-# Cache semua config/route/view (SETIAP DEPLOY)
 php artisan optimize
-
-# Bersihkan cache lama
 php artisan cache:clear
 php artisan config:clear
 php artisan route:clear
 php artisan view:clear
 ```
 
-## 4. Shared Hosting Specific
+If the server supports Node.js and the build was not uploaded, run:
 
-### 4a. File Permissions
 ```bash
-# Folder harus writable
+npm install
+npm run build
+```
+
+## 5. Bilingual Settings Verification
+
+After signing in to `/admin/settings`:
+
+1. Open Hero Section and enter both English and Indonesian values.
+2. Open About Me and verify both Markdown editors.
+3. Open Socials & Status and verify bilingual availability messages.
+4. Open Navigation and verify both labels share the same Href.
+5. Open SEO and verify bilingual title and description.
+6. Save the settings.
+7. Switch the public locale between `EN` and `ID`.
+8. Confirm public copy, navigation, sidebar status, and document metadata change accordingly.
+
+Existing single-language settings remain valid through fallback behavior.
+
+## 6. Responsive Verification
+
+Check these viewport behaviors after deployment:
+
+- Desktop: admin sidebar remains visible and collapsible.
+- Mobile public pages: sidebar is hidden behind a menu button.
+- Mobile menu: overlay appears, body scrolling is locked, and navigation closes after selecting a link.
+- Admin settings: language fields stack vertically on narrow screens.
+- Admin settings: Save All Settings remains visible while scrolling the long form.
+
+## 7. Permissions and Security
+
+```bash
 chmod -R 775 storage bootstrap/cache
 chmod 644 public/.htaccess public/.user.ini
 ```
 
-### 4b. PHP Version
-Pastikan pakai **PHP 8.3** (cek di cPanel → Select PHP Version).
+Ensure:
 
-### 4c. Database
-- Buat database MySQL baru di cPanel
-- Buat user database dengan password kuat
-- Jangan pakai SQLite di production
+- `APP_DEBUG=false`
+- HTTPS is active
+- `.env` is not web-accessible
+- Storage uploads are limited to expected image types
+- Admin authentication and admin middleware are active
+- GitHub and WakaTime tokens are stored only in server configuration/database settings
 
-### 4d. SSL
-- Aktifkan SSL lewat cPanel (Let's Encrypt / AutoSSL)
-- Uncomment HTTPS redirect di `public/.htaccess` (baris 66-70)
-
-## 5. Verify
+## 8. Verify the Deployment
 
 ```bash
-# Cek halaman utama
-curl -I https://domainkamu.com
-
-# Cek security headers
-curl -I https://domainkamu.com | grep -i "content-security-policy\|x-frame-options\|x-content-type-options\|strict-transport"
-
-# Cek admin panel
-# Buka https://domainkamu.com/admin → harus redirect ke login
+curl -I https://example.com
+curl -I https://example.com/build/manifest.json
 ```
 
-## 6. Post-Deploy (Opsional tapi Direkomendasikan)
+Check the browser for:
 
-- [ ] Setup backup database otomatis (cPanel → Backup Wizard)
-- [ ] Setup cron job: `* * * * * php /home/user/project/artisan schedule:run >> /dev/null 2>&1`
-- [ ] Tes form login admin
-- [ ] Tes upload gambar di admin settings
-- [ ] Tes halaman mobile responsive
+- No missing JS/CSS assets
+- No failed Inertia requests
+- No console errors
+- Working EN/ID switcher
+- Working mobile menu
+- Working admin settings save
+- Working profile image upload
 
-## Environment Variables untuk Production
+Admin should require authentication:
 
-```env
-APP_NAME="Aji Nur Aji Portfolio"
-APP_ENV=production
-APP_DEBUG=false
-APP_URL=https://domainkamu.com
-
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=nama_database
-DB_USERNAME=user_database
-DB_PASSWORD=password_kuat_db
-
-SESSION_ENCRYPT=true
-SESSION_SECURE_COOKIE=true
-SESSION_SAME_SITE=strict
-
-CACHE_STORE=file          # file lebih cepat di shared hosting
-LOG_STACK=daily
-LOG_LEVEL=error           # hanya log error di production
+```text
+https://example.com/admin
 ```
 
 ## Troubleshooting
 
-| Masalah | Solusi |
+| Problem | Check |
 |---|---|
-| **500 Internal Server Error** | Cek `storage/logs/laravel.log`. Biasanya permission atau .env salah |
-| **CSS/JS tidak loading** | Jalankan `pnpm run build` ulang, pastikan `public/build/` terupload |
-| **Gambar tidak muncul** | Jalankan `php artisan storage:link` |
-| **Login gagal** | Jalankan ulang `php artisan migrate --force` dan `php artisan db:seed --class=AdminUserSeeder` |
-| **CSP memblokir resource** | Cek console browser, tambahkan domain di `app/Http/Middleware/SecurityHeaders.php` |
+| 500 error | `storage/logs/laravel.log`, permissions, `.env`, and cache |
+| CSS/JS missing | Upload `public/build/` and verify `APP_URL` |
+| Locale does not change | Check session cookies, locale route, and Inertia reload |
+| Editable copy stays in one language | Confirm both `*_en` and `*_id` fields were saved |
+| Images missing | Run `php artisan storage:link` and check `storage` permissions |
+| Login fails | Check database, migrations, session driver, and admin middleware |
+| CSP blocks assets | Review `SecurityHeaders.php` and allowed production domains |
+| Mobile menu does not open | Clear browser cache and inspect console errors |
+
+## Backups and Rollback
+
+Before deployment:
+
+- Back up the database.
+- Back up `storage/app/public`.
+- Record the current release or commit identifier.
+
+If rollback is required, restore the previous application files and assets, then clear Laravel caches:
+
+```bash
+php artisan optimize:clear
+```

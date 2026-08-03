@@ -12,12 +12,19 @@ use App\Http\Controllers\Admin\SkillController;
 use App\Http\Controllers\Admin\AchievementController;
 use App\Http\Controllers\Admin\ExperienceController;
 use App\Http\Controllers\ProjectController as PublicProjectController;
+use App\Http\Controllers\PortfolioController;
+
+Route::post('/locale/{locale}', [\App\Http\Controllers\LocaleController::class, 'update'])
+    ->where('locale', 'en|id')
+    ->name('locale.update');
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/about', [PortfolioController::class, 'about'])->name('about');
+Route::get('/experience', [PortfolioController::class, 'experience'])->name('experience');
 Route::get('/projects', [PublicProjectController::class, 'index'])->name('projects.index');
 Route::get('/projects/{slug}', [PublicProjectController::class, 'show'])->name('projects.show');
 Route::get('/projects/{slug}/readme', [PublicProjectController::class, 'readme'])->name('projects.readme');
-Route::get('/projects/{slug}/refresh-readme', [PublicProjectController::class, 'refreshReadme'])->name('projects.refresh-readme');
+
 
 Route::get('/achievements', [\App\Http\Controllers\AchievementController::class, 'index'])->name('achievements.index');
 Route::get('/achievements/{achievement}', [\App\Http\Controllers\AchievementController::class, 'show'])->name('achievements.show');
@@ -26,7 +33,7 @@ Route::get('/admin', function () {
     return redirect()->route('login');
 });
 
-Route::middleware(['auth', 'verified', 'throttle:60,1'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'verified', 'admin', 'throttle:60,1'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('projects', ProjectController::class);
     Route::get('/projects/{project}/fetch-readme', [ProjectController::class, 'fetchReadme'])->name('projects.fetch-readme');
@@ -98,9 +105,17 @@ Route::get('/sitemap.xml', function () {
 
 // Public API routes
 Route::prefix('api')->name('api.')->group(function () {
-    Route::get('/wakatime/{username}/{shareId}', [App\Http\Controllers\Api\WakaTimeController::class, 'show'])->name('wakatime.show');
-    Route::get('/github/{username}', [App\Http\Controllers\Api\GitHubController::class, 'show'])->name('github.show');
-    Route::get('/github/{username}/readme', [App\Http\Controllers\Api\GitHubController::class, 'readme'])->name('github.readme');
+    Route::middleware('throttle:30,1')->group(function () {
+        Route::get('/wakatime/{username}/{shareId}', [App\Http\Controllers\Api\WakaTimeController::class, 'show'])
+            ->where(['username' => '[A-Za-z0-9_-]{1,39}', 'shareId' => '[A-Za-z0-9_-]{1,100}'])
+            ->name('wakatime.show');
+        Route::get('/github/{username}', [App\Http\Controllers\Api\GitHubController::class, 'show'])
+            ->where('username', '[A-Za-z0-9-]{1,39}')
+            ->name('github.show');
+        Route::get('/github/{username}/readme', [App\Http\Controllers\Api\GitHubController::class, 'readme'])
+            ->where('username', '[A-Za-z0-9-]{1,39}')
+            ->name('github.readme');
+    });
 });
 
 require __DIR__.'/auth.php';

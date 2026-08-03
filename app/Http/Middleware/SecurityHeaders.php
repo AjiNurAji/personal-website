@@ -36,7 +36,10 @@ class SecurityHeaders
                 'camera=(), microphone=(), geolocation=(), interest-cohort=()'
             );
 
-            $scriptSrc = "'self' 'unsafe-inline' 'unsafe-eval'";
+            $scriptSrc = "'self' 'unsafe-inline'";
+            if (app()->environment('local')) {
+                $scriptSrc .= " 'unsafe-eval'";
+            }
             $connectSrc = "'self' https://api.github.com https://wakatime.com";
 
             if (app()->environment('local')) {

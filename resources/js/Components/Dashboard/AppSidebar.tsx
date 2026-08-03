@@ -23,6 +23,7 @@ import {
   SidebarMenuItem,
 } from "@/Components/UI/sidebar";
 import { Link, usePage } from "@inertiajs/react";
+import { useTranslation } from "@/lib/i18n";
 
 const navItems = [
   {
@@ -65,6 +66,8 @@ const navItems = [
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { t } = useTranslation();
+
   // `component` adalah nama file page Inertia yang sedang aktif
   const {url} = usePage();
 
@@ -77,14 +80,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <RiLayoutLine className="size-4" />
           </div>
           <div className="flex flex-col gap-0.5 leading-none group-data-[collapsible=icon]:hidden">
-            <span className="font-semibold">Portfolio Admin</span>
-            <span className="text-xs text-muted-foreground">v1.0.0</span>
+            <span className="font-semibold">{t("Portfolio Admin")}</span>
+                        <span className="text-xs text-muted-foreground">v1.0.0</span>
           </div>
         </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Management</SidebarGroupLabel>
+          <SidebarGroupLabel>{t("Management")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map((item) => (
@@ -96,7 +99,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   >
                     <Link href={item.url}>
                       <item.icon />
-                      <span>{item.title}</span>
+                      <span>{t(item.title)}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -114,7 +117,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <Link href={route('logout')} method="post" as="button">
                 <RiLogoutBoxLine />
-                <span>Logout</span>
+                <span>{t("Logout")}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

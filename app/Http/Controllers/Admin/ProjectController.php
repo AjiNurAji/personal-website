@@ -52,7 +52,7 @@ class ProjectController extends Controller
 
         Project::create($validated);
 
-        Cache::forget('home_page_data');
+        Cache::forget('home_page_data_public_v2');
 
         return redirect()->route('admin.projects.index')->with('success', 'Project created successfully.');
     }
@@ -104,7 +104,7 @@ class ProjectController extends Controller
 
         $project->update($validated);
 
-        Cache::forget('home_page_data');
+        Cache::forget('home_page_data_public_v2');
 
         return redirect()->route('admin.projects.index')->with('success', 'Project updated successfully.');
     }
@@ -116,7 +116,7 @@ class ProjectController extends Controller
         }
         $project->delete();
 
-        Cache::forget('home_page_data');
+        Cache::forget('home_page_data_public_v2');
 
         return redirect()->route('admin.projects.index')->with('success', 'Project deleted successfully.');
     }

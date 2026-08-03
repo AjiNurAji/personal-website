@@ -1,8 +1,6 @@
 "use client";
 
-import { Navbar } from "@/Components/Elements/navbar";
-import { Footer } from "@/Components/Elements/footer";
-import { InteractiveCursor } from "@/Components/Elements/InteractiveCursor";
+import ClientLayout from "@/Layouts/ClientLayout";
 import { Head, Link } from "@inertiajs/react";
 import { AnimateIn } from "@/Components/Elements/AnimateIn";
 import { Badge } from "@/Components/UI/badge";
@@ -43,9 +41,10 @@ const MarkdownImage = ({ node, ...props }: any) => (
 
 interface Props {
   achievement: any;
+  settings?: Record<string, any>;
 }
 
-export default function AchievementShow({ achievement }: Props) {
+export default function AchievementShow({ achievement, settings = {} }: Props) {
   const [backUrl, setBackUrl] = useState("/#achievements");
   const [backLabel, setBackLabel] = useState("Back to Home");
 
@@ -65,10 +64,17 @@ export default function AchievementShow({ achievement }: Props) {
         <meta name="description" content={achievement.description || `${achievement.title} — ${achievement.organization} (${achievement.year})`} />
         <link rel="canonical" href={`https://ajinuraji.my.id/achievements/${achievement.id}`} />
       </Head>
-      <InteractiveCursor />
-      <Navbar />
-
-      <main className="min-h-screen w-full pt-24 pb-20">
+      <ClientLayout
+        active="Achievements"
+        title={achievement.title}
+        description={achievement.description || "Achievement details and recognition."}
+        name={settings.hero_title?.replace(/<[^>]+>/g, "")}
+        role={settings.role}
+        tagline={settings.hero_subtitle}
+        contactEmail={settings.contact_email}
+        settings={settings}
+      >
+      <main className="min-h-screen w-full pb-20">
         <div className="max-w-4xl mx-auto px-6">
           <AnimateIn variant="blur-fade">
             <Link
@@ -216,8 +222,7 @@ export default function AchievementShow({ achievement }: Props) {
           </article>
         </div>
       </main>
-
-      <Footer />
+      </ClientLayout>
     </div>
   );
 }

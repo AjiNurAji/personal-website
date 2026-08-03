@@ -3,6 +3,7 @@
 import { useForm, Link } from "@inertiajs/react";
 import { Button } from "@/Components/UI/button";
 import { Input } from "@/Components/UI/input";
+import { Textarea } from "@/Components/UI/textarea";
 import {
   Field,
   FieldLabel,
@@ -321,8 +322,7 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
                 <Field>
                 <FieldLabel>Embed Code (Optional)</FieldLabel>
                 <FieldContent>
-                    <textarea 
-                        className="flex min-h-[100px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                    <Textarea
                         placeholder="Paste your Credly or third-party embed code here..."
                         value={data.embed_code || ''}
                         onChange={(e) => setData('embed_code', e.target.value)}

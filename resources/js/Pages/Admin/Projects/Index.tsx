@@ -48,7 +48,7 @@ export default function ProjectsIndex({ projects }: ProjectsIndexProps) {
             </Link>
         </div>
 
-        <div className="rounded-md border bg-white dark:bg-zinc-950 shadow-sm">
+        <div className="rounded-xl border bg-card shadow-sm">
             <Table>
             <TableHeader>
                 <TableRow>
@@ -91,7 +91,7 @@ export default function ProjectsIndex({ projects }: ProjectsIndexProps) {
                                             {badgesArray.slice(0, 3).map((badge: string) => (
                                                 <span
                                                     key={badge}
-                                                    className="text-[10px] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded"
+                                                    className="rounded-md bg-muted px-1.5 py-0.5 text-[10px]"
                                                 >
                                                     {badge}
                                                 </span>

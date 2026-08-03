@@ -1,20 +1,8 @@
-import { LabelHTMLAttributes } from 'react';
+import { Label } from '@/Components/UI/label';
+import type { ComponentProps } from 'react';
 
-export default function InputLabel({
-    value,
-    className = '',
-    children,
-    ...props
-}: LabelHTMLAttributes<HTMLLabelElement> & { value?: string }) {
-    return (
-        <label
-            {...props}
-            className={
-                `block text-sm font-medium text-gray-700 dark:text-gray-300 ` +
-                className
-            }
-        >
-            {value ? value : children}
-        </label>
-    );
+type Props = ComponentProps<typeof Label> & { value?: string };
+
+export default function InputLabel({ value, children, ...props }: Props) {
+    return <Label {...props}>{value || children}</Label>;
 }

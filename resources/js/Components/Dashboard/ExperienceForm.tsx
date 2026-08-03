@@ -95,7 +95,7 @@ export function ExperienceForm({ initialData }: ExperienceFormProps) {
         </Link>
       </div>
 
-      <form onSubmit={onSubmit} className="space-y-6 max-w-4xl border p-6 rounded-xl bg-white dark:bg-zinc-950 shadow-sm">
+      <form onSubmit={onSubmit} className="max-w-4xl space-y-6 rounded-xl border bg-card p-6 text-card-foreground shadow-sm">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field>
             <FieldLabel>Company Name</FieldLabel>
@@ -202,7 +202,7 @@ export function ExperienceForm({ initialData }: ExperienceFormProps) {
             <FieldContent>
               <div className="flex items-center gap-4">
                 {preview && (
-                  <div className="h-12 w-12 rounded border overflow-hidden shrink-0 bg-white">
+                  <div className="h-12 w-12 shrink-0 overflow-hidden rounded border bg-background">
                     <img src={preview} alt="Logo preview" className="h-full w-full object-contain" />
                   </div>
                 )}
