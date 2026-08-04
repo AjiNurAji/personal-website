@@ -41,6 +41,7 @@ class SkillController extends Controller
 
         Skill::create($validated);
 
+        Cache::forget('home_page_data_public_v2_'.app()->getLocale());
         Cache::forget('home_page_data');
 
         return redirect()->route('admin.skills.index')->with('success', 'Skill created successfully.');
@@ -57,6 +58,7 @@ class SkillController extends Controller
 
         $skill->update($validated);
 
+        Cache::forget('home_page_data_public_v2_'.app()->getLocale());
         Cache::forget('home_page_data');
 
         return redirect()->route('admin.skills.index')->with('success', 'Skill updated successfully.');
@@ -65,6 +67,7 @@ class SkillController extends Controller
     public function destroy(Skill $skill)
     {
         $skill->delete();
+        Cache::forget('home_page_data_public_v2_'.app()->getLocale());
         Cache::forget('home_page_data');
         return redirect()->route('admin.skills.index')->with('success', 'Skill deleted successfully.');
     }

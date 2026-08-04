@@ -1,3 +1,4 @@
+import { useState, useMemo } from "react";
 import { Head } from "@inertiajs/react";
 import ClientLayout from "@/Layouts/ClientLayout";
 import { Badge } from "@/Components/UI/badge";
@@ -35,6 +36,30 @@ const skillCategories = ["All", "Frontend", "Backend", "Mobile", "Database", "To
 
 function SkillsSection({ skills = [], settings }: { skills: any[]; settings: Record<string, any> }) {
     const { t } = useTranslation();
+    const [activeCategory, setActiveCategory] = useState("All");
+
+    // Collect categories from skill data (support comma-separated values)
+    const derivedCategories = useMemo(() => {
+        const cats = new Set<string>();
+        skills.forEach((s) => {
+            const raw = String(s.category || "");
+            raw.split(",").forEach((c) => {
+                const trimmed = c.trim();
+                if (trimmed) cats.add(trimmed);
+            });
+        });
+        return ["All", ...Array.from(cats).sort()];
+    }, [skills]);
+
+    const displayCategories = derivedCategories.length > 1 ? derivedCategories : skillCategories;
+
+    const filteredSkills = useMemo(() => {
+        if (activeCategory === "All") return skills;
+        return skills.filter((s) => {
+            const raw = String(s.category || "");
+            return raw.split(",").map((c) => c.trim()).includes(activeCategory);
+        });
+    }, [skills, activeCategory]);
 
     return (
         <section id="skills" className="border-t border-border/70 py-14 sm:py-20">
@@ -50,22 +75,34 @@ function SkillsSection({ skills = [], settings }: { skills: any[]; settings: Rec
             </div>
 
             <div className="mb-8 flex flex-wrap gap-2" aria-label="Skill categories">
-                {skillCategories.map((category, index) => (
-                    <Button
-                        key={category}
-                        type="button"
-                        size="sm"
-                        variant={index === 0 ? "default" : "outline"}
-                        className="rounded-full"
-                    >
-                        {t(category)}
-                        <span className="ml-1 rounded-full bg-background/20 px-1.5 text-[10px]">{index === 0 ? skills.length : "—"}</span>
-                    </Button>
-                ))}
+                {displayCategories.map((category) => {
+                    const idx = displayCategories.indexOf(category);
+                    const isActive = activeCategory === category;
+                    return (
+                        <Button
+                            key={category}
+                            type="button"
+                            size="sm"
+                            variant={isActive ? "default" : "outline"}
+                            className="rounded-full"
+                            onClick={() => setActiveCategory(category)}
+                        >
+                            {t(category)}
+                            <span className="ml-1 rounded-full bg-background/20 px-1.5 text-[10px]">
+                                {category === "All"
+                                    ? skills.length
+                                    : skills.filter((s) => {
+                                        const raw = String(s.category || "");
+                                        return raw.split(",").map((c) => c.trim()).includes(category);
+                                    }).length || "—"}
+                            </span>
+                        </Button>
+                    );
+                })}
             </div>
 
             <div className="flex flex-wrap gap-2.5">
-                {skills.map((skill: any) => {
+                {filteredSkills.map((skill: any) => {
                     const name = String(skill.name || "");
                     const slug = getSkillSlug(skill);
                     return (
@@ -87,7 +124,7 @@ function SkillsSection({ skills = [], settings }: { skills: any[]; settings: Rec
                         </Badge>
                     );
                 })}
-                {skills.length === 0 && <p className="text-sm italic text-muted-foreground">{t("Skills data is coming soon.")}</p>}
+                {filteredSkills.length === 0 && <p className="text-sm italic text-muted-foreground">{t("Skills data is coming soon.")}</p>}
             </div>
         </section>
     );
