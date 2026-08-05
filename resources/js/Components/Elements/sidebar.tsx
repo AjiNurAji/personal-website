@@ -176,8 +176,8 @@ export const Sidebar = ({ name, role, tagline, socialLinks, navSections, activeS
         </div>
 
         {/* Profile identity */}
-        <div className="flex items-center gap-3 rounded-2xl border border-border/70 bg-card/60 p-3 lg:block lg:border-0 lg:bg-transparent lg:p-0 lg:text-center">
-          {avatarUrl && <img src={avatarUrl} alt={`${name} GitHub profile`} className="size-12 shrink-0 rounded-full border border-border object-cover lg:mx-auto lg:mb-5 lg:size-25" loading="lazy" />}
+        <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-border/70 bg-card/60 p-4 text-center lg:border-0 lg:bg-transparent lg:p-0">
+          {avatarUrl && <img src={avatarUrl} alt={`${name} GitHub profile`} className="size-12 shrink-0 rounded-full border border-border object-cover lg:mb-5 lg:size-25" loading="lazy" />}
           <h1 className="flex max-w-[18ch] items-center gap-1.5 text-xl font-bold leading-tight tracking-tight text-foreground sm:text-2xl">
             <span>{name}</span>
             <span className="inline-flex size-4 shrink-0 items-center justify-center text-sky-400" title="Verified profile" aria-label="Verified profile">
