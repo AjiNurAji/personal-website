@@ -7,6 +7,7 @@ import { RiArrowRightLine, RiCodeSSlashLine, RiMailLine } from "@remixicon/react
 import { AnimateIn } from "@/Components/Elements/AnimateIn";
 import { useTranslation } from "@/lib/i18n";
 import { getIconComponent } from "@/Components/Dashboard/IconRegistry";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface Props {
     skills: any[];
@@ -32,6 +33,21 @@ function getSkillSlug(skill: any) {
         .replace(/ /g, "")
         .replace(/\+/g, "plus")
         .replace(/#/g, "sharp");
+}
+
+const skillAccents = [
+    "border-sky-400/30 bg-sky-400/10 hover:bg-sky-400/15",
+    "border-violet-400/30 bg-violet-400/10 hover:bg-violet-400/15",
+    "border-emerald-400/30 bg-emerald-400/10 hover:bg-emerald-400/15",
+    "border-amber-400/30 bg-amber-400/10 hover:bg-amber-400/15",
+    "border-rose-400/30 bg-rose-400/10 hover:bg-rose-400/15",
+    "border-cyan-400/30 bg-cyan-400/10 hover:bg-cyan-400/15",
+];
+
+function getSkillAccent(skill: any) {
+    const value = `${skill.name || ""}:${skill.icon || ""}`;
+    const hash = Array.from(value).reduce((total, char) => total + char.charCodeAt(0), 0);
+    return skillAccents[hash % skillAccents.length];
 }
 
 const skillCategories = ["All", "Frontend", "Backend", "Mobile", "Database", "Tools"];
@@ -104,34 +120,56 @@ function SkillsSection({ skills = [], settings }: { skills: any[]; settings: Rec
                 </div>
             </AnimateIn>
 
-            <AnimateIn variant="blur-fade" delay={0.14} className="flex flex-wrap gap-2.5">
-                {filteredSkills.map((skill: any) => {
-                    const name = String(skill.name || "");
-                    const slug = getSkillSlug(skill);
-                    const SkillIcon = getIconComponent(skill.icon);
-                    return (
-                        <Badge
-                            key={skill.id || name}
-                            variant="outline"
-                            className="h-9 gap-2 rounded-full border-border bg-card px-3 text-sm font-medium text-foreground transition-colors hover:border-primary/50 hover:bg-primary/5"
-                        >
-                            {SkillIcon ? (
-                                <SkillIcon className="size-4" aria-hidden="true" />
-                            ) : slug ? (
-                                <img
-                                    src={`https://cdn.simpleicons.org/${slug}`}
-                                    alt=""
-                                    loading="lazy"
-                                    className="size-4 object-contain"
-                                    onError={(event) => { event.currentTarget.style.display = "none"; }}
-                                />
-                            ) : null}
-                            {name}
-                        </Badge>
-                    );
-                })}
-                {filteredSkills.length === 0 && <p className="text-sm italic text-muted-foreground">{t("Skills data is coming soon.")}</p>}
-            </AnimateIn>
+            <AnimatePresence mode="popLayout" initial={false}>
+                <motion.div
+                    key={activeCategory}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    variants={{
+                        hidden: {},
+                        visible: { transition: { staggerChildren: 0.045 } },
+                        exit: { transition: { staggerChildren: 0.025, staggerDirection: -1 } },
+                    }}
+                    className="flex flex-wrap gap-2.5"
+                >
+                    {filteredSkills.map((skill: any) => {
+                        const name = String(skill.name || "");
+                        const slug = getSkillSlug(skill);
+                        const SkillIcon = getIconComponent(skill.icon);
+                        return (
+                            <motion.div
+                                key={skill.id || name}
+                                variants={{
+                                    hidden: { opacity: 0, y: 8, scale: 0.96 },
+                                    visible: { opacity: 1, y: 0, scale: 1 },
+                                    exit: { opacity: 0, y: -6, scale: 0.96 },
+                                }}
+                                transition={{ duration: 0.24, ease: "easeOut" }}
+                            >
+                                <Badge
+                                    variant="outline"
+                                    className={`h-9 gap-2 rounded-full px-3 text-sm font-medium text-foreground transition-colors ${getSkillAccent(skill)}`}
+                                >
+                                    {SkillIcon ? (
+                                        <SkillIcon className="size-4" aria-hidden="true" />
+                                    ) : slug ? (
+                                        <img
+                                            src={`https://cdn.simpleicons.org/${slug}`}
+                                            alt=""
+                                            loading="lazy"
+                                            className="size-4 object-contain"
+                                            onError={(event) => { event.currentTarget.style.display = "none"; }}
+                                        />
+                                    ) : null}
+                                    {name}
+                                </Badge>
+                            </motion.div>
+                        );
+                    })}
+                    {filteredSkills.length === 0 && <p className="text-sm italic text-muted-foreground">{t("Skills data is coming soon.")}</p>}
+                </motion.div>
+            </AnimatePresence>
         </section>
     );
 }
