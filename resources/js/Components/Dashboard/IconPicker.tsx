@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import * as SimpleIcons from "react-icons/si";
+import { getIconComponent, getIconEntries } from "./IconRegistry";
 import { Button } from "@/Components/UI/button";
 import { Input } from "@/Components/UI/input";
 import {
@@ -21,12 +21,7 @@ export function IconPicker({ value, onChange }: { value: string, onChange: (val:
   const [search, setSearch] = useState("");
 
   const icons = useMemo(() => {
-    return Object.keys(SimpleIcons)
-      .map((key) => ({
-        key,
-        // @ts-ignore
-        Icon: SimpleIcons[key] as React.ElementType,
-      }));
+    return getIconEntries();
   }, []);
 
   const filteredIcons = useMemo(() => {
@@ -34,7 +29,7 @@ export function IconPicker({ value, onChange }: { value: string, onChange: (val:
     return icons.filter((i) => i.key.toLowerCase().includes(search.toLowerCase())).slice(0, 150);
   }, [icons, search]);
 
-  const CurrentIcon = value && (SimpleIcons as any)[value] ? (SimpleIcons as any)[value] : null;
+  const CurrentIcon = getIconComponent(value);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

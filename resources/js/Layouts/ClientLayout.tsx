@@ -5,6 +5,7 @@ import { useTranslation } from "@/lib/i18n";
 interface ClientLink {
     label: string;
     href: string;
+    icon?: string;
 }
 
 interface ClientLayoutProps {
@@ -21,11 +22,11 @@ interface ClientLayoutProps {
 }
 
 export const CLIENT_NAVIGATION: ClientLink[] = [
-    { label: "Home", href: "/" },
-    { label: "About", href: "/about" },
-    { label: "Projects", href: "/projects" },
-    { label: "Experience", href: "/experience" },
-    { label: "Achievements", href: "/achievements" },
+    { label: "Home", href: "/", icon: "Ri:RiHomeLine" },
+    { label: "About", href: "/about", icon: "Ri:RiUserLine" },
+    { label: "Projects", href: "/projects", icon: "Ri:RiCodeBoxLine" },
+    { label: "Experience", href: "/experience", icon: "Ri:RiBriefcaseLine" },
+    { label: "Achievements", href: "/achievements", icon: "Ri:RiMedalLine" },
 ];
 
 function cleanName(value: string) {
@@ -71,6 +72,7 @@ function getNavigation(settings: Record<string, any>) {
             return parsed.map((link) => ({
                 ...link,
                 href: normalizeNavigationHref(link?.href),
+                icon: link?.icon || CLIENT_NAVIGATION[parsed.indexOf(link)]?.icon,
             }));
         }
     } catch {
@@ -112,7 +114,7 @@ export default function ClientLayout({
 
     return (
         <div className="min-h-screen bg-background text-foreground antialiased">
-            <div className="mx-auto flex min-h-screen max-w-[1440px] flex-col lg:flex-row">
+            <div className="flex min-h-screen flex-col lg:flex-row">
                 <div className="w-full shrink-0 px-6 pt-10 sm:px-10 lg:w-[320px] lg:px-10 lg:pt-0">
                     <Sidebar
                         name={displayName}
@@ -128,7 +130,7 @@ export default function ClientLayout({
                 </div>
 
                 <main id="main-content" tabIndex={-1} className="min-w-0 flex-1 border-border/70 px-5 py-12 outline-none sm:px-8 lg:border-l lg:px-16 lg:py-16">
-                    <div className="mx-auto max-w-5xl">
+                    <div className="w-full">
                         {showPageHeader && title && (
                             <div className="mb-10 max-w-3xl">
                                 <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.24em] text-primary">

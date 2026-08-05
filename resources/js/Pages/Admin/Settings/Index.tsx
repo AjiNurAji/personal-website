@@ -25,6 +25,7 @@ import { RiAddLine, RiDeleteBinLine, RiUserLine, RiLayoutLine, RiSettings4Line, 
 import MDEditor from "@uiw/react-md-editor";
 import { useTheme } from "@/hooks/use-theme";
 import { Checkbox } from "@/Components/UI/checkbox";
+import { IconPicker } from "@/Components/Dashboard/IconPicker";
 
 interface Props {
   settings: Record<string, any>;
@@ -222,7 +223,7 @@ export default function SettingsIndex({ settings }: Props) {
   }
 
   function addNavLink() {
-    const link = { label: "", href: "#" };
+    const link = { label: "", href: "#", icon: "Ri:RiHomeLine" };
     setData('nav_links', [...data.nav_links, link]);
     setData('nav_links_en', [...data.nav_links_en, link]);
     setData('nav_links_id', [...data.nav_links_id, link]);
@@ -240,11 +241,16 @@ export default function SettingsIndex({ settings }: Props) {
     setData('nav_links', newLinks);
   }
 
-  function updateLocalizedNavLink(locale: 'en' | 'id', index: number, field: 'label' | 'href', value: string) {
+  function updateLocalizedNavLink(locale: 'en' | 'id', index: number, field: 'label' | 'href' | 'icon', value: string) {
     const key = locale === 'en' ? 'nav_links_en' : 'nav_links_id';
     const links = [...data[key]];
     links[index] = { ...links[index], [field]: value };
     setData(key, links);
+    if (field === 'icon' || field === 'href') {
+      const baseLinks = [...data.nav_links];
+      baseLinks[index] = { ...baseLinks[index], [field]: value };
+      setData('nav_links', baseLinks);
+    }
   }
 
   function addSocialLink() {
@@ -685,8 +691,18 @@ export default function SettingsIndex({ settings }: Props) {
                                                 );
                                             })}
                                         </div>
-                                        <div className="mt-4 flex items-end gap-4">
-                                            <Field className="flex-1">
+                                        <div className="mt-4 grid gap-4 md:grid-cols-[1fr_1fr_auto] md:items-end">
+                                            <Field>
+                                                <FieldLabel>Icon</FieldLabel>
+                                                <IconPicker
+                                                    value={data.nav_links_en[index]?.icon || ''}
+                                                    onChange={(value) => {
+                                                        updateLocalizedNavLink('en', index, 'icon', value);
+                                                        updateLocalizedNavLink('id', index, 'icon', value);
+                                                    }}
+                                                />
+                                            </Field>
+                                            <Field>
                                                 <FieldLabel>Href</FieldLabel>
                                                 <Input
                                                     value={data.nav_links_en[index]?.href || ''}

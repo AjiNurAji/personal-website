@@ -77,7 +77,7 @@ export function SkillForm({ initialData }: SkillFormProps) {
         </Field>
 
         <Field>
-          <FieldLabel>Icon Key (Simple Icons format)</FieldLabel>
+          <FieldLabel>Icon</FieldLabel>
           <FieldContent>
             <IconPicker 
               value={data.icon}

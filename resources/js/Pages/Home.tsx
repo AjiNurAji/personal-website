@@ -4,7 +4,9 @@ import ClientLayout from "@/Layouts/ClientLayout";
 import { Badge } from "@/Components/UI/badge";
 import { Button } from "@/Components/UI/button";
 import { RiArrowRightLine, RiCodeSSlashLine, RiMailLine } from "@remixicon/react";
+import { AnimateIn } from "@/Components/Elements/AnimateIn";
 import { useTranslation } from "@/lib/i18n";
+import { getIconComponent } from "@/Components/Dashboard/IconRegistry";
 
 interface Props {
     skills: any[];
@@ -63,7 +65,7 @@ function SkillsSection({ skills = [], settings }: { skills: any[]; settings: Rec
 
     return (
         <section id="skills" className="border-t border-border/70 py-14 sm:py-20">
-            <div className="mb-7 flex items-end justify-between gap-4">
+            <AnimateIn className="mb-7 flex items-end justify-between gap-4">
                 <div>
                     <div className="flex items-center gap-2 text-primary">
                         <RiCodeSSlashLine className="size-5" />
@@ -71,12 +73,12 @@ function SkillsSection({ skills = [], settings }: { skills: any[]; settings: Rec
                     </div>
                     <p className="mt-2 text-sm text-muted-foreground">{t(cleanText(settings.skills_subtitle, "My professional skills."))}</p>
                 </div>
-                <Badge variant="secondary" className="rounded-full">{skills.length} {t("skills")}</Badge>
-            </div>
+                <Badge variant="secondary" className="rounded-full border-primary/20 bg-primary/5 text-primary">{skills.length} {t("skills")}</Badge>
+            </AnimateIn>
 
-            <div className="mb-8 flex flex-wrap gap-2" aria-label="Skill categories">
+            <AnimateIn variant="fade-left" delay={0.08} className="mb-8">
+                <div className="flex flex-wrap gap-2" aria-label="Skill categories">
                 {displayCategories.map((category) => {
-                    const idx = displayCategories.indexOf(category);
                     const isActive = activeCategory === category;
                     return (
                         <Button
@@ -99,19 +101,23 @@ function SkillsSection({ skills = [], settings }: { skills: any[]; settings: Rec
                         </Button>
                     );
                 })}
-            </div>
+                </div>
+            </AnimateIn>
 
-            <div className="flex flex-wrap gap-2.5">
+            <AnimateIn variant="blur-fade" delay={0.14} className="flex flex-wrap gap-2.5">
                 {filteredSkills.map((skill: any) => {
                     const name = String(skill.name || "");
                     const slug = getSkillSlug(skill);
+                    const SkillIcon = getIconComponent(skill.icon);
                     return (
                         <Badge
                             key={skill.id || name}
                             variant="outline"
                             className="h-9 gap-2 rounded-full border-border bg-card px-3 text-sm font-medium text-foreground transition-colors hover:border-primary/50 hover:bg-primary/5"
                         >
-                            {slug && (
+                            {SkillIcon ? (
+                                <SkillIcon className="size-4" aria-hidden="true" />
+                            ) : slug ? (
                                 <img
                                     src={`https://cdn.simpleicons.org/${slug}`}
                                     alt=""
@@ -119,13 +125,13 @@ function SkillsSection({ skills = [], settings }: { skills: any[]; settings: Rec
                                     className="size-4 object-contain"
                                     onError={(event) => { event.currentTarget.style.display = "none"; }}
                                 />
-                            )}
+                            ) : null}
                             {name}
                         </Badge>
                     );
                 })}
                 {filteredSkills.length === 0 && <p className="text-sm italic text-muted-foreground">{t("Skills data is coming soon.")}</p>}
-            </div>
+            </AnimateIn>
         </section>
     );
 }
@@ -155,27 +161,31 @@ export default function Home({ skills, settings }: Props) {
             <Head title={settings.site_title || name} />
             <main className="min-w-0">
                 <section id="about" className="pb-14 pt-4 sm:pb-20 sm:pt-8">
-                    <p className="mb-5 text-xs font-semibold uppercase tracking-[0.22em] text-primary">{t(eyebrow)}</p>
-                    <h1 className="max-w-3xl text-4xl font-bold leading-tight tracking-tight text-foreground sm:text-6xl">
-                        Hi, <span className="text-primary">I&apos;m</span> {name}
-                    </h1>
-                    <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
-                        <span><i className="mr-2 inline-block size-2 rounded-full bg-primary" />{t(location)}</span>
-                        <span><i className="mr-2 inline-block size-2 rounded-full bg-primary/60" />{t(status)}</span>
-                    </div>
-                    <div className="mt-8 max-w-3xl space-y-5 text-base leading-8 text-muted-foreground sm:text-lg">
-                        <p>{t(description)}</p>
-                        <p>{t(focus)}</p>
-                    </div>
-                    {contactEmail && (
-                        <Button asChild size="lg" className="group mt-8 rounded-full px-5">
-                            <a href={`mailto:${contactEmail}`}>
-                                <RiMailLine />
-                                {t(ctaLabel)}
-                                <RiArrowRightLine className="transition-transform group-hover:translate-x-1" />
-                            </a>
-                        </Button>
-                    )}
+                    <AnimateIn className="relative isolate w-full overflow-hidden rounded-3xl border border-border/60 bg-card/70 p-6 shadow-[0_20px_60px_-30px_rgba(15,23,42,0.35)] backdrop-blur-xl after:absolute after:-right-16 after:-top-20 after:size-48 after:rounded-full after:bg-primary/10 after:blur-3xl dark:bg-card/60 dark:shadow-black/20 sm:p-10">
+                        <div className="relative z-10">
+                        <p className="mb-5 text-xs font-semibold uppercase tracking-[0.22em] text-primary">{t(eyebrow)}</p>
+                        <h1 className="text-4xl font-bold leading-tight tracking-tight text-foreground sm:text-6xl">
+                            Hi, <span className="text-primary">I&apos;m</span> {name}
+                        </h1>
+                        <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
+                            <span><i className="mr-2 inline-block size-2 rounded-full bg-primary" />{t(location)}</span>
+                            <span><i className="mr-2 inline-block size-2 rounded-full bg-primary/60" />{t(status)}</span>
+                        </div>
+                        <div className="mt-8 space-y-5 text-base leading-8 text-muted-foreground sm:text-lg">
+                            <p>{t(description)}</p>
+                            <p>{t(focus)}</p>
+                        </div>
+                        {contactEmail && (
+                            <Button asChild size="lg" className="group mt-8 rounded-full px-5">
+                                <a href={`mailto:${contactEmail}`}>
+                                    <RiMailLine />
+                                    {t(ctaLabel)}
+                                    <RiArrowRightLine className="transition-transform group-hover:translate-x-1" />
+                                </a>
+                            </Button>
+                        )}
+                        </div>
+                    </AnimateIn>
                 </section>
                 <SkillsSection skills={skills} settings={settings} />
             </main>
