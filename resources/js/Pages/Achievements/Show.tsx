@@ -73,9 +73,10 @@ export default function AchievementShow({ achievement, settings = {} }: Props) {
         tagline={settings.hero_subtitle}
         contactEmail={settings.contact_email}
         settings={settings}
+        showPageHeader={false}
       >
       <main className="min-h-screen w-full pb-20">
-        <div className="max-w-4xl mx-auto px-6">
+        <div className="mx-auto max-w-6xl">
           <AnimateIn variant="blur-fade">
             <Link
               href={backUrl}
@@ -110,11 +111,11 @@ export default function AchievementShow({ achievement, settings = {} }: Props) {
             {/* Preview Image / Certificate */}
             {(achievement.preview_image || achievement.certificate_path) && (
               <AnimateIn variant="blur-fade" delay={0.2}>
-                <div className="rounded-3xl overflow-hidden border shadow-2xl bg-muted aspect-video relative group">
+                <div className="group relative overflow-hidden rounded-3xl border border-border/70 bg-card/60 shadow-2xl shadow-black/10">
                   <img
                     src={achievement.preview_image ? `/storage/${achievement.preview_image}` : "/api/placeholder/800/450"}
                     alt={achievement.title}
-                    className="w-full h-full object-cover"
+                    className="max-h-[min(68vh,720px)] w-full object-contain bg-muted/30"
                   />
                   {achievement.certificate_path && (
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
@@ -146,8 +147,8 @@ export default function AchievementShow({ achievement, settings = {} }: Props) {
             )}
 
             {/* Content */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-              <div className="lg:col-span-2 space-y-8">
+            <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-14">
+              <div className="space-y-8">
                 <AnimateIn variant="blur-fade" delay={0.3}>
                    <div className="prose prose-zinc dark:prose-invert max-w-none">
                       <h3 className="text-2xl font-bold mb-4">Description</h3>
@@ -189,8 +190,8 @@ export default function AchievementShow({ achievement, settings = {} }: Props) {
 
               <div className="space-y-8">
                 <AnimateIn variant="blur-fade" delay={0.4}>
-                  <div className="p-6 rounded-2xl border bg-card/50 backdrop-blur-sm sticky top-28">
-                    <h3 className="font-bold mb-4">At a glance</h3>
+                  <div className="sticky top-28 rounded-2xl border border-border/70 bg-card/60 p-6 shadow-sm backdrop-blur-sm">
+                    <h3 className="mb-5 text-lg font-bold">At a glance</h3>
                     <div className="space-y-4 text-sm">
                       <div className="flex justify-between items-start gap-4 border-b pb-2">
                         <span className="text-muted-foreground shrink-0">Category</span>

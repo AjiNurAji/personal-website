@@ -36,7 +36,7 @@ class SecurityHeaders
                 'camera=(), microphone=(), geolocation=(), interest-cohort=()'
             );
 
-            $scriptSrc = "'self' 'unsafe-inline'";
+            $scriptSrc = "'self' 'unsafe-inline' https://cdn.credly.com https://static.cloudflareinsights.com";
             if (app()->environment('local')) {
                 $scriptSrc .= " 'unsafe-eval'";
             }
@@ -56,7 +56,7 @@ class SecurityHeaders
                 "img-src 'self' data: https: blob:",
                 "font-src 'self' fonts.gstatic.com",
                 "connect-src {$connectSrc}",
-                "frame-src 'self'",
+                "frame-src 'self' https://www.credly.com https://*.credly.com",
                 "object-src 'none'",
                 "base-uri 'self'",
                 "form-action 'self'",
