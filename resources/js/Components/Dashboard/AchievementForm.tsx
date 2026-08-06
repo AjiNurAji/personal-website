@@ -28,9 +28,17 @@ import {
 export interface Achievement {
   id?: number;
   title: string;
+  title_en?: string;
+  title_id?: string;
   description: string;
+  description_en?: string;
+  description_id?: string;
   content: string | null;
+  content_en?: string | null;
+  content_id?: string | null;
   organization: string | null;
+  organization_en?: string | null;
+  organization_id?: string | null;
   year: string | null;
   category: "event" | "award" | "certification";
   certificate_path: string | null;
@@ -47,16 +55,29 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
   const [localPreview, setLocalPreview] = useState<string | null>(null);
   const { data, setData, post, processing, errors } = useForm({
     title: initialData?.title || "",
+    title_en: initialData?.title_en || "",
+    title_id: initialData?.title_id || "",
     description: initialData?.description || "",
+    description_en: initialData?.description_en || "",
+    description_id: initialData?.description_id || "",
     content: initialData?.content || "",
+    content_en: initialData?.content_en || "",
+    content_id: initialData?.content_id || "",
     organization: initialData?.organization || "",
+    organization_en: initialData?.organization_en || "",
+    organization_id: initialData?.organization_id || "",
     year: initialData?.year || "",
     category: initialData?.category || "event",
     certificate: null as File | null,
     preview_image_file: null as File | null,
     embed_code: initialData?.embed_code || "",
+    documentation_images: [] as File[],
     _method: initialData?.id ? 'PUT' : 'POST',
   });
+
+  const handleDocumentationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setData('documentation_images', Array.from(e.target.files || []));
+  };
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -136,6 +157,28 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
                 </FieldContent>
                 </Field>
 
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    {(['en', 'id'] as const).map((locale) => (
+                        <Field key={locale}>
+                            <FieldLabel>Description ({locale.toUpperCase()})</FieldLabel>
+                            <FieldContent>
+                                <div data-color-mode={theme} className="w-full">
+                                    <MDEditor value={data[`description_${locale}`] || ''} onChange={(value) => setData(`description_${locale}`, value || '')} preview="edit" height={200} />
+                                </div>
+                            </FieldContent>
+                        </Field>
+                    ))}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {(['en', 'id'] as const).map((locale) => (
+                        <Field key={locale}>
+                            <FieldLabel>Title ({locale.toUpperCase()})</FieldLabel>
+                            <FieldContent><Input value={data[`title_${locale}`]} onChange={(e) => setData(`title_${locale}`, e.target.value)} /></FieldContent>
+                        </Field>
+                    ))}
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Field>
                     <FieldLabel>Organization (Optional)</FieldLabel>
@@ -162,6 +205,15 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
                     </Field>
                 </div>
 
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {(['en', 'id'] as const).map((locale) => (
+                        <Field key={locale}>
+                            <FieldLabel>Organization ({locale.toUpperCase()})</FieldLabel>
+                            <FieldContent><Input value={data[`organization_${locale}`] || ''} onChange={(e) => setData(`organization_${locale}`, e.target.value)} /></FieldContent>
+                        </Field>
+                    ))}
+                </div>
+
                 <Field>
                 <FieldLabel>Category</FieldLabel>
                 <FieldContent>
@@ -180,6 +232,14 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
                     </Select>
                     {errors.category && <FieldError errors={[errors.category]} />}
                 </FieldContent>
+                </Field>
+
+                <Field>
+                    <FieldLabel>Documentation Photos (Slideshow)</FieldLabel>
+                    <FieldContent>
+                        <Input type="file" accept="image/*" multiple onChange={handleDocumentationChange} />
+                        <p className="text-xs text-muted-foreground">Select multiple photos for the achievement slideshow.</p>
+                    </FieldContent>
                 </Field>
 
                 <Field>
@@ -318,6 +378,24 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
                     {errors.content && <FieldError errors={[errors.content]} />}
                 </FieldContent>
                 </Field>
+
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    {(['en', 'id'] as const).map((locale) => (
+                        <Field key={locale}>
+                            <FieldLabel>Details / Content ({locale.toUpperCase()})</FieldLabel>
+                            <FieldContent className="min-h-[200px]">
+                                <div data-color-mode={theme} className="w-full">
+                                    <MDEditor
+                                        value={data[`content_${locale}`] || ''}
+                                        onChange={(value) => setData(`content_${locale}`, value || '')}
+                                        preview="edit"
+                                        height={200}
+                                    />
+                                </div>
+                            </FieldContent>
+                        </Field>
+                    ))}
+                </div>
 
                 <Field>
                 <FieldLabel>Embed Code (Optional)</FieldLabel>

@@ -11,5 +11,27 @@ class Project extends Model
     protected $casts = [
         'badges' => 'array',
         'featured' => 'boolean',
+        'documentation_images' => 'array',
     ];
+
+    public function getTitleAttribute($value): string
+    {
+        return $this->localizedValue('title', $value);
+    }
+
+    public function getDescriptionAttribute($value): string
+    {
+        return $this->localizedValue('description', $value);
+    }
+
+    public function getContentAttribute($value): ?string
+    {
+        return $this->localizedValue('content', $value);
+    }
+
+    private function localizedValue(string $field, mixed $fallback): mixed
+    {
+        $locale = app()->getLocale();
+        return $this->getRawOriginal("{$field}_{$locale}") ?: $fallback;
+    }
 }

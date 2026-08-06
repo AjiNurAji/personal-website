@@ -25,6 +25,7 @@ interface Project {
     github?: string | null;
     demo?: string | null;
     badges: string | string[];
+    documentation_images?: string[] | null;
 }
 
 interface Props {
@@ -68,7 +69,8 @@ export default function ProjectShow({ project, settings = {} }: Props) {
     const [isLoadingReadme, setIsLoadingReadme] = useState<boolean>(!!project.github);
     const [readmeError, setReadmeError] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<'content' | 'readme'>('content');
-
+    const [activeDocumentation, setActiveDocumentation] = useState(0);
+    const documentation = project.documentation_images || [];
 
     useEffect(() => {
         if (project.github) {
@@ -149,6 +151,30 @@ export default function ProjectShow({ project, settings = {} }: Props) {
                                                 alt={project.title}
                                                 className="w-full h-full object-cover"
                                             />
+                                        </div>
+                                    )}
+
+                                    {documentation.length > 0 && (
+                                        <div className="space-y-3 rounded-2xl border bg-card p-3">
+                                            <div className="aspect-video overflow-hidden rounded-xl bg-muted">
+                                                <SafeImage
+                                                    src={`/storage/${documentation[activeDocumentation]}`}
+                                                    alt={`${project.title} documentation ${activeDocumentation + 1}`}
+                                                    className="h-full w-full object-cover"
+                                                />
+                                            </div>
+                                            <div className="flex gap-2 overflow-x-auto">
+                                                {documentation.map((image, index) => (
+                                                    <button
+                                                        key={image}
+                                                        type="button"
+                                                        onClick={() => setActiveDocumentation(index)}
+                                                        className={cn("h-16 w-24 shrink-0 overflow-hidden rounded-lg border-2", activeDocumentation === index ? "border-primary" : "border-transparent")}
+                                                    >
+                                                        <img src={`/storage/${image}`} alt="" className="h-full w-full object-cover" />
+                                                    </button>
+                                                ))}
+                                            </div>
                                         </div>
                                     )}
 

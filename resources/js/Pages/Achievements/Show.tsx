@@ -13,15 +13,32 @@ import { useState, useEffect, useRef } from "react";
 
 const RawHtml = ({ html }: { html: string }) => {
     const divRef = useRef<HTMLDivElement>(null);
+    const [isDark, setIsDark] = useState(false);
+
+    useEffect(() => {
+        const root = document.documentElement;
+        const updateTheme = () => setIsDark(root.classList.contains("dark"));
+        updateTheme();
+
+        const observer = new MutationObserver(updateTheme);
+        observer.observe(root, { attributes: true, attributeFilter: ["class"] });
+
+        return () => observer.disconnect();
+    }, []);
 
     useEffect(() => {
         if (!divRef.current) return;
-        const fragment = document.createRange().createContextualFragment(html);
+        const theme = isDark ? "dark" : "light";
+        const themedHtml = html.replace(
+            /(data-share-badge-theme=["'])[^"']*(["'])/gi,
+            `$1${theme}$2`,
+        );
+        const fragment = document.createRange().createContextualFragment(themedHtml);
         divRef.current.innerHTML = '';
         divRef.current.appendChild(fragment);
-    }, [html]);
+    }, [html, isDark]);
 
-    return <div ref={divRef} className="flex justify-center" />;
+    return <div ref={divRef} className="credential-embed flex w-full justify-center" />;
 };
 
 const MarkdownImage = ({ node, ...props }: any) => (
@@ -47,6 +64,8 @@ interface Props {
 export default function AchievementShow({ achievement, settings = {} }: Props) {
   const [backUrl, setBackUrl] = useState("/#achievements");
   const [backLabel, setBackLabel] = useState("Back to Home");
+  const [activeDocumentation, setActiveDocumentation] = useState(0);
+  const documentation = achievement.documentation_images || [];
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -146,6 +165,24 @@ export default function AchievementShow({ achievement, settings = {} }: Props) {
               </AnimateIn>
             )}
 
+            {documentation.length > 0 && (
+              <AnimateIn variant="blur-fade" delay={0.25}>
+                <div className="space-y-3 rounded-2xl border border-border/70 bg-card/60 p-3 shadow-sm">
+                  <h3 className="px-2 pt-1 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Documentation</h3>
+                  <div className="aspect-video overflow-hidden rounded-xl bg-muted">
+                    <img src={`/storage/${documentation[activeDocumentation]}`} alt={`${achievement.title} documentation ${activeDocumentation + 1}`} className="h-full w-full object-cover" />
+                  </div>
+                  <div className="flex gap-2 overflow-x-auto">
+                    {documentation.map((image: string, index: number) => (
+                      <button key={image} type="button" onClick={() => setActiveDocumentation(index)} className={cn("h-16 w-24 shrink-0 overflow-hidden rounded-lg border-2", activeDocumentation === index ? "border-primary" : "border-transparent")}>
+                        <img src={`/storage/${image}`} alt="" className="h-full w-full object-cover" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </AnimateIn>
+            )}
+
             {/* Content */}
             <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-14">
               <div className="space-y-8">
@@ -178,9 +215,9 @@ export default function AchievementShow({ achievement, settings = {} }: Props) {
                    </div>
                    
                    {achievement.embed_code && (
-                        <div className="mt-12 flex flex-col items-start gap-4">
+                        <div className="mt-12 flex flex-col gap-4">
                             <h3 className="text-2xl font-bold">Credential Badge</h3>
-                            <div className="p-6 bg-muted/30 rounded-2xl border border-zinc-200 dark:border-zinc-800 transition-transform hover:scale-[1.02] duration-300">
+                            <div className="credential-card w-full overflow-hidden rounded-2xl border border-border/70 bg-card p-3 shadow-sm transition-colors duration-300 sm:p-6">
                                 <RawHtml html={achievement.embed_code} />
                             </div>
                         </div>

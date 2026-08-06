@@ -31,20 +31,30 @@ class ProjectController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'title_en' => 'nullable|string|max:255',
+            'title_id' => 'nullable|string|max:255',
             'slug' => 'required|string|max:255|unique:projects',
             'description' => 'required|string',
+            'description_en' => 'nullable|string',
+            'description_id' => 'nullable|string',
             'content' => 'nullable|string',
+            'content_en' => 'nullable|string',
+            'content_id' => 'nullable|string',
             'image' => 'required|image|max:2048',
             'link' => 'nullable|string',
             'github' => 'nullable|string',
             'demo' => 'nullable|string',
             'badges' => 'nullable|string',
             'featured' => 'boolean',
+            'documentation_images' => 'nullable|array',
+            'documentation_images.*' => 'image|max:4096',
         ]);
 
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('projects', 'public');
         }
+
+        $validated['documentation_images'] = $this->storeDocumentation($request);
 
         if (isset($validated['badges']) && is_string($validated['badges'])) {
             $validated['badges'] = collect(explode(',', $validated['badges']))->map(fn($b) => trim($b))->filter()->values()->toJson();
@@ -78,15 +88,23 @@ class ProjectController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'title_en' => 'nullable|string|max:255',
+            'title_id' => 'nullable|string|max:255',
             'slug' => 'required|string|max:255|unique:projects,slug,' . $project->id,
             'description' => 'required|string',
+            'description_en' => 'nullable|string',
+            'description_id' => 'nullable|string',
             'content' => 'nullable|string',
+            'content_en' => 'nullable|string',
+            'content_id' => 'nullable|string',
             'image' => 'nullable|image|max:2048',
             'link' => 'nullable|string',
             'github' => 'nullable|string',
             'demo' => 'nullable|string',
             'badges' => 'nullable|string',
             'featured' => 'boolean',
+            'documentation_images' => 'nullable|array',
+            'documentation_images.*' => 'image|max:4096',
         ]);
 
         if ($request->hasFile('image')) {
@@ -102,6 +120,11 @@ class ProjectController extends Controller
             $validated['badges'] = collect(explode(',', $validated['badges']))->map(fn($b) => trim($b))->filter()->values()->toJson();
         }
 
+        $newDocumentation = $this->storeDocumentation($request);
+        if ($newDocumentation) {
+            $validated['documentation_images'] = array_merge($project->documentation_images ?? [], $newDocumentation);
+        }
+
         $project->update($validated);
 
         Cache::forget('home_page_data_public_v2');
@@ -114,11 +137,22 @@ class ProjectController extends Controller
         if ($project->image && !str_starts_with($project->image, 'http')) {
             Storage::disk('public')->delete($project->image);
         }
+        foreach ($project->documentation_images ?? [] as $image) {
+            Storage::disk('public')->delete($image);
+        }
         $project->delete();
 
         Cache::forget('home_page_data_public_v2');
 
         return redirect()->route('admin.projects.index')->with('success', 'Project deleted successfully.');
+    }
+
+    private function storeDocumentation(Request $request): array
+    {
+        return collect($request->file('documentation_images', []))
+            ->map(fn ($file) => $file->store('projects/documentation', 'public'))
+            ->values()
+            ->all();
     }
 
     /**

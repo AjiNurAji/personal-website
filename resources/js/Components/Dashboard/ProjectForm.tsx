@@ -27,10 +27,17 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
   const { theme } = useTheme();
   const { data, setData, post, processing, errors } = useForm({
     title: initialData?.title || "",
+    title_en: initialData?.title_en || "",
+    title_id: initialData?.title_id || "",
     slug: initialData?.slug || "",
     description: initialData?.description || "",
+    description_en: initialData?.description_en || "",
+    description_id: initialData?.description_id || "",
     content: initialData?.content || "",
+    content_en: initialData?.content_en || "",
+    content_id: initialData?.content_id || "",
     image: null as File | null,
+    documentation_images: [] as File[],
     link: initialData?.link || "",
     github: initialData?.github || "",
     demo: initialData?.demo || "",
@@ -47,6 +54,10 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
 
   const [isFetchingReadme, setIsFetchingReadme] = useState(false);
   const [readmePreview, setReadmePreview] = useState<string | null>(null);
+
+  const handleDocumentationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setData('documentation_images', Array.from(e.target.files || []));
+  };
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -173,6 +184,17 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
           </Field>
         </div>
 
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {(['en', 'id'] as const).map((locale) => (
+            <Field key={locale}>
+              <FieldLabel>Title ({locale.toUpperCase()})</FieldLabel>
+              <FieldContent>
+                <Input value={data[`title_${locale}`]} onChange={(e) => setData(`title_${locale}`, e.target.value)} placeholder={`Project title in ${locale.toUpperCase()}`} />
+              </FieldContent>
+            </Field>
+          ))}
+        </div>
+
         <Field>
           <FieldLabel>Short Description</FieldLabel>
           <FieldContent>
@@ -184,6 +206,17 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
             {errors.description && <FieldError errors={[errors.description]} />}
           </FieldContent>
         </Field>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {(['en', 'id'] as const).map((locale) => (
+            <Field key={locale}>
+              <FieldLabel>Short Description ({locale.toUpperCase()})</FieldLabel>
+              <FieldContent>
+                <Input value={data[`description_${locale}`]} onChange={(e) => setData(`description_${locale}`, e.target.value)} placeholder={`Description in ${locale.toUpperCase()}`} />
+              </FieldContent>
+            </Field>
+          ))}
+        </div>
 
         <Field>
           <FieldLabel className="flex items-center justify-between">
@@ -207,6 +240,24 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
           </FieldContent>
         </Field>
 
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          {(['en', 'id'] as const).map((locale) => (
+            <Field key={locale}>
+              <FieldLabel>Content Details ({locale.toUpperCase()})</FieldLabel>
+              <FieldContent>
+                <div data-color-mode={theme} className="w-full">
+                  <MDEditor
+                    value={data[`content_${locale}`] || ''}
+                    onChange={(value) => setData(`content_${locale}`, value || '')}
+                    preview="edit"
+                    height={260}
+                  />
+                </div>
+              </FieldContent>
+            </Field>
+          ))}
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Field>
             <FieldLabel>Cover Image</FieldLabel>
@@ -229,6 +280,13 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
           </Field>
 
           <div className="space-y-4">
+            <Field>
+              <FieldLabel>Documentation Photos (Slideshow)</FieldLabel>
+              <FieldContent>
+                <Input type="file" accept="image/*" multiple onChange={handleDocumentationChange} />
+                <p className="text-xs text-muted-foreground">Select multiple photos for the project slideshow.</p>
+              </FieldContent>
+            </Field>
             <Field>
               <FieldLabel>Live URL</FieldLabel>
               <FieldContent>
