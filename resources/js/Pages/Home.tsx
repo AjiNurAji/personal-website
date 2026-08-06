@@ -24,15 +24,44 @@ function cleanName(value: string) {
     return value.replace(/^\s*(hi\s*,?\s*i['’]?m|hai\s*,?\s*(saya|aku))\s+/i, "").trim() || "Aji Nur Aji";
 }
 
+const skillIconSlugs: Record<string, string> = {
+    html: "html5",
+    css: "css3",
+    javascript: "javascript",
+    js: "javascript",
+    typescript: "typescript",
+    ts: "typescript",
+    "next.js": "nextdotjs",
+    nextjs: "nextdotjs",
+    "shadcn ui": "shadcnui",
+    "tailwind css": "tailwindcss",
+    "express.js": "express",
+};
+
+const skillIconColors: Record<string, string> = {
+    html5: "e34f26", css3: "1572b6", javascript: "f7df1e", typescript: "3178c6",
+    nextdotjs: "ffffff", react: "61dafb", laravel: "ff2d20", php: "777bb4",
+    tailwindcss: "06b6d4", shadcnui: "ffffff", express: "ffffff",
+    postgresql: "4169e1", mysql: "4479a1", supabase: "3ecf8e",
+};
+
+function getSkillNameKey(skill: any) {
+    return String(skill.name || "").trim().toLowerCase();
+}
+
 function getSkillSlug(skill: any) {
-    const icon = String(skill.icon || "");
-    if (icon.startsWith("Si")) return icon.substring(2).toLowerCase();
-    return String(skill.name || "")
-        .toLowerCase()
-        .replace(/\.js$/, "dotjs")
-        .replace(/ /g, "")
+    const nameKey = getSkillNameKey(skill);
+    return skillIconSlugs[nameKey] || nameKey
+        .replace(/\.js$/i, "dotjs")
+        .replace(/\s+/g, "")
         .replace(/\+/g, "plus")
-        .replace(/#/g, "sharp");
+        .replace(/#/g, "sharp")
+        .replace(/[^a-z0-9]/g, "");
+}
+
+function getSkillIconUrl(skill: any) {
+    const slug = getSkillSlug(skill);
+    return slug ? `https://cdn.simpleicons.org/${slug}/${skillIconColors[slug] || "a1a1aa"}` : null;
 }
 
 const skillAccents = [
@@ -50,37 +79,53 @@ function getSkillAccent(skill: any) {
     return skillAccents[hash % skillAccents.length];
 }
 
-const skillCategories = ["All", "Frontend", "Backend", "Mobile", "Database", "Tools"];
+function getSkillIconClass(skill: any) {
+    const value = `${skill.name || ""} ${skill.icon || ""}`.toLowerCase();
+    if (value.includes("laravel")) return "text-red-500";
+    if (value.includes("html")) return "text-orange-500";
+    if (value.includes("css")) return "text-blue-500";
+    if (value.includes("javascript") || value.includes("js")) return "text-yellow-400";
+    if (value.includes("typescript") || value.includes("ts")) return "text-blue-400";
+    if (value.includes("react")) return "text-cyan-400";
+    if (value.includes("tailwind")) return "text-cyan-300";
+    if (value.includes("next")) return "text-foreground";
+    if (value.includes("php")) return "text-indigo-400";
+    if (value.includes("postgres")) return "text-sky-400";
+    if (value.includes("mysql")) return "text-blue-300";
+    if (value.includes("supabase")) return "text-emerald-400";
+    return "text-primary";
+}
+
+function normalizeCategory(value: unknown) {
+    return String(value || "").trim().toLocaleLowerCase();
+}
+
+function getSkillCategories(skills: any[]) {
+    const categories = new Map<string, string>();
+    skills.forEach((skill) => String(skill.category || "").split(",").forEach((category) => {
+        const label = category.trim();
+        const key = normalizeCategory(label);
+        if (key && !categories.has(key)) categories.set(key, label);
+    }));
+    return Array.from(categories.values()).sort((a, b) => a.localeCompare(b));
+}
 
 function SkillsSection({ skills = [], settings }: { skills: any[]; settings: Record<string, any> }) {
     const { t } = useTranslation();
     const [activeCategory, setActiveCategory] = useState("All");
 
-    // Collect categories from skill data (support comma-separated values)
-    const derivedCategories = useMemo(() => {
-        const cats = new Set<string>();
-        skills.forEach((s) => {
-            const raw = String(s.category || "");
-            raw.split(",").forEach((c) => {
-                const trimmed = c.trim();
-                if (trimmed) cats.add(trimmed);
-            });
-        });
-        return ["All", ...Array.from(cats).sort()];
-    }, [skills]);
-
-    const displayCategories = derivedCategories.length > 1 ? derivedCategories : skillCategories;
+    const displayCategories = useMemo(() => ["All", ...getSkillCategories(skills)], [skills]);
 
     const filteredSkills = useMemo(() => {
         if (activeCategory === "All") return skills;
         return skills.filter((s) => {
             const raw = String(s.category || "");
-            return raw.split(",").map((c) => c.trim()).includes(activeCategory);
+            return raw.split(",").some((category) => normalizeCategory(category) === normalizeCategory(activeCategory));
         });
     }, [skills, activeCategory]);
 
     return (
-        <section id="skills" className="border-t border-border/70 py-14 sm:py-20">
+        <section id="skills" className="relative isolate overflow-hidden border-t border-border/70 py-14 sm:py-20 before:absolute before:inset-x-0 before:top-0 before:-z-10 before:h-72 before:bg-gradient-to-b before:from-primary/[0.07] before:via-primary/[0.025] before:to-transparent">
             <AnimateIn className="mb-7 flex items-end justify-between gap-4">
                 <div>
                     <div className="flex items-center gap-2 text-primary">
@@ -111,7 +156,7 @@ function SkillsSection({ skills = [], settings }: { skills: any[]; settings: Rec
                                     ? skills.length
                                     : skills.filter((s) => {
                                         const raw = String(s.category || "");
-                                        return raw.split(",").map((c) => c.trim()).includes(category);
+                                        return raw.split(",").some((item) => normalizeCategory(item) === normalizeCategory(category));
                                     }).length || "—"}
                             </span>
                         </Button>
@@ -135,7 +180,7 @@ function SkillsSection({ skills = [], settings }: { skills: any[]; settings: Rec
                 >
                     {filteredSkills.map((skill: any) => {
                         const name = String(skill.name || "");
-                        const slug = getSkillSlug(skill);
+                        const iconUrl = getSkillIconUrl(skill);
                         const SkillIcon = getIconComponent(skill.icon);
                         return (
                             <motion.div
@@ -149,18 +194,12 @@ function SkillsSection({ skills = [], settings }: { skills: any[]; settings: Rec
                             >
                                 <Badge
                                     variant="outline"
-                                    className={`h-9 gap-2 rounded-full px-3 text-sm font-medium text-foreground transition-colors ${getSkillAccent(skill)}`}
+                                    className={`h-10 gap-2 rounded-xl px-3.5 text-sm font-medium text-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md ${getSkillAccent(skill)}`}
                                 >
                                     {SkillIcon ? (
-                                        <SkillIcon className="size-4" aria-hidden="true" />
-                                    ) : slug ? (
-                                        <img
-                                            src={`https://cdn.simpleicons.org/${slug}`}
-                                            alt=""
-                                            loading="lazy"
-                                            className="size-4 object-contain"
-                                            onError={(event) => { event.currentTarget.style.display = "none"; }}
-                                        />
+                                        <SkillIcon className={`size-4 ${getSkillIconClass(skill)}`} aria-hidden="true" />
+                                    ) : iconUrl ? (
+                                        <img src={iconUrl} alt="" loading="lazy" className="size-4 object-contain" onError={(event) => { event.currentTarget.style.display = "none"; }} />
                                     ) : null}
                                     {name}
                                 </Badge>

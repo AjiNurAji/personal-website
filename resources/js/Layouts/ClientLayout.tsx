@@ -56,10 +56,18 @@ function parseSettingArray(value: unknown, fallback: string[]) {
 
 function normalizeNavigationHref(href: unknown) {
     const value = String(href || "/").trim();
+    const sectionRoutes: Record<string, string> = {
+        about: "/about",
+        skills: "/#skills",
+        projects: "/projects",
+        experience: "/experience",
+        achievement: "/achievements",
+        achievements: "/achievements",
+    };
 
     if (value === "#") return "/";
     if (value.startsWith("/#") || value.startsWith("http://") || value.startsWith("https://")) return value;
-    if (value.startsWith("#")) return `/${value}`;
+    if (value.startsWith("#")) return sectionRoutes[value.slice(1).toLowerCase()] || `/${value}`;
     if (value.startsWith("/")) return value;
 
     return `/${value}`;

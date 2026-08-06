@@ -168,16 +168,16 @@ export const Sidebar = ({ name, role, tagline, socialLinks, navSections, activeS
         </Button>
       </div>
       {isMobileOpen && <button type="button" aria-label="Close navigation" onClick={() => setIsMobileOpen(false)} className="fixed inset-0 z-40 bg-background/70 backdrop-blur-sm lg:hidden" />}
-      <aside className={`z-50 flex w-full flex-col justify-between py-8 lg:sticky lg:top-0 lg:z-auto lg:h-screen lg:max-h-screen ${isMobileOpen ? "fixed inset-x-0 top-16 max-h-[calc(100vh-4rem)] animate-in slide-in-from-top-2 overflow-y-auto border-b border-border bg-background px-5 py-5 shadow-2xl sm:px-10 lg:static lg:border-0 lg:bg-transparent lg:px-0 lg:shadow-none" : "hidden lg:flex"}`}>
-      <div className="space-y-6 sm:space-y-8 lg:space-y-12">
+      <aside className={`z-50 flex w-full flex-col justify-between py-8 lg:sticky lg:top-0 lg:z-auto lg:h-screen lg:max-h-screen ${isMobileOpen ? "fixed inset-x-0 top-16 max-h-[calc(100vh-4rem)] animate-in slide-in-from-top-2 overflow-y-auto border-b border-border bg-background px-5 pb-8 pt-8 shadow-2xl sm:px-10 sm:pt-10 lg:static lg:border-0 lg:bg-transparent lg:px-0 lg:shadow-none" : "hidden lg:flex"}`}>
+      <div className="space-y-7 sm:space-y-9 lg:space-y-12">
         {/* Logo */}
         <div className="hidden lg:block">
           <Logo />
         </div>
 
         {/* Profile identity */}
-        <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-border/70 bg-card/60 p-4 text-center lg:border-0 lg:bg-transparent lg:p-0">
-          {avatarUrl && <img src={avatarUrl} alt={`${name} GitHub profile`} className="size-12 shrink-0 rounded-full border border-border object-cover lg:mb-5 lg:size-25" loading="lazy" />}
+        <div className="flex flex-col items-center justify-center gap-3 overflow-visible rounded-2xl border border-border/70 bg-card/60 p-5 text-center lg:border-0 lg:bg-transparent lg:p-0">
+          {avatarUrl && <img src={avatarUrl} alt={`${name} GitHub profile`} className="size-14 shrink-0 rounded-full border border-border object-cover lg:mb-5 lg:size-24" loading="lazy" />}
           <h1 className="flex max-w-[18ch] items-center gap-1.5 text-xl font-bold leading-tight tracking-tight text-foreground sm:text-2xl">
             <span>{name}</span>
             <span className="inline-flex size-4 shrink-0 items-center justify-center text-sky-400" title="Verified profile" aria-label="Verified profile">
@@ -208,7 +208,7 @@ export const Sidebar = ({ name, role, tagline, socialLinks, navSections, activeS
                       </a>
                     ) : (
                       <Link
-                        href={section.href}
+                        href={normalizedHref}
                         preserveScroll
                         onClick={() => setIsMobileOpen(false)}
                         className={`group flex min-h-11 items-center justify-between gap-4 rounded-xl border px-3 py-2.5 transition-colors lg:border-0 ${isActive ? "border-primary/25 bg-primary/5 text-foreground" : "border-border/60 hover:bg-card/60"}`}
