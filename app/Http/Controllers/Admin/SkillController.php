@@ -43,6 +43,7 @@ class SkillController extends Controller
 
         Cache::forget('home_page_data_public_v2_'.app()->getLocale());
         Cache::forget('home_page_data');
+        Cache::forget('skills_page_'.app()->getLocale());
 
         return redirect()->route('admin.skills.index')->with('success', 'Skill created successfully.');
     }
@@ -60,6 +61,7 @@ class SkillController extends Controller
 
         Cache::forget('home_page_data_public_v2_'.app()->getLocale());
         Cache::forget('home_page_data');
+        Cache::forget('skills_page_'.app()->getLocale());
 
         return redirect()->route('admin.skills.index')->with('success', 'Skill updated successfully.');
     }
@@ -69,6 +71,7 @@ class SkillController extends Controller
         $skill->delete();
         Cache::forget('home_page_data_public_v2_'.app()->getLocale());
         Cache::forget('home_page_data');
+        Cache::forget('skills_page_'.app()->getLocale());
         return redirect()->route('admin.skills.index')->with('success', 'Skill deleted successfully.');
     }
 }

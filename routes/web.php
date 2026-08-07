@@ -20,12 +20,9 @@ Route::post('/locale/{locale}', [\App\Http\Controllers\LocaleController::class, 
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [PortfolioController::class, 'about'])->name('about');
-Route::get('/experience', [PortfolioController::class, 'experience'])->name('experience');
 Route::get('/projects', [PublicProjectController::class, 'index'])->name('projects.index');
 Route::get('/projects/{slug}', [PublicProjectController::class, 'show'])->name('projects.show');
 Route::get('/projects/{slug}/readme', [PublicProjectController::class, 'readme'])->name('projects.readme');
-
-
 Route::get('/achievements', [\App\Http\Controllers\AchievementController::class, 'index'])->name('achievements.index');
 Route::get('/achievements/{achievement}', [\App\Http\Controllers\AchievementController::class, 'show'])->name('achievements.show');
 

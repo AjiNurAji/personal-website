@@ -25,12 +25,4 @@ class PortfolioController extends Controller
         ]));
     }
 
-    public function experience()
-    {
-        return Inertia::render('Experience', array_merge($this->shared(), [
-            'work_experiences' => Experience::where('type', 'work')->orderByDesc('start_date')->get()->toArray(),
-            'education_experiences' => Experience::where('type', 'education')->orderByDesc('start_date')->get()->toArray(),
-        ]));
-    }
-
 }

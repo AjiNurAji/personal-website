@@ -25,7 +25,6 @@ export const CLIENT_NAVIGATION: ClientLink[] = [
     { label: "Home", href: "/", icon: "Ri:RiHomeLine" },
     { label: "About", href: "/about", icon: "Ri:RiUserLine" },
     { label: "Projects", href: "/projects", icon: "Ri:RiCodeBoxLine" },
-    { label: "Experience", href: "/experience", icon: "Ri:RiBriefcaseLine" },
     { label: "Achievements", href: "/achievements", icon: "Ri:RiMedalLine" },
 ];
 
@@ -60,7 +59,7 @@ function normalizeNavigationHref(href: unknown) {
         about: "/about",
         skills: "/#skills",
         projects: "/projects",
-        experience: "/experience",
+        experience: "/about#experience",
         achievement: "/achievements",
         achievements: "/achievements",
     };
