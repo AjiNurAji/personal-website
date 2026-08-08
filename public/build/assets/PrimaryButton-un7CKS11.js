@@ -1,0 +1,1 @@
+import{st as e}from"./app-DoNKyBjZ.js";import{t}from"./button-D_ogRYMj.js";var n=e();function r({className:e=``,children:r,...i}){return(0,n.jsx)(t,{...i,className:e,children:r})}export{r as t};
