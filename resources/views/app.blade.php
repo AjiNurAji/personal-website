@@ -66,7 +66,7 @@
         <link rel="canonical" href="{{ $canonical }}">
 
         <!-- Favicon & Icons -->
-        <link rel="icon" type="image/png" href="{{ asset('ana.png') }}">
+        <link rel="icon" type="image/svg+xml" href="{{ asset('ana.svg') }}">
         <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
 
         <!-- Web App Manifest -->
