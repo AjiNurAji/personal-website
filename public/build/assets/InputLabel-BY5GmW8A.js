@@ -1,1 +1,0 @@
-import{st as e}from"./app-B5oKqmwI.js";import{o as t}from"./field-CY8fpuHL.js";var n=e();function r({value:e,children:r,...i}){return(0,n.jsx)(t,{...i,children:e||r})}export{r as t};
