@@ -1,0 +1,1 @@
+import{st as e}from"./app-BuT_WNTV.js";import{t}from"./button-Dhv3AcAY.js";var n=e();function r({className:e=``,children:r,...i}){return(0,n.jsx)(t,{...i,className:e,children:r})}export{r as t};
