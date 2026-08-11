@@ -1,9 +1,8 @@
 import { Link } from "@inertiajs/react";
 import { SafeImage } from "./SafeImage";
+const APP_URL = import.meta.env.VITE_APP_URL || "https://aji.dev";
 
 export const Logo = () => {
-    const APP_URL = import.meta.env.VITE_APP_URL || "https://aji.dev";
-
     return (
     <Link
         href="/"
