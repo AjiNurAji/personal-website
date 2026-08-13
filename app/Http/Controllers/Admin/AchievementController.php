@@ -74,12 +74,12 @@ class AchievementController extends Controller
             $extension = strtolower($file->getClientOriginalExtension());
             $validated['certificate_path'] = $file->store('achievements/certificates', 'public');
 
-            if (in_array($extension, ['jpg', 'jpeg', 'png'])) {
+            if (in_array($extension, ['jpg', 'jpeg', 'png', 'webp'])) {
                 try {
                     $manager = new ImageManager(new Driver());
                     $image = $manager->decode($file->getPathname());
                     $image->scaleDown(width: 600);
-                    $previewPath = 'achievements/previews/preview_' . uniqid() . '.jpg';
+                    $previewPath = 'achievements/previews/preview_' . uniqid() . '.webp';
                     Storage::disk('public')->put($previewPath, (string) $image->encode(new JpegEncoder(80)));
                     $validated['preview_image'] = $previewPath;
                 } catch (\Exception $e) {
@@ -121,7 +121,7 @@ class AchievementController extends Controller
             'organization_id' => 'nullable|string|max:255',
             'year' => 'nullable|string|max:255',
             'category' => 'required|in:event,award,certification',
-            'certificate' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
+            'certificate' => 'nullable|file|mimes:pdf,png,jpg,jpeg,webp|max:5120',
             'preview_image_file' => 'nullable|file|mimes:png,jpg,jpeg|max:5120',
             'embed_code' => 'nullable|string',
             'documentation_images' => 'nullable|array',
@@ -137,12 +137,12 @@ class AchievementController extends Controller
             $validated['certificate_path'] = $file->store('achievements/certificates', 'public');
             $validated['preview_image'] = null;
 
-            if (in_array($extension, ['jpg', 'jpeg', 'png'])) {
+            if (in_array($extension, ['jpg', 'jpeg', 'png', 'webp'])) {
                 try {
                     $manager = new ImageManager(new Driver());
                     $image = $manager->decode($file->getPathname());
                     $image->scaleDown(width: 600);
-                    $previewPath = 'achievements/previews/preview_' . uniqid() . '.jpg';
+                    $previewPath = 'achievements/previews/preview_' . uniqid() . '.webp';
                     Storage::disk('public')->put($previewPath, (string) $image->encode(new JpegEncoder(80)));
                     $validated['preview_image'] = $previewPath;
                 } catch (\Exception $e) {
