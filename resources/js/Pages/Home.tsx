@@ -241,6 +241,7 @@ export default function Home({ skills, settings }: Props) {
                     </AnimateIn>
                 </section>
                 <SkillsSection skills={skills} settings={settings} />
+                <StatsHighlights settings={settings} />
             </main>
         </ClientLayout>
     );

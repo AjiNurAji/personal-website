@@ -1,8 +1,9 @@
-import { Head } from "@inertiajs/react";
 import ClientLayout from "@/Layouts/ClientLayout";
+import { Head } from "@inertiajs/react";
 import Experience from "@/Components/Sections/experience";
 import AboutSection from "@/Components/Sections/about";
 import { useTranslation } from "@/lib/i18n";
+import StatsHighlights from "@/Components/Sections/stats-highlights";
 
 interface Props {
     settings: Record<string, any>;
@@ -24,6 +25,7 @@ export default function About({ settings, work_experiences, education_experience
                 image={settings.about_image}
             />
             <Experience workExperiences={work_experiences} educationExperiences={education_experiences} />
+            <StatsHighlights settings={settings} />
         </ClientLayout>
     );
 }
