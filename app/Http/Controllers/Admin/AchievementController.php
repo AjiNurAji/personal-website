@@ -62,7 +62,7 @@ class AchievementController extends Controller
             'organization_id' => 'nullable|string|max:255',
             'year' => 'nullable|string|max:255',
             'category' => 'required|in:event,award,certification',
-            'certificate' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
+            'certificate' => 'nullable|file|mimes:pdf,png,jpg,jpeg,webp|max:5120',
             'preview_image_file' => 'nullable|file|mimes:png,jpg,jpeg|max:5120',
             'embed_code' => 'nullable|string',
             'documentation_images' => 'nullable|array',
