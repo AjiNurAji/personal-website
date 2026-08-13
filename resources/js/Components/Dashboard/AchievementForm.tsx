@@ -25,6 +25,16 @@ import {
   SelectValue,
 } from "@/Components/UI/select";
 
+function dataURLtoFile(dataUrl: string, filename: string): File {
+  const arr = dataUrl.split(',');
+  const mime = arr[0].match(/:(.*?);/)?.[1] || 'image/jpeg';
+  const bstr = atob(arr[1]);
+  const n = bstr.length;
+  const u8 = new Uint8Array(n);
+  for (let i = 0; i < n; i++) u8[i] = bstr.charCodeAt(i);
+  return new File([u8], filename, { type: mime });
+}
+
 export interface Achievement {
   id?: number;
   title: string;
@@ -292,11 +302,7 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
                                         
                                         const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
                                         setLocalPreview(dataUrl);
-                                        
-                                        const res = await fetch(dataUrl);
-                                        const blob = await res.blob();
-                                        const previewFile = new File([blob], 'preview.jpg', { type: 'image/jpeg' });
-                                        setData('preview_image_file', previewFile);
+                                        setData('preview_image_file', dataURLtoFile(dataUrl, 'preview.jpg'));
                                     }
                                 } catch (error) {
                                     console.error('Error generating PDF preview:', error);
