@@ -25,6 +25,7 @@ Route::get('/projects/{slug}', [PublicProjectController::class, 'show'])->name('
 Route::get('/projects/{slug}/readme', [PublicProjectController::class, 'readme'])->name('projects.readme');
 Route::get('/achievements', [\App\Http\Controllers\AchievementController::class, 'index'])->name('achievements.index');
 Route::get('/achievements/{achievement}', [\App\Http\Controllers\AchievementController::class, 'show'])->name('achievements.show');
+Route::get('/stats', [\App\Http\Controllers\StatsController::class, 'index'])->name('stats.index');
 
 Route::get('/admin', function () {
     return redirect()->route('login');

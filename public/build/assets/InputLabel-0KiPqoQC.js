@@ -1,0 +1,1 @@
+import{lt as e}from"./app-BeG_z0nt.js";import{o as t}from"./field-BH-aX2-n.js";var n=e();function r({value:e,children:r,...i}){return(0,n.jsx)(t,{...i,children:e||r})}export{r as t};

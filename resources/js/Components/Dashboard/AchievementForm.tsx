@@ -300,9 +300,9 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
                                         canvas.width = viewport.width;
                                         await page.render({ canvasContext: context, viewport }).promise;
                                         
-                                        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                                        const dataUrl = canvas.toDataURL('image/webp', 0.8);
                                         setLocalPreview(dataUrl);
-                                        setData('preview_image_file', dataURLtoFile(dataUrl, 'preview.jpg'));
+                                        setData('preview_image_file', dataURLtoFile(dataUrl, 'preview.webp'));
                                     }
                                 } catch (error) {
                                     console.error('Error generating PDF preview:', error);

@@ -26,6 +26,7 @@ export const CLIENT_NAVIGATION: ClientLink[] = [
     { label: "About", href: "/about", icon: "Ri:RiUserLine" },
     { label: "Projects", href: "/projects", icon: "Ri:RiCodeBoxLine" },
     { label: "Achievements", href: "/achievements", icon: "Ri:RiMedalLine" },
+    { label: "Stats", href: "/stats", icon: "Ri:RiBarChart2Line" },
 ];
 
 function cleanName(value: string) {
