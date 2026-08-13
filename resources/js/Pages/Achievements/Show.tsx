@@ -165,24 +165,6 @@ export default function AchievementShow({ achievement, settings = {} }: Props) {
               </AnimateIn>
             )}
 
-            {documentation.length > 0 && (
-              <AnimateIn variant="blur-fade" delay={0.25}>
-                <div className="space-y-3 rounded-2xl border border-border/70 bg-card/60 p-3 shadow-sm">
-                  <h3 className="px-2 pt-1 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Documentation</h3>
-                  <div className="aspect-video overflow-hidden rounded-xl bg-muted">
-                    <img src={`/storage/${documentation[activeDocumentation]}`} alt={`${achievement.title} documentation ${activeDocumentation + 1}`} className="h-full w-full object-cover" />
-                  </div>
-                  <div className="flex gap-2 overflow-x-auto">
-                    {documentation.map((image: string, index: number) => (
-                      <button key={image} type="button" onClick={() => setActiveDocumentation(index)} className={cn("h-16 w-24 shrink-0 overflow-hidden rounded-lg border-2", activeDocumentation === index ? "border-primary" : "border-transparent")}>
-                        <img src={`/storage/${image}`} alt="" className="h-full w-full object-cover" />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </AnimateIn>
-            )}
-
             {/* Content */}
             <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-14">
               <div className="space-y-8">
@@ -261,6 +243,24 @@ export default function AchievementShow({ achievement, settings = {} }: Props) {
                 </AnimateIn>
               </div>
             </div>
+
+            {documentation.length > 0 && (
+              <AnimateIn variant="blur-fade" delay={0.25}>
+                <div className="space-y-3 rounded-2xl border border-border/70 bg-card/60 p-3 shadow-sm">
+                  <h3 className="px-2 pt-1 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Documentation</h3>
+                  <div className="aspect-video overflow-hidden rounded-xl bg-muted">
+                    <img src={`/storage/${documentation[activeDocumentation]}`} alt={`${achievement.title} documentation ${activeDocumentation + 1}`} className="h-full w-full object-cover" />
+                  </div>
+                  <div className="flex gap-2 overflow-x-auto">
+                    {documentation.map((image: string, index: number) => (
+                      <button key={image} type="button" onClick={() => setActiveDocumentation(index)} className={cn("h-16 w-24 shrink-0 overflow-hidden rounded-lg border-2", activeDocumentation === index ? "border-primary" : "border-transparent")}>
+                        <img src={`/storage/${image}`} alt="" className="h-full w-full object-cover" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </AnimateIn>
+            )}
           </article>
         </div>
       </main>
