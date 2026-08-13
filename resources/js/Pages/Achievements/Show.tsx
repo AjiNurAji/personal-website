@@ -190,7 +190,11 @@ export default function AchievementShow({ achievement, settings = {} }: Props) {
                    <div className="prose prose-zinc dark:prose-invert max-w-none">
                       <h3 className="text-2xl font-bold mb-4">Description</h3>
                       <p className="text-muted-foreground text-lg leading-relaxed mb-10">
-                        {achievement.description}
+                        <MDEditor.Markdown 
+                          source={achievement.description || "No description provided."} 
+                          style={{ backgroundColor: 'transparent', color: 'inherit' }}
+                          components={{ img: MarkdownImage }}
+                        />
                       </p>
                       
                       {achievement.content && (
