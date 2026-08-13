@@ -258,15 +258,15 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
                                 setData('preview_image_file', null);
                             } else if (file.type === 'application/pdf') {
                                 try {
-                                    // Load PDF.js from CDN dynamically to avoid NPM conflicts
+                                    // Load PDF.js from local bundled assets to avoid CSP/CDN issues
                                     const loadPdfJs = async (): Promise<any> => {
                                         if ((window as any).pdfjsLib) return (window as any).pdfjsLib;
                                         return new Promise((resolve, reject) => {
                                             const script = document.createElement('script');
-                                            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+                                            script.src = '/pdfjs/pdf.min.js';
                                             script.onload = () => {
-                                                const pdfjsLib = (window as any)['pdfjs-dist/build/pdf'];
-                                                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                                                const pdfjsLib = (window as any).pdfjsLib;
+                                                pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdfjs/pdf.worker.min.js';
                                                 (window as any).pdfjsLib = pdfjsLib;
                                                 resolve(pdfjsLib);
                                             };
