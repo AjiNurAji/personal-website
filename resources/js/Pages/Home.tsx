@@ -8,6 +8,7 @@ import { useTranslation } from "@/lib/i18n";
 import { getIconComponent } from "@/Components/Dashboard/IconRegistry";
 import { motion } from "framer-motion";
 import { useTheme } from "@/hooks/use-theme";
+import StatsHighlights from "@/Components/Sections/stats-highlights";
 
 interface Props {
     skills: any[];
