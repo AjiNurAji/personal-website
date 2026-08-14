@@ -209,6 +209,7 @@ export default function SettingsIndex({ settings }: Props) {
     github_url: settings.github_url || "https://github.com/ajinuraji",
     github_token: settings.github_token || "",
     wakatime_username: settings.wakatime_username || "",
+    wakatime_api_key: settings.wakatime_api_key || "",
     wakatime_share_ids: parseWakaShares('wakatime_share_ids_en'),
     wakatime_share_ids_en: parseWakaShares('wakatime_share_ids_en').length ? parseWakaShares('wakatime_share_ids_en') : parseWakaShares(),
     wakatime_share_ids_id: parseWakaShares('wakatime_share_ids_id').length ? parseWakaShares('wakatime_share_ids_id') : parseWakaShares(),
@@ -511,6 +512,14 @@ export default function SettingsIndex({ settings }: Props) {
                                         <p className="text-xs text-muted-foreground mt-1">
                                             Shows coding activity chart on the landing page. Leave empty to hide.
                                         </p>
+                                    </FieldContent>
+                                </Field>
+
+                                <Field>
+                                    <FieldLabel>WakaTime API Key</FieldLabel>
+                                    <FieldContent>
+                                        <Input type="password" value={data.wakatime_api_key} onChange={(e) => setData('wakatime_api_key', e.target.value)} placeholder="waka_..." autoComplete="new-password" />
+                                        <p className="mt-1 text-xs text-muted-foreground">Used securely on the server for custom WakaTime JSON stats. Never exposed to visitors.</p>
                                     </FieldContent>
                                 </Field>
 

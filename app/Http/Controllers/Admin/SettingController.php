@@ -85,6 +85,7 @@ class SettingController extends Controller
             'github_url' => 'nullable|url|max:2048',
             'github_token' => 'nullable|string|max:255',
             'wakatime_username' => 'nullable|string',
+            'wakatime_api_key' => 'nullable|string|max:255',
             'wakatime_share_ids' => 'nullable|array',
             'wakatime_share_ids.*.label' => 'required|string',
             'wakatime_share_ids.*.url' => 'required|string',

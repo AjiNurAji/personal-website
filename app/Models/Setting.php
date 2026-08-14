@@ -22,7 +22,7 @@ class Setting extends Model
     public static function publicValues(): array
     {
         return self::query()
-            ->whereNotIn('key', ['github_token'])
+            ->whereNotIn('key', ['github_token', 'wakatime_api_key'])
             ->pluck('value', 'key')
             ->toArray();
     }

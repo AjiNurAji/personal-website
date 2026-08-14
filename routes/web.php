@@ -107,6 +107,8 @@ Route::prefix('api')->name('api.')->group(function () {
         Route::get('/wakatime/{username}/{shareId}', [App\Http\Controllers\Api\WakaTimeController::class, 'show'])
             ->where(['username' => '[A-Za-z0-9_-]{1,39}', 'shareId' => '[A-Za-z0-9_-]{1,100}'])
             ->name('wakatime.show');
+        Route::get('/wakatime/stats', [App\Http\Controllers\Api\WakaTimeController::class, 'stats'])
+            ->name('api.wakatime.stats');
         Route::get('/github/{username}', [App\Http\Controllers\Api\GitHubController::class, 'show'])
             ->where('username', '[A-Za-z0-9-]{1,39}')
             ->name('github.show');

@@ -48,6 +48,12 @@ function getWakaDays(data: any) {
         .filter((item: any) => item.date);
 }
 
+function formatWakaMetric(seconds: number) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    return hours ? `${hours}h ${minutes}m` : `${minutes}m`;
+}
+
 export default function Stats({ settings }: Props) {
     const { t } = useTranslation();
     const [wakaData, setWakaData] = useState<any>(null);
@@ -56,6 +62,8 @@ export default function Stats({ settings }: Props) {
     const [activeWakaIndex, setActiveWakaIndex] = useState(0);
     const [githubData, setGithubData] = useState<any>(null);
     const [githubError, setGithubError] = useState<string | null>(null);
+    const [wakaApiData, setWakaApiData] = useState<any>(null);
+    const [wakaApiError, setWakaApiError] = useState<string | null>(null);
 
     const wakatimeUsername = String(settings.wakatime_username || "").trim() || null;
     const wakatimeShares: ShareItem[] = useMemo(() => {
@@ -133,8 +141,20 @@ export default function Stats({ settings }: Props) {
             }
         }
 
+        async function fetchWakaApi() {
+            try {
+                const res = await fetch('/api/wakatime/stats');
+                const json = await res.json();
+                if (!res.ok || json.error) throw new Error(json.error || 'WakaTime API request failed');
+                if (!cancelled) setWakaApiData(json);
+            } catch (err) {
+                if (!cancelled) setWakaApiError(err instanceof Error ? err.message : 'WakaTime API request failed');
+            }
+        }
+
         fetchGithub();
         fetchWaka();
+        fetchWakaApi();
 
         return () => {
             cancelled = true;
@@ -153,12 +173,13 @@ export default function Stats({ settings }: Props) {
     const contributionDays = getContributionDays(githubData);
     const wakaDays = getWakaDays(wakaData);
     const wakaTotalSeconds = wakaDays.reduce((total: number, day: any) => total + day.seconds, 0);
+    const wakaLanguages = Array.isArray(wakaApiData?.languages) ? wakaApiData.languages.slice(0, 6) : [];
 
     return (
         <ClientLayout active="Stats" settings={settings} title="Stats" description="Developer activity and account summaries">
             <Head title={t("Stats") + " — Aji Nur Aji"} />
 
-            <div className="mx-auto max-w-5xl space-y-10">
+            <div className="w-full max-w-none space-y-10">
                 <div className="grid gap-6">
                     <div className="flex items-center gap-2 text-primary">
                         <RiBarChartBoxLine className="size-5" />
@@ -245,6 +266,31 @@ export default function Stats({ settings }: Props) {
                         <p className="text-sm text-muted-foreground">{wakaError}</p>
                     )}
 
+                    {wakaApiError && wakaApiError !== 'WakaTime API key is not configured' && !wakaData && (
+                        <p className="text-sm text-muted-foreground">{wakaApiError}</p>
+                    )}
+
+                    {wakaApiData && (
+                        <section className="rounded-2xl border border-border/70 bg-card p-5 shadow-sm sm:p-6">
+                            <div className="flex flex-wrap items-start justify-between gap-4">
+                                <div>
+                                    <h3 className="text-lg font-bold text-foreground">{t("WakaTime Stats")}</h3>
+                                    <p className="text-xs text-muted-foreground">{wakaApiData.human_readable_range || t("Coding activity over the past 7 days.")}</p>
+                                </div>
+                                <span className="text-xs font-semibold text-muted-foreground">{wakaApiData.human_readable_total || formatWakaMetric(wakaApiData.total_seconds || 0)}</span>
+                            </div>
+                            <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                                {[
+                                    ["Total time", wakaApiData.human_readable_total || formatWakaMetric(wakaApiData.total_seconds || 0)],
+                                    ["Daily average", wakaApiData.human_readable_daily_average || formatWakaMetric(wakaApiData.daily_average || 0)],
+                                    ["Languages", wakaLanguages.length],
+                                    ["Projects", Array.isArray(wakaApiData.projects) ? wakaApiData.projects.length : 0],
+                                ].map(([label, value]) => <div key={String(label)} className="rounded-xl border border-border/60 bg-background p-3"><p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{t(String(label))}</p><p className="mt-1 text-xl font-extrabold text-foreground">{value}</p></div>)}
+                            </div>
+                            {wakaLanguages.length > 0 && <div className="mt-6 space-y-3"><p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{t("Languages")}</p>{wakaLanguages.map((language: any) => <div key={language.name}><div className="mb-1 flex justify-between text-xs"><span>{language.name}</span><span className="text-muted-foreground">{language.percent ?? 0}%</span></div><div className="h-2 overflow-hidden rounded-full bg-muted"><div className="h-full rounded-full bg-primary" style={{ width: `${Math.min(Number(language.percent) || 0, 100)}%` }} /></div></div>)}</div>}
+                        </section>
+                    )}
+
                     {wakaData && activeShareId && (
                         <section className="rounded-2xl border border-border/70 bg-card p-5 shadow-sm sm:p-6">
                             <div className="flex flex-wrap items-start justify-between gap-4">
@@ -286,7 +332,7 @@ export default function Stats({ settings }: Props) {
                         </section>
                     )}
 
-                    {!wakaError && !wakaData && wakatimeShares.length === 0 && (
+                    {!wakaError && !wakaData && !wakaApiData && wakatimeShares.length === 0 && (
                         <p className="text-sm text-muted-foreground">{t("No WakaTime share configured yet.")}</p>
                     )}
                     {!wakaError && !wakaData && wakatimeShares.length > 0 && (
