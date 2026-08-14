@@ -28,6 +28,26 @@ function extractUsernameFromUrl(url: string) {
     return match ? match[1] : null;
 }
 
+function formatDuration(seconds: number) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
+}
+
+function getContributionDays(data: any) {
+    return data?.contributionCalendar?.weeks?.flatMap((week: any) => week.contributionDays || []) || [];
+}
+
+function getWakaDays(data: any) {
+    if (!Array.isArray(data)) return [];
+    return data
+        .map((item: any) => ({
+            date: item.date || item.name || "",
+            seconds: Number(item.grand_total?.total_seconds ?? item.total_seconds ?? 0),
+        }))
+        .filter((item: any) => item.date);
+}
+
 export default function Stats({ settings }: Props) {
     const { t } = useTranslation();
     const [wakaData, setWakaData] = useState<any>(null);
@@ -130,6 +150,9 @@ export default function Stats({ settings }: Props) {
             { title: "Contributions", value: githubData.totalContributions ?? "—" },
         ];
     }, [githubData]);
+    const contributionDays = getContributionDays(githubData);
+    const wakaDays = getWakaDays(wakaData);
+    const wakaTotalSeconds = wakaDays.reduce((total: number, day: any) => total + day.seconds, 0);
 
     return (
         <ClientLayout active="Stats" settings={settings} title="Stats" description="Developer activity and account summaries">
@@ -159,42 +182,30 @@ export default function Stats({ settings }: Props) {
                     )}
 
                     {githubCards.length > 0 && (
-                        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                            {githubCards.map((item) => (
-                                <div key={item.title} className="rounded-xl border border-border/70 bg-card p-4 text-center shadow-sm">
-                                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t(item.title)}</p>
-                                    <p className="mt-2 text-3xl font-extrabold text-foreground">{item.value}</p>
+                        <section className="rounded-2xl border border-border/70 bg-card p-5 shadow-sm sm:p-6">
+                            <div className="flex flex-wrap items-start justify-between gap-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="flex size-10 items-center justify-center rounded-xl bg-muted/70"><RiGithubFill className="size-5" /></div>
+                                    <div>
+                                        <h3 className="text-lg font-bold text-foreground">{t("GitHub Activity")}</h3>
+                                        <p className="text-xs text-muted-foreground">@{githubUsername}</p>
+                                    </div>
                                 </div>
-                            ))}
-                        </div>
-                    )}
-
-                    {githubData?.pinnedRepos?.length > 0 && (
-                        <div className="space-y-3">
-                            <div className="flex items-center gap-2 text-foreground">
-                                <RiGithubFill className="size-5" />
-                                <h3 className="text-lg font-semibold">{t("Pinned Repositories")}</h3>
+                                <a href={String(settings.github_url || "#")} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold text-primary hover:underline">View profile</a>
                             </div>
-                            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                                {githubData.pinnedRepos.map((repo: any) => (
-                                    <a
-                                        key={repo.url}
-                                        href={repo.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="group block rounded-xl border border-border/70 bg-card p-4 transition-all hover:border-primary/40 hover:shadow-md"
-                                    >
-                                        <p className="text-sm font-semibold text-foreground group-hover:text-primary">{repo.name}</p>
-                                        <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{repo.description || "—"}</p>
-                                        <div className="mt-3 flex items-center gap-2 text-[11px] text-muted-foreground">
-                                            {repo.language ? <span>{repo.language}</span> : null}
-                                            <span>★ {repo.stars ?? 0}</span>
-                                            <span>⑂ {repo.forks ?? 0}</span>
-                                        </div>
-                                    </a>
-                                ))}
+                            <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                                {githubCards.map((item) => <div key={item.title} className="rounded-xl border border-border/60 bg-background p-3"><p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{t(item.title)}</p><p className="mt-1 text-xl font-extrabold text-foreground">{item.value}</p></div>)}
                             </div>
-                        </div>
+                            {contributionDays.length > 0 && (
+                                <div className="mt-6 overflow-x-auto rounded-xl border border-border/60 bg-background p-4">
+                                    <div className="mb-3 flex items-center justify-between text-xs text-muted-foreground"><span>{githubData.totalContributions ?? 0} contributions</span><span>Less&nbsp;&nbsp; <span className="text-emerald-500">■ ■ ■ ■ ■</span> &nbsp;&nbsp;More</span></div>
+                                    <div className="grid min-w-[560px] grid-flow-col grid-cols-[repeat(53,minmax(10px,1fr))] grid-rows-7 gap-1">
+                                        {contributionDays.map((day: any, index: number) => <span key={`${day.date}-${index}`} title={`${day.date}: ${day.contributionCount} contributions`} className={`aspect-square rounded-[3px] ${day.contributionCount === 0 ? "bg-muted" : day.contributionCount < 3 ? "bg-emerald-200 dark:bg-emerald-950" : day.contributionCount < 7 ? "bg-emerald-400" : day.contributionCount < 12 ? "bg-emerald-600" : "bg-emerald-800 dark:bg-emerald-400"}`} />)}
+                                    </div>
+                                </div>
+                            )}
+                            {githubData?.pinnedRepos?.length > 0 && <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{githubData.pinnedRepos.slice(0, 3).map((repo: any) => <a key={repo.url} href={repo.url} target="_blank" rel="noopener noreferrer" className="group rounded-xl border border-border/60 bg-background p-4 hover:border-primary/40"><p className="text-sm font-semibold group-hover:text-primary">{repo.name}</p><p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{repo.description || "—"}</p><p className="mt-3 text-[11px] text-muted-foreground">{repo.language || "Repository"} · ★ {repo.stars ?? 0}</p></a>)}</div>}
+                        </section>
                     )}
                 </div>
 
@@ -235,8 +246,28 @@ export default function Stats({ settings }: Props) {
                     )}
 
                     {wakaData && activeShareId && (
-                        <div className="space-y-3">
-                            <WakaTimeChart data={wakaData} label={activeWakaShare?.label || t("Coding Activity")} kind={wakaKind} />
+                        <section className="rounded-2xl border border-border/70 bg-card p-5 shadow-sm sm:p-6">
+                            <div className="flex flex-wrap items-start justify-between gap-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="flex size-10 items-center justify-center rounded-xl bg-muted/70"><RiTimeLine className="size-5" /></div>
+                                    <div>
+                                        <h3 className="text-lg font-bold text-foreground">{t("WakaTime Stats")}</h3>
+                                        <p className="text-xs text-muted-foreground">{t("Coding activity over the past 7 days.")}</p>
+                                    </div>
+                                </div>
+                                <span className="text-xs font-semibold text-muted-foreground">{formatDuration(wakaTotalSeconds)}</span>
+                            </div>
+                            <div className="mt-5 rounded-xl border border-border/60 bg-background p-3">
+                                <div className="flex h-24 items-end gap-1.5">
+                                    {wakaDays.slice(-7).map((day: any) => {
+                                        const max = Math.max(...wakaDays.map((item: any) => item.seconds), 1);
+                                        return <span key={day.date} title={`${day.date}: ${formatDuration(day.seconds)}`} className="flex-1 rounded-t-sm bg-primary/80" style={{ height: `${Math.max((day.seconds / max) * 100, 4)}%` }} />;
+                                    })}
+                                </div>
+                                <div className="mt-2 flex justify-between text-[10px] text-muted-foreground"><span>{wakaDays.slice(-7)[0]?.date || "—"}</span><span>{wakaDays.slice(-1)[0]?.date || "—"}</span></div>
+                            </div>
+                            <div className="mt-4 space-y-3">
+                                <WakaTimeChart data={wakaData} label={activeWakaShare?.label || t("Coding Activity")} kind={wakaKind} />
                             <div className="flex flex-wrap gap-2">
                                 {(["time-series", "category", "heatmap"] as ChartKind[]).map((kind) => (
                                     <button
@@ -251,7 +282,8 @@ export default function Stats({ settings }: Props) {
                                     </button>
                                 ))}
                             </div>
-                        </div>
+                            </div>
+                        </section>
                     )}
 
                     {!wakaError && !wakaData && wakatimeShares.length === 0 && (
