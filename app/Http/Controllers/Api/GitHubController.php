@@ -19,13 +19,44 @@ class GitHubController extends Controller
      */
     public function show(string $username): JsonResponse
     {
-        $cacheKey = "github_{$username}";
+        $cacheKey = "github_v2_{$username}";
 
         $data = Cache::remember($cacheKey, now()->addHour(), function () use ($username) {
             $token = Setting::getValue('github_token');
 
+            $profileResponse = Http::timeout(15)
+                ->withHeaders(['Accept' => 'application/vnd.github+json'])
+                ->get("https://api.github.com/users/{$username}");
+
+            if (! $profileResponse->successful()) {
+                return ['error' => 'GitHub profile request failed: ' . $profileResponse->status()];
+            }
+
+            $profile = $profileResponse->json();
+            $reposResponse = Http::timeout(15)
+                ->withHeaders(['Accept' => 'application/vnd.github+json'])
+                ->get("https://api.github.com/users/{$username}/repos", [
+                    'visibility' => 'public',
+                    'sort' => 'updated',
+                    'per_page' => 6,
+                ]);
+            $repos = $reposResponse->successful() ? $reposResponse->json() : [];
+            $result = [
+                'followers' => $profile['followers'] ?? 0,
+                'following' => $profile['following'] ?? 0,
+                'repositories' => $profile['public_repos'] ?? 0,
+                'totalContributions' => null,
+                'contributionCalendar' => null,
+                'pinnedRepos' => array_map(fn ($repo) => [
+                    'name' => $repo['name'], 'description' => $repo['description'] ?? null,
+                    'url' => $repo['html_url'], 'stars' => $repo['stargazers_count'] ?? 0,
+                    'forks' => $repo['forks_count'] ?? 0, 'language' => $repo['language'] ?? null,
+                    'languageColor' => null,
+                ], is_array($repos) ? $repos : []),
+            ];
+
             if (! $token) {
-                return ['error' => 'GitHub token not configured'];
+                return $result;
             }
 
             $query = <<<'GRAPHQL'
@@ -87,13 +118,12 @@ GRAPHQL;
                 return ['error' => 'GitHub user not found'];
             }
 
-            return [
-                'followers' => $user['followers']['totalCount'],
-                'following' => $user['following']['totalCount'],
-                'repositories' => $user['repositories']['totalCount'],
-                'totalContributions' => $user['contributionsCollection']['totalCommitContributions'],
-                'contributionCalendar' => $user['contributionsCollection']['contributionCalendar'],
-                'pinnedRepos' => array_map(function ($repo) {
+            $result['followers'] = $user['followers']['totalCount'];
+            $result['following'] = $user['following']['totalCount'];
+            $result['repositories'] = $user['repositories']['totalCount'];
+            $result['totalContributions'] = $user['contributionsCollection']['totalCommitContributions'];
+            $result['contributionCalendar'] = $user['contributionsCollection']['contributionCalendar'];
+            $result['pinnedRepos'] = array_map(function ($repo) {
                     return [
                         'name' => $repo['name'],
                         'description' => $repo['description'],
@@ -103,8 +133,9 @@ GRAPHQL;
                         'language' => $repo['primaryLanguage']['name'] ?? null,
                         'languageColor' => $repo['primaryLanguage']['color'] ?? null,
                     ];
-                }, $user['pinnedItems']['nodes'] ?? []),
-            ];
+                }, $user['pinnedItems']['nodes'] ?? []);
+
+            return $result;
         });
 
         if (isset($data['error'])) {

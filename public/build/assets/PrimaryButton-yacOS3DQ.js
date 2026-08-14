@@ -1,1 +1,0 @@
-import{lt as e}from"./app-BG04ISNu.js";import{t}from"./button-j_EXyORu.js";var n=e();function r({className:e=``,children:r,...i}){return(0,n.jsx)(t,{...i,className:e,children:r})}export{r as t};

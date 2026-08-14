@@ -74,16 +74,21 @@ function normalizeNavigationHref(href: unknown) {
 }
 
 function getNavigation(settings: Record<string, any>) {
+    const ensureStatsLink = (links: ClientLink[]) => {
+        const hasStats = links.some((link) => normalizeNavigationHref(link?.href).split('?')[0] === "/stats");
+        return hasStats ? links : [...links, { label: "Stats", href: "/stats", icon: "Ri:RiBarChart2Line" }];
+    };
+
     try {
         const locale = (typeof window !== "undefined" && window.document?.documentElement?.lang) || "en";
         const localeKey = locale.toLowerCase() === "id" ? "_id" : "_en";
         const localizedKey = `nav_links${localeKey}`;
         const parsedLocalized = typeof settings[localizedKey] === "string" ? JSON.parse(settings[localizedKey]) : settings[localizedKey];
         if (Array.isArray(parsedLocalized) && parsedLocalized.length > 0) {
-            return parsedLocalized.map((link) => ({
+            return ensureStatsLink(parsedLocalized.map((link) => ({
                 ...link,
                 href: normalizeNavigationHref(link?.href),
-            }));
+            })));
         }
     } catch {
         // ignore localized parse failure and fall back below
@@ -92,11 +97,11 @@ function getNavigation(settings: Record<string, any>) {
     try {
         const parsed = typeof settings.nav_links === "string" ? JSON.parse(settings.nav_links) : settings.nav_links;
         if (Array.isArray(parsed) && parsed.length > 0) {
-            return parsed.map((link) => ({
+            return ensureStatsLink(parsed.map((link) => ({
                 ...link,
                 href: normalizeNavigationHref(link?.href),
                 icon: link?.icon || CLIENT_NAVIGATION[parsed.indexOf(link)]?.icon,
-            }));
+            })));
         }
     } catch {
         // ignore base parse failure

@@ -33,6 +33,7 @@ export default function Stats({ settings }: Props) {
     const [wakaData, setWakaData] = useState<any>(null);
     const [wakaError, setWakaError] = useState<string | null>(null);
     const [wakaKind, setWakaKind] = useState<ChartKind>("time-series");
+    const [activeWakaIndex, setActiveWakaIndex] = useState(0);
     const [githubData, setGithubData] = useState<any>(null);
     const [githubError, setGithubError] = useState<string | null>(null);
 
@@ -66,7 +67,7 @@ export default function Stats({ settings }: Props) {
     }, [settings.wakatime_share_ids]);
 
     const githubUsername = extractUsernameFromUrl(String(settings.github_url || ""));
-    const activeWakaShare = wakatimeShares[0] || null;
+    const activeWakaShare = wakatimeShares[activeWakaIndex] || wakatimeShares[0] || null;
     const activeShareId = activeWakaShare ? extractShareId(activeWakaShare.url) : null;
 
     useEffect(() => {
@@ -126,7 +127,7 @@ export default function Stats({ settings }: Props) {
             { title: "Repositories", value: githubData.repositories ?? 0 },
             { title: "Followers", value: githubData.followers ?? 0 },
             { title: "Following", value: githubData.following ?? 0 },
-            { title: "Contributions", value: githubData.totalContributions ?? 0 },
+            { title: "Contributions", value: githubData.totalContributions ?? "—" },
         ];
     }, [githubData]);
 
@@ -151,6 +152,10 @@ export default function Stats({ settings }: Props) {
                         <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/40 dark:text-red-300">
                             {t("WakaTime data unavailable")}: {wakaError}
                         </div>
+                    )}
+
+                    {githubData === null && !githubError && (
+                        <p className="text-sm text-muted-foreground">{t("Loading GitHub stats…")}</p>
                     )}
 
                     {githubCards.length > 0 && (
@@ -210,8 +215,8 @@ export default function Stats({ settings }: Props) {
                                             key={share.url}
                                             type="button"
                                             onClick={() => {
+                                                setActiveWakaIndex(wakatimeShares.findIndex((item) => item.url === share.url));
                                                 setWakaKind("time-series");
-                                                window.location.href = `/api/wakatime/${encodeURIComponent(wakatimeUsername || "")}/${encodeURIComponent(shareId)}`;
                                             }}
                                             className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${
                                                 isActive ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-muted-foreground hover:text-foreground"
@@ -249,8 +254,11 @@ export default function Stats({ settings }: Props) {
                         </div>
                     )}
 
-                    {!wakaError && !wakaData && (
+                    {!wakaError && !wakaData && wakatimeShares.length === 0 && (
                         <p className="text-sm text-muted-foreground">{t("No WakaTime share configured yet.")}</p>
+                    )}
+                    {!wakaError && !wakaData && wakatimeShares.length > 0 && (
+                        <p className="text-sm text-muted-foreground">{t("Loading WakaTime activity…")}</p>
                     )}
                 </div>
             </div>

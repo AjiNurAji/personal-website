@@ -66,9 +66,7 @@ export default function StatsHighlights({ settings }: Props) {
             <div className="grid gap-4 sm:grid-cols-2">
                 {hasGithub && (
                     <Link
-                        href={githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        href="/stats"
                         className="group flex items-center justify-between rounded-2xl border border-border/70 bg-card p-4 shadow-sm transition-all hover:border-primary/40 hover:shadow-md"
                     >
                         <div className="flex items-center gap-3">
@@ -76,8 +74,8 @@ export default function StatsHighlights({ settings }: Props) {
                                 <RiGithubFill className="size-5" />
                             </div>
                             <div>
-                                <p className="text-sm font-semibold text-foreground group-hover:text-primary">GitHub</p>
-                                <p className="text-xs text-muted-foreground">@{githubUsername}</p>
+                                <p className="text-sm font-semibold text-foreground group-hover:text-primary">GitHub Stats</p>
+                                <p className="text-xs text-muted-foreground">@{githubUsername} · View activity</p>
                             </div>
                         </div>
                         <RiArrowRightLine className="size-4 text-muted-foreground transition-transform group-hover:translate-x-1" />
@@ -86,7 +84,7 @@ export default function StatsHighlights({ settings }: Props) {
 
                 {hasWaka && (
                     <Link
-                        href={firstShare ? `/api/wakatime/${encodeURIComponent(wakatimeUsername)}/${encodeURIComponent(firstShareId || "")}` : "/stats"}
+                        href="/stats"
                         className="group flex items-center justify-between rounded-2xl border border-border/70 bg-card p-4 shadow-sm transition-all hover:border-primary/40 hover:shadow-md"
                     >
                         <div className="flex items-center gap-3">

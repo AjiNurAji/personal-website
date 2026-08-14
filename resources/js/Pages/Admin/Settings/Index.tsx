@@ -102,6 +102,7 @@ export default function SettingsIndex({ settings }: Props) {
     { label: "Projects", href: "#projects" },
     { label: "Experience", href: "#experience" },
     { label: "Achievement", href: "#achievement" },
+    { label: "Stats", href: "/stats", icon: "Ri:RiBarChart2Line" },
   ];
 
   const initialSocialLinks = settings.social_links ? (typeof settings.social_links === 'string' ? JSON.parse(settings.social_links) : settings.social_links) : [
@@ -139,6 +140,7 @@ export default function SettingsIndex({ settings }: Props) {
     { label: "Projects", href: "#projects" },
     { label: "Experience", href: "#experience" },
     { label: "Achievement", href: "#achievement" },
+    { label: "Stats", href: "/stats", icon: "Ri:RiBarChart2Line" },
   ];
   const defaultNavLinksId = [
     { label: "Beranda", href: "#" },
@@ -146,9 +148,13 @@ export default function SettingsIndex({ settings }: Props) {
     { label: "Proyek", href: "#projects" },
     { label: "Pengalaman", href: "#experience" },
     { label: "Pencapaian", href: "#achievement" },
+    { label: "Statistik", href: "/stats", icon: "Ri:RiBarChart2Line" },
   ];
-  const navLinksEn = parseArray(settings.nav_links_en || settings.nav_links, defaultNavLinks);
-  const navLinksId = parseArray(settings.nav_links_id, defaultNavLinksId);
+  const ensureStatsNavLink = (links: any[], label: string) => links.some((link) => String(link?.href || '').split('?')[0] === '/stats')
+    ? links
+    : [...links, { label, href: '/stats', icon: 'Ri:RiBarChart2Line' }];
+  const navLinksEn = ensureStatsNavLink(parseArray(settings.nav_links_en || settings.nav_links, defaultNavLinks), 'Stats');
+  const navLinksId = ensureStatsNavLink(parseArray(settings.nav_links_id, defaultNavLinksId), 'Statistik');
 
   const { data, setData, post, processing, errors } = useForm({
     about_title: aboutTitle.en,
@@ -251,6 +257,20 @@ export default function SettingsIndex({ settings }: Props) {
       baseLinks[index] = { ...baseLinks[index], [field]: value };
       setData('nav_links', baseLinks);
     }
+  }
+
+  function updateNavDestination(index: number, value: string) {
+    const update = (links: any[]) => links.map((link, itemIndex) => itemIndex === index ? { ...link, href: value } : link);
+    setData('nav_links_en', update(data.nav_links_en));
+    setData('nav_links_id', update(data.nav_links_id));
+    setData('nav_links', update(data.nav_links));
+  }
+
+  function updateNavIcon(index: number, value: string) {
+    const update = (links: any[]) => links.map((link, itemIndex) => itemIndex === index ? { ...link, icon: value } : link);
+    setData('nav_links_en', update(data.nav_links_en));
+    setData('nav_links_id', update(data.nav_links_id));
+    setData('nav_links', update(data.nav_links));
   }
 
   function addSocialLink() {
@@ -696,20 +716,14 @@ export default function SettingsIndex({ settings }: Props) {
                                                 <FieldLabel>Icon</FieldLabel>
                                                 <IconPicker
                                                     value={data.nav_links_en[index]?.icon || ''}
-                                                    onChange={(value) => {
-                                                        updateLocalizedNavLink('en', index, 'icon', value);
-                                                        updateLocalizedNavLink('id', index, 'icon', value);
-                                                    }}
+                                                    onChange={(value) => updateNavIcon(index, value)}
                                                 />
                                             </Field>
                                             <Field>
                                                 <FieldLabel>Href</FieldLabel>
                                                 <Input
                                                     value={data.nav_links_en[index]?.href || ''}
-                                                    onChange={(e) => {
-                                                        updateLocalizedNavLink('en', index, 'href', e.target.value);
-                                                        updateLocalizedNavLink('id', index, 'href', e.target.value);
-                                                    }}
+                                                    onChange={(e) => updateNavDestination(index, e.target.value)}
                                                     placeholder="#about"
                                                 />
                                             </Field>
