@@ -57,18 +57,37 @@ const RawHtml = ({ html }: { html: string }) => {
 
             const width = Number.parseInt(badge.dataset.iframeWidth || "0", 10);
             const height = Number.parseInt(badge.dataset.iframeHeight || "0", 10);
-            if (width > 0) iframe.style.width = `${width}px`;
-            if (height > 0) iframe.style.height = `${height}px`;
+            if (width <= 0 || height <= 0) return;
+
+            const resize = () => {
+                const availableWidth = container.clientWidth;
+                const renderedWidth = Math.min(width, availableWidth);
+                iframe.style.width = `${renderedWidth}px`;
+                iframe.style.height = `${Math.ceil(renderedWidth * height / width)}px`;
+            };
+
             iframe.style.maxWidth = "100%";
             iframe.style.display = "block";
             iframe.style.marginInline = "auto";
+            resize();
+
+            const resizeObserver = new ResizeObserver(resize);
+            resizeObserver.observe(container);
+            return resizeObserver;
         };
 
-        const observer = new MutationObserver(normalizeBadgeFrame);
+        let frameResizeObserver: ResizeObserver | undefined;
+        const observer = new MutationObserver(() => {
+            frameResizeObserver?.disconnect();
+            frameResizeObserver = normalizeBadgeFrame();
+        });
         observer.observe(container, { childList: true, subtree: true });
-        normalizeBadgeFrame();
+        frameResizeObserver = normalizeBadgeFrame();
 
-        return () => observer.disconnect();
+        return () => {
+            observer.disconnect();
+            frameResizeObserver?.disconnect();
+        };
     }, [html, isDark]);
 
     return <div ref={divRef} className="credential-embed flex w-full justify-center overflow-hidden" />;
