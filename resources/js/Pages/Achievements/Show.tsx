@@ -28,17 +28,50 @@ const RawHtml = ({ html }: { html: string }) => {
 
     useEffect(() => {
         if (!divRef.current) return;
+
+        const container = divRef.current;
         const theme = isDark ? "dark" : "light";
         const themedHtml = html.replace(
             /(data-share-badge-theme=["'])[^"']*(["'])/gi,
             `$1${theme}$2`,
         );
         const fragment = document.createRange().createContextualFragment(themedHtml);
-        divRef.current.innerHTML = '';
-        divRef.current.appendChild(fragment);
+        const scripts = Array.from(fragment.querySelectorAll("script"));
+
+        // Scripts inserted through innerHTML/contextual fragments do not execute.
+        // Credly's embed is script-driven, so replace each script with a fresh one.
+        container.replaceChildren(fragment);
+        scripts.forEach((script) => {
+            const replacement = document.createElement("script");
+            Array.from(script.attributes).forEach((attribute) => {
+                replacement.setAttribute(attribute.name, attribute.value);
+            });
+            replacement.textContent = script.textContent;
+            script.replaceWith(replacement);
+        });
+
+        const normalizeBadgeFrame = () => {
+            const badge = container.querySelector<HTMLElement>("[data-iframe-width]");
+            const iframe = container.querySelector<HTMLIFrameElement>("iframe");
+            if (!badge || !iframe) return;
+
+            const width = Number.parseInt(badge.dataset.iframeWidth || "0", 10);
+            const height = Number.parseInt(badge.dataset.iframeHeight || "0", 10);
+            if (width > 0) iframe.style.width = `${width}px`;
+            if (height > 0) iframe.style.height = `${height}px`;
+            iframe.style.maxWidth = "100%";
+            iframe.style.display = "block";
+            iframe.style.marginInline = "auto";
+        };
+
+        const observer = new MutationObserver(normalizeBadgeFrame);
+        observer.observe(container, { childList: true, subtree: true });
+        normalizeBadgeFrame();
+
+        return () => observer.disconnect();
     }, [html, isDark]);
 
-    return <div ref={divRef} className="credential-embed flex w-full justify-center" />;
+    return <div ref={divRef} className="credential-embed flex w-full justify-center overflow-hidden" />;
 };
 
 const MarkdownImage = ({ node, ...props }: any) => (
