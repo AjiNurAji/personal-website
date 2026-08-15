@@ -66,7 +66,9 @@ const RawHtml = ({ html }: { html: string }) => {
                 iframe.style.height = `${Math.ceil(renderedWidth * height / width)}px`;
             };
 
-            iframe.style.maxWidth = "100%";
+            badge.style.width = "100%";
+            badge.style.maxWidth = "100%";
+            iframe.style.maxWidth = "100%"
             iframe.style.display = "block";
             iframe.style.marginInline = "auto";
             resize();
@@ -90,7 +92,7 @@ const RawHtml = ({ html }: { html: string }) => {
         };
     }, [html, isDark]);
 
-    return <div ref={divRef} className="credential-embed flex w-full justify-center overflow-hidden" />;
+    return <div ref={divRef} className="credential-embed flex w-full min-w-0 justify-center overflow-hidden" />;
 };
 
 const MarkdownImage = ({ node, ...props }: any) => (
@@ -255,7 +257,7 @@ export default function AchievementShow({ achievement, settings = {} }: Props) {
                    {achievement.embed_code && (
                         <div className="mt-12 flex flex-col gap-4">
                             <h3 className="text-2xl font-bold">Credential Badge</h3>
-                            <div className="credential-card w-full overflow-hidden rounded-2xl border border-border/70 bg-card p-3 shadow-sm transition-colors duration-300 sm:p-6">
+                            <div className="credential-card w-full min-w-0 overflow-hidden rounded-2xl border border-border/70 bg-card shadow-sm transition-colors duration-300">
                                 <RawHtml html={achievement.embed_code} />
                             </div>
                         </div>
