@@ -10,6 +10,7 @@ import { RiArrowLeftSLine, RiDownloadLine, RiExternalLinkLine } from "@remixicon
 import MDEditor from "@uiw/react-md-editor";
 import { cn } from "@/lib/utils";
 import { useState, useEffect, useRef } from "react";
+import { SafeImage } from "@/Components/Elements/SafeImage";
 
 const RawHtml = ({ html }: { html: string }) => {
     const divRef = useRef<HTMLDivElement>(null);
@@ -102,9 +103,9 @@ const MarkdownImage = ({ node, ...props }: any) => (
     </DialogTrigger>
     <DialogContent className="sm:max-w-5xl md:max-w-7xl w-[95vw] h-fit max-h-[95vh] p-0 overflow-hidden bg-transparent border-0 ring-0 flex items-center justify-center">
       <DialogTitle className="sr-only">Image View</DialogTitle>
-      <img 
-        {...props} 
-        className="w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl bg-zinc-50/10 backdrop-blur-md" 
+      <img
+        {...props}
+        className="w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl bg-zinc-50/10 backdrop-blur-md"
       />
     </DialogContent>
   </Dialog>
@@ -185,7 +186,7 @@ export default function AchievementShow({ achievement, settings = {} }: Props) {
             {(achievement.preview_image || achievement.certificate_path) && (
               <AnimateIn variant="blur-fade" delay={0.2}>
                 <div className="group relative overflow-hidden rounded-3xl border border-border/70 bg-card/60 shadow-2xl shadow-black/10">
-                  <img
+                  <SafeImage
                     src={achievement.preview_image ? `/storage/${achievement.preview_image}` : "/api/placeholder/800/450"}
                     alt={achievement.title}
                     className="max-h-[min(68vh,720px)] w-full object-contain bg-muted/30"
@@ -199,14 +200,14 @@ export default function AchievementShow({ achievement, settings = {} }: Props) {
                             <DialogContent className="sm:max-w-4xl md:max-w-5xl w-[95vw] sm:w-[90vw] h-fit max-h-[95vh] p-0 overflow-hidden bg-transparent border-0 ring-0 flex items-center justify-center">
                                 <DialogTitle className="sr-only">Certificate View</DialogTitle>
                                 {achievement.certificate_path.toLowerCase().endsWith('.pdf') ? (
-                                    <iframe 
-                                        src={`/storage/${achievement.certificate_path}`} 
-                                        className="w-full h-[85vh] rounded-2xl bg-white dark:bg-zinc-950 shadow-2xl" 
+                                    <iframe
+                                        src={`/storage/${achievement.certificate_path}`}
+                                        className="w-full h-[85vh] rounded-2xl bg-white dark:bg-zinc-950 shadow-2xl"
                                         title="Certificate Viewer"
                                     />
                                 ) : (
-                                    <img 
-                                        src={`/storage/${achievement.certificate_path}`} 
+                                    <SafeImage
+                                        src={`/storage/${achievement.certificate_path}`}
                                         alt="Certificate"
                                         className="w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl"
                                     />
@@ -226,26 +227,26 @@ export default function AchievementShow({ achievement, settings = {} }: Props) {
                    <div className="prose prose-zinc dark:prose-invert max-w-none">
                       <h3 className="text-2xl font-bold mb-4">Description</h3>
                       <p className="text-muted-foreground text-lg leading-relaxed mb-10">
-                        <MDEditor.Markdown 
-                          source={achievement.description || "No description provided."} 
+                        <MDEditor.Markdown
+                          source={achievement.description || "No description provided."}
                           style={{ backgroundColor: 'transparent', color: 'inherit' }}
                           components={{ img: MarkdownImage }}
                         />
                       </p>
-                      
+
                       {achievement.content && (
                         <>
                           <h3 className="text-2xl font-bold mb-4">Details</h3>
                           <div data-color-mode="light" className="dark:hidden">
-                            <MDEditor.Markdown 
-                              source={achievement.content} 
+                            <MDEditor.Markdown
+                              source={achievement.content}
                               style={{ backgroundColor: 'transparent', color: 'inherit' }}
                               components={{ img: MarkdownImage }}
                             />
                           </div>
                           <div data-color-mode="dark" className="hidden dark:block">
-                            <MDEditor.Markdown 
-                              source={achievement.content} 
+                            <MDEditor.Markdown
+                              source={achievement.content}
                               style={{ backgroundColor: 'transparent', color: 'inherit' }}
                               components={{ img: MarkdownImage }}
                             />
@@ -253,7 +254,7 @@ export default function AchievementShow({ achievement, settings = {} }: Props) {
                         </>
                       )}
                    </div>
-                   
+
                    {achievement.embed_code && (
                         <div className="mt-12 flex flex-col gap-4">
                             <h3 className="text-2xl font-bold">Credential Badge</h3>
@@ -285,8 +286,8 @@ export default function AchievementShow({ achievement, settings = {} }: Props) {
                     </div>
 
                     {achievement.certificate_path && (
-                        <a 
-                            href={`/storage/${achievement.certificate_path}`} 
+                        <a
+                            href={`/storage/${achievement.certificate_path}`}
                             download
                             className={cn(buttonVariants({ variant: "outline" }), "w-full mt-6 rounded-xl gap-2")}
                         >

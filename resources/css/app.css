@@ -269,15 +269,8 @@
     @apply border-zinc-800;
   }
 
-  .credential-card iframe,
-  .credential-card > div,
-  .credential-card > div > div {
-    max-width: 100% !important;
-  }
-
   .credential-card iframe {
     display: block;
-    width: min(100%, 640px) !important;
     min-height: 420px;
     margin-inline: auto;
     border: 0;
